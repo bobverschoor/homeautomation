@@ -34,4 +34,4 @@ class Gas:
 
 
     def __str__(self):
-        return "m3: " + str(self._m3) + ", time: " + str(self._timestamp)
+        return "m3: " + str(self._m3) + ", tijdstip: " + str(self._timestamp)

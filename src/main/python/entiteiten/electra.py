@@ -4,8 +4,8 @@ import datetime
 class Electra:
     LAAGTARIEF = "laag"
     HOOGTARIEF = "hoog"
-    CONSUMENT = "consument"
-    PRODUCENT = "producent"
+    VERBRUIKT = "verbruikt"
+    GELEVERD = "geleverd"
 
     def __init__(self):
         self._tarief = ""
@@ -30,7 +30,7 @@ class Electra:
 
     @richting.setter
     def richting(self, value):
-        if value in [Electra.CONSUMENT, Electra.PRODUCENT]:
+        if value in [Electra.VERBRUIKT, Electra.GELEVERD]:
             self._richting = value
         else:
             raise ValueError("Wrong direction: " + str(value))
@@ -52,4 +52,4 @@ class Electra:
 
     def __str__(self):
         return "tarief: " + self._tarief + ", richting: " + self._richting + ", Wh: " + str(self._wh) + \
-                ", time: " + str(self._timestamp)
+                ", tijdstip: " + str(self._timestamp)

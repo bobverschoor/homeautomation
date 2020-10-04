@@ -9,9 +9,9 @@ class TestEntiteiten(unittest.TestCase):
     def test_correct_electra(self):
         e = Electra()
         e.tarief = Electra.HOOGTARIEF
-        e.richting = Electra.CONSUMENT
+        e.richting = Electra.VERBRUIKT
         e.wh = 1000
-        self.assertEqual("tarief: hoog, richting: consument, Wh: 1000, time: " + str(e._timestamp), str(e))
+        self.assertEqual("tarief: hoog, richting: verbruikt, Wh: 1000, tijdstip: " + str(e._timestamp), str(e))
 
     def test_incorrect_e_fields_expects_exception(self):
         e = Electra()
@@ -26,7 +26,7 @@ class TestEntiteiten(unittest.TestCase):
         g = Gas()
         g.m3 = 1000
         g.timestamp = datetime.datetime.now(datetime.timezone.utc)
-        self.assertEqual("m3: 1000, time: " + str(g._timestamp), str(g))
+        self.assertEqual("m3: 1000, tijdstip: " + str(g._timestamp), str(g))
 
     def test_incorrect_g_fields_expects_exception(self):
         g = Gas()
