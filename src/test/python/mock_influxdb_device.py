@@ -6,5 +6,8 @@ class MockInFluxDBDevice(InFluxDBDevice):
     def __init__(self):
         self._meetwaarde = None
 
+    def setup_db(self):
+        pass
+
     def write(self, meetwaarde):
         self._meetwaarde = meetwaarde

@@ -16,4 +16,5 @@ class InFluxDBDevice:
                 self.client.create_database(InFluxDBDevice.DB_Naam)
 
     def write(self, meetwaarde):
-        pass
+        if not self.client.write_points(meetwaarde):
+            raise IOError(f"writeing: {str(meetwaarde)} to database failed.")
