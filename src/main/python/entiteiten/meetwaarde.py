@@ -1,10 +1,28 @@
 import datetime
 
+
 class Meetwaarde:
     def __init__(self, eenheid):
         self._waarde = ""
-        self.eenheid = eenheid
+        self._eenheid = eenheid
+        self._tags = {}
         self._timestamp = datetime.datetime.now(datetime.timezone.utc)
+
+    @property
+    def eenheid(self):
+        return self._eenheid
+
+    @property
+    def tags(self):
+        return self._tags
+
+    @tags.setter
+    def tags(self, value):
+        if ":" in value:
+            tagnaam, tagvalue = value.split(":")
+            self._tags[tagnaam] = tagvalue
+        else:
+            raise ValueError("invalid tag: " + str(value))
 
     @property
     def waarde(self):
@@ -19,7 +37,7 @@ class Meetwaarde:
 
     @property
     def timestamp(self):
-        return self._timestamp
+        return self._timestamp.timestamp()
 
     @timestamp.setter
     def timestamp(self, value):

@@ -12,6 +12,7 @@ class TestEntiteiten(unittest.TestCase):
         e.richting = Electra.VERBRUIKT
         e.waarde = 1000
         self.assertEqual("tarief: hoog, richting: verbruikt, Wh: 1000, tijdstip: " + str(e._timestamp), str(e))
+        self.assertEqual({"tarief": "hoog", "richting": "verbruikt"}, e.tags)
 
     def test_incorrect_e_fields_expects_exception(self):
         e = Electra()
@@ -21,6 +22,8 @@ class TestEntiteiten(unittest.TestCase):
             e.richting = "UP"
         with self.assertRaises(ValueError):
             e.waarde = -5
+        with self.assertRaises(ValueError):
+            e.tags = "test"
 
     def test_correct_gas(self):
         g = Gas()

@@ -7,5 +7,13 @@ class DatabaseGateway:
         self.entiteiten = []
 
     def store(self):
+        db_entiteiten = []
         for entiteit in self.entiteiten:
-            self.repository.write(entiteit)
+            db_entiteit = {
+                "measurement": entiteit.eenheid,
+                "tags": entiteit.tags,
+                "time": entiteit.timestamp,
+                "fields": {"meetwaarde": entiteit.waarde}
+                }
+            db_entiteiten.append(db_entiteit)
+        self.repository.write(db_entiteiten)

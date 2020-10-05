@@ -4,6 +4,8 @@ from sensor.p1_device import P1Device
 
 
 class MockP1Device(P1Device):
+
+    # noinspection PyMissingConstructor
     def __init__(self, file):
         self.file = file
 

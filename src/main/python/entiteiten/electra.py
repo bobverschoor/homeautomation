@@ -21,6 +21,7 @@ class Electra(Meetwaarde):
     def tarief(self, value):
         if value in [Electra.LAAGTARIEF, Electra.HOOGTARIEF]:
             self._tarief = value
+            self.tags = "tarief:" + str(value)
         else:
             raise ValueError("Wrong tarief: " + str(value))
 
@@ -32,6 +33,7 @@ class Electra(Meetwaarde):
     def richting(self, value):
         if value in [Electra.VERBRUIKT, Electra.GELEVERD]:
             self._richting = value
+            self.tags = "richting:" + str(value)
         else:
             raise ValueError("Wrong direction: " + str(value))
 
