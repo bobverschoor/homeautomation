@@ -1,17 +1,17 @@
-import datetime
+
+from entiteiten.meetwaarde import Meetwaarde
 
 
-class Electra:
+class Electra(Meetwaarde):
     LAAGTARIEF = "laag"
     HOOGTARIEF = "hoog"
     VERBRUIKT = "verbruikt"
     GELEVERD = "geleverd"
 
     def __init__(self):
+        super().__init__("Wh")
         self._tarief = ""
         self._richting = ""
-        self._wh = -1
-        self._timestamp = datetime.datetime.now(datetime.timezone.utc)
 
     @property
     def tarief(self):
@@ -35,21 +35,6 @@ class Electra:
         else:
             raise ValueError("Wrong direction: " + str(value))
 
-    @property
-    def wh(self):
-        return self._wh
-
-    @wh.setter
-    def wh(self, value):
-        if value >= 0:
-            self._wh = value
-        else:
-            raise ValueError("invalid wh: " + str(value))
-
-    @property
-    def timestamp(self):
-        return self._timestamp
-
     def __str__(self):
-        return "tarief: " + self._tarief + ", richting: " + self._richting + ", Wh: " + str(self._wh) + \
+        return "tarief: " + self._tarief + ", richting: " + self._richting + ", Wh: " + str(self._waarde) + \
                 ", tijdstip: " + str(self._timestamp)

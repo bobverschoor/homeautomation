@@ -35,7 +35,7 @@ class SlimmemeterGateway:
         for tarief in electra.keys():
             for richting in electra[tarief]:
                 e = Electra()
-                e.wh = int(electra[tarief][richting] * 1000)
+                e.waarde = int(electra[tarief][richting] * 1000)
                 if tarief == P1Device.E_LAAG:
                     e.tarief = Electra.LAAGTARIEF
                 else:
@@ -49,5 +49,5 @@ class SlimmemeterGateway:
     def _set_gas(self, gas):
         g = Gas()
         g.timestamp = gas["timestamp"]
-        g.m3 = gas["m3"]
+        g.waarde = gas["m3"]
         self._gas.append(g)

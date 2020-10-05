@@ -8,4 +8,4 @@ class DatabaseGateway:
 
     def store(self):
         for entiteit in self.entiteiten:
-            self.repository.write()
+            self.repository.write(entiteit)

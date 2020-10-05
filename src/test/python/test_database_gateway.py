@@ -9,8 +9,11 @@ class TestDatabasegateway(unittest.TestCase):
         electra = Electra()
         electra.richting = Electra.VERBRUIKT
         electra.tarief = Electra.LAAGTARIEF
-        electra.wh = 34224
+        electra.waarde = 34224
         db = DatabaseGateway()
+        db.entiteiten = [electra]
+        db.store()
+
         self.assertEqual(True, False)
 
 

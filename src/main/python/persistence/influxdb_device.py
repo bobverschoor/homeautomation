@@ -1,5 +1,6 @@
 from influxdb import InfluxDBClient
 
+
 class InFluxDBDevice:
     DB_Naam = "p1meter"
 
@@ -14,6 +15,5 @@ class InFluxDBDevice:
             if InFluxDBDevice.DB_Naam not in self.client.get_list_database():
                 self.client.create_database(InFluxDBDevice.DB_Naam)
 
-
-    def write(self):
+    def write(self, meetwaarde):
         pass
