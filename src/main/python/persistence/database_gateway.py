@@ -7,7 +7,6 @@ class DatabaseGateway:
         self.entiteiten = []
 
     def store(self):
-        self.repository.setup_db()
         db_entiteiten = []
         for entiteit in self.entiteiten:
             db_entiteit = {

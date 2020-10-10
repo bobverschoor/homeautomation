@@ -37,7 +37,7 @@ class Meetwaarde:
 
     @property
     def timestamp(self):
-        return self._timestamp.timestamp()
+        return int(self._timestamp.timestamp())
 
     @timestamp.setter
     def timestamp(self, value):
