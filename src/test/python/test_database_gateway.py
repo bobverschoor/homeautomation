@@ -6,14 +6,19 @@ from mock_influxdb_device import MockInFluxDBDevice
 from persistence.database_gateway import DatabaseGateway
 
 
+def get_a_electra():
+    electra = Electra()
+    electra.richting = Electra.VERBRUIKT
+    electra.tarief = Electra.LAAGTARIEF
+    electra.waarde = 34224
+    return electra
+
+
 class TestDatabasegateway(unittest.TestCase):
     def test_store_electra_gas(self):
         db = DatabaseGateway()
         db.repository = MockInFluxDBDevice()
-        electra = Electra()
-        electra.richting = Electra.VERBRUIKT
-        electra.tarief = Electra.LAAGTARIEF
-        electra.waarde = 34224
+        electra = get_a_electra()
         db.entiteiten.append(electra)
         gas = Gas()
         gas.waarde = 4312
@@ -33,10 +38,7 @@ class TestDatabasegateway(unittest.TestCase):
     def test_integratie(self):
         db = DatabaseGateway()
         db.repository.drop_database()
-        electra = Electra()
-        electra.richting = Electra.VERBRUIKT
-        electra.tarief = Electra.LAAGTARIEF
-        electra.waarde = 34224
+        electra = get_a_electra()
         db.entiteiten.append(electra)
         gas = Gas()
         gas.waarde = 4312
