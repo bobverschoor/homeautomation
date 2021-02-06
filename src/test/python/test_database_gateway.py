@@ -35,17 +35,17 @@ class TestDatabasegateway(unittest.TestCase):
              "fields": {"meetwaarde": gas.waarde}}],
             db.repository._meetwaarde)
 
-    def test_integratie(self):
-        db = DatabaseGateway()
-        db.repository.drop_database()
-        electra = get_a_electra()
-        db.entiteiten.append(electra)
-        gas = Gas()
-        gas.waarde = 4312
-        db.entiteiten.append(gas)
-        db.store()
-        items = db.repository.get_all_items()
-        print(items)
+    # def test_integratie(self):
+    #     db = DatabaseGateway()
+    #     db.repository.drop_database()
+    #     electra = get_a_electra()
+    #     db.entiteiten.append(electra)
+    #     gas = Gas()
+    #     gas.waarde = 4312
+    #     db.entiteiten.append(gas)
+    #     db.store()
+    #     items = db.repository.get_all_items()
+    #     print(items)
 
 
 if __name__ == '__main__':
