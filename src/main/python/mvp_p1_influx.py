@@ -8,12 +8,14 @@
 #        '"gas": {"m3": 7368.67, "timestamp": 1612623600}}'
 
 from sensor.slimmemeter_gateway import SlimmemeterGateway
+from sensor.p1_device import P1Device
 import datetime
 import json
 
 #data = json.loads(datastr)
 
 slimmemeter = SlimmemeterGateway()
+slimmemeter.set_p1(P1Device())
 
 
 # measurement: electra, tags: {low, consumed}, fields: {"kwh":17069.223, "time":now}
