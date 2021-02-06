@@ -1,7 +1,7 @@
 from entiteiten.electra import Electra
 from entiteiten.gas import Gas
 from sensor.p1_device import P1Device
-
+import json
 
 class SlimmemeterGateway:
     def __init__(self):
@@ -27,7 +27,7 @@ class SlimmemeterGateway:
     def _collect_data(self):
         if self.p1 is None:
             raise ModuleNotFoundError("p1 device not set")
-        data = self.p1.get_data()
+        data = json.loads(self.p1.get_data())
         self._set_electra(data['electra'])
         self._set_gas(data['gas'])
 
