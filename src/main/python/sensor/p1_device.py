@@ -23,6 +23,6 @@ class P1Device:
                 e[tarief][richting] = packet['kwh'][tarief][richting]
         g = {P1Device.G_M3: packet['gas']['total'], P1Device.G_TIMESTAMP: packet['gas']['measured_at']}
         data = {'electra': e, 'gas': g}
-        return json.dumps(json.loads(data))
+        return str(data)
 
 #{"electra": {"low": {"consumed": 16351.117, "produced": 1.804}, "high": {"consumed": 20121.471, "produced": 0.007}}, "gas": {"m3": 7368.67, "timestamp": 1601391600}}
