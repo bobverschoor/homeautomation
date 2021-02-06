@@ -7,36 +7,37 @@
 #        '"high": {"consumed": 21100.748, "produced": 0.007}},' \
 #        '"gas": {"m3": 7368.67, "timestamp": 1612623600}}'
 
-from sensor.p1_device import P1Device
+from sensor.slimmemeter_gateway import SlimmemeterGateway
 import datetime
 import json
 
 #data = json.loads(datastr)
 
-p1 = P1Device()
-data = p1.get_data()
+slimmemeter = SlimmemeterGateway()
+
 
 # measurement: electra, tags: {low, consumed}, fields: {"kwh":17069.223, "time":now}
 #measurement: gas, fields: {"m3":7368.67, "timestamp": 1612623600}
 
 metingen = []
 
-for lh in data["electra"].keys():
+for electra in slimmemeter.electra:
     meting = {}
     meting["measurement"] = "electra"
     meting["tags"] = {}
     meting["fields"] = {}
-    meting["tags"]["tarief"] = lh
-    for richting in data["electra"][lh]:
-        meting["tags"]["richting"] = richting
-        meting["fields"]["kwh"] = data["electra"][lh][richting]
-        meting["fields"]["timestamp"] = int(datetime.datetime.utcnow().timestamp())
+    meting["tags"]["tarief"] = electra.tarief
+    meting["tags"]["richting"] = electra.richting
+    meting["fields"]["kwh"] = electra.waarde
+    meting["fields"]["timestamp"] = electra.timestamp
     metingen.append(meting)
-meting = {}
-meting["measurement"] = "gas"
-meting["fields"] = {}
-meting["fields"]["m3"] = data["gas"]["m3"]
-meting["fields"]["timestamp"] = data["gas"]["timestamp"]
-metingen.append(meting)
+
+for gas in slimmemeter.gas:
+    meting = {}
+    meting["measurement"] = "gas"
+    meting["fields"] = {}
+    meting["fields"]["m3"] = gas.waarde
+    meting["fields"]["timestamp"] = gas.timestamp
+    metingen.append(meting)
 
 print(metingen)
