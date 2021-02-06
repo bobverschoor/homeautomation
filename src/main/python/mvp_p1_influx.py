@@ -20,18 +20,19 @@ data = json.loads(datastr)
 #measurement: gas, fields: {"m3":7368.67, "timestamp": 1612623600}
 
 metingen = []
-meting = {}
-meting["measurement"] = "electra"
 
 for lh in data["electra"].keys():
+    meting = {}
+    meting["measurement"] = "electra"
     meting["tags"] = {}
     meting["fields"] = {}
     meting["tags"]["tarief"] = lh
     for richting in data["electra"][lh]:
         meting["tags"]["richting"] = richting
-        meting["fields"]["kwh"] = data["electra"]
-        meting["fields"]["timestamp"] = str(datetime.datetime.now())
-metingen.append(meting)
+        meting["fields"]["kwh"] = data["electra"][lh][richting]
+        meting["fields"]["timestamp"] = int(datetime.datetime.utcnow().timestamp())
+    metingen.append(meting)
+meting = {}
 meting["measurement"] = "gas"
 meting["fields"] = {}
 meting["fields"]["m3"] = data["gas"]["m3"]
