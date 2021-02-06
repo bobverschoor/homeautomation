@@ -9,10 +9,7 @@
 
 from sensor.slimmemeter_gateway import SlimmemeterGateway
 from sensor.p1_device import P1Device
-import datetime
-import json
-
-#data = json.loads(datastr)
+from persistence.database_gateway import DatabaseGateway
 
 slimmemeter = SlimmemeterGateway()
 slimmemeter.set_p1(P1Device())
@@ -43,3 +40,7 @@ for gas in slimmemeter.gas:
     metingen.append(meting)
 
 print(metingen)
+
+db = DatabaseGateway()
+db.entiteiten = metingen
+db.store()
