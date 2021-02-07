@@ -18,29 +18,29 @@ slimmemeter.set_p1(P1Device())
 # measurement: electra, tags: {low, consumed}, fields: {"kwh":17069.223, "time":now}
 #measurement: gas, fields: {"m3":7368.67, "timestamp": 1612623600}
 
-metingen = []
-
-for electra in slimmemeter.electra:
-    meting = {}
-    meting["measurement"] = "electra"
-    meting["tags"] = {}
-    meting["fields"] = {}
-    meting["tags"]["tarief"] = electra.tarief
-    meting["tags"]["richting"] = electra.richting
-    meting["fields"]["kwh"] = electra.waarde
-    meting["fields"]["timestamp"] = electra.timestamp
-    metingen.append(meting)
-
-for gas in slimmemeter.gas:
-    meting = {}
-    meting["measurement"] = "gas"
-    meting["fields"] = {}
-    meting["fields"]["m3"] = gas.waarde
-    meting["fields"]["timestamp"] = gas.timestamp
-    metingen.append(meting)
-
-print(metingen)
+# metingen = []
+#
+# for electra in slimmemeter.electra:
+#     meting = {}
+#     meting["measurement"] = "electra"
+#     meting["tags"] = {}
+#     meting["fields"] = {}
+#     meting["tags"]["tarief"] = electra.tarief
+#     meting["tags"]["richting"] = electra.richting
+#     meting["fields"]["kwh"] = electra.waarde
+#     meting["fields"]["timestamp"] = electra.timestamp
+#     metingen.append(meting)
+#
+# for gas in slimmemeter.gas:
+#     meting = {}
+#     meting["measurement"] = "gas"
+#     meting["fields"] = {}
+#     meting["fields"]["m3"] = gas.waarde
+#     meting["fields"]["timestamp"] = gas.timestamp
+#     metingen.append(meting)
 
 db = DatabaseGateway()
-db.entiteiten = metingen
+
+for meting in slimmemeter.electra:
+    db.entiteiten = meting
 db.store()
