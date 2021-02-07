@@ -14,7 +14,7 @@ class InFluxDBDevice:
         # Apparently cheaper to just try to create db even if it exists.
         client.create_database(InFluxDBDevice.DB_Naam)
         client.switch_database(InFluxDBDevice.DB_Naam)
-        if not client.write_points(meetwaarde):
+        if not client.write_points(meetwaarde, time_precision='s'):
             client.close()
             raise IOError(f"writeing: {str(meetwaarde)} to database failed.")
         client.close()
