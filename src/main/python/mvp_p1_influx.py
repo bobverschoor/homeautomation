@@ -43,4 +43,7 @@ db = DatabaseGateway()
 
 for meting in slimmemeter.electra:
     db.entiteiten = meting
+for meting in slimmemeter.gas:
+    db.entiteiten = meting
+
 db.store()
