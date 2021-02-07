@@ -29,4 +29,6 @@ class DatabaseGateway:
                 "fields": {"meetwaarde": entiteit.waarde}
                 }
             db_entiteiten.append(db_entiteit)
+        print(db_entiteiten)
         self.repository.write(db_entiteiten)
+
