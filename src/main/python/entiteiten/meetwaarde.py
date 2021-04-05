@@ -7,6 +7,7 @@ class Meetwaarde:
         self._eenheid = eenheid
         self._tags = {}
         self._timestamp = datetime.datetime.now(datetime.timezone.utc)
+        self._slimmemeter = None
 
     @property
     def eenheid(self):
@@ -50,3 +51,13 @@ class Meetwaarde:
                 raise ValueError(e)
         else:
             raise ValueError("m3 value below zero: " + str(value))
+
+    @property
+    def slimmemeter(self):
+        return self._slimmemeter
+
+    @slimmemeter.setter
+    def slimmemeter(self, sm):
+        self._slimmemeter = sm
+        self.tags = "meternaam:" + sm.naam
+        self.tags = "metertype:" + sm.type

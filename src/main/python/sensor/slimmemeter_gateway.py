@@ -31,9 +31,9 @@ class SlimmemeterGateway:
         if self.p1 is None:
             raise ModuleNotFoundError("p1 device not set")
         data = json.loads(self.p1.get_data())
+        self._slimmemeter = Slimmemeter(data['header'])
         self._set_electra(data['electra'])
         self._set_gas(data['gas'])
-        self._slimmemeter = Slimmemeter(data['header'])
         for e in self._electra:
             e.slimmemeter = self._slimmemeter
 
@@ -56,4 +56,5 @@ class SlimmemeterGateway:
         g = Gas()
         g.timestamp = gas["timestamp"]
         g.waarde = gas["m3"]
+        g.slimmemeter = self._slimmemeter
         self._gas.append(g)
