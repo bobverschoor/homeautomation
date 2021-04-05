@@ -1,13 +1,16 @@
 from entiteiten.electra import Electra
 from entiteiten.gas import Gas
+from entiteiten.slimmemeter import Slimmemeter
 from sensor.p1_device import P1Device
 import json
+
 
 class SlimmemeterGateway:
     def __init__(self):
         self.p1 = None
         self._electra = []
         self._gas = []
+        self._slimmemeter = None
 
     @property
     def electra(self):
@@ -30,6 +33,9 @@ class SlimmemeterGateway:
         data = json.loads(self.p1.get_data())
         self._set_electra(data['electra'])
         self._set_gas(data['gas'])
+        self._slimmemeter = Slimmemeter(data['header'])
+        for e in self._electra:
+            e.slimmemeter = self._slimmemeter
 
     def _set_electra(self, electra):
         for tarief in electra.keys():

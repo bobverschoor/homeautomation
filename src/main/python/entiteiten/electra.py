@@ -12,6 +12,7 @@ class Electra(Meetwaarde):
         super().__init__("Wh")
         self._tarief = ""
         self._richting = ""
+        self._slimmemeter = None
 
     @property
     def tarief(self):
@@ -36,6 +37,16 @@ class Electra(Meetwaarde):
             self.tags = "richting:" + str(value)
         else:
             raise ValueError("Wrong direction: " + str(value))
+
+    @property
+    def slimmemeter(self):
+        return self._slimmemeter
+
+    @slimmemeter.setter
+    def slimmemeter(self, sm):
+        self._slimmemeter = sm
+        self.tags = "meternaam:" + sm.naam
+        self.tags = "metertype:" + sm.type
 
     def __str__(self):
         return "tarief: " + self._tarief + ", richting: " + self._richting + ", Wh: " + str(self._waarde) + \
