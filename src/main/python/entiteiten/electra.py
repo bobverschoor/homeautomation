@@ -7,11 +7,13 @@ class Electra(Meetwaarde):
     HOOGTARIEF = "hoog"
     VERBRUIKT = "verbruikt"
     GELEVERD = "geleverd"
+    FASE = "fase"
 
     def __init__(self):
         super().__init__("Wh")
         self._tarief = ""
         self._richting = ""
+        self._fase = ""
 
     @property
     def tarief(self):

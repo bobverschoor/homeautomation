@@ -1,5 +1,6 @@
 import re
 import datetime
+import inspect
 
 
 def obis2attribute(obis):
@@ -10,63 +11,63 @@ def obis2attribute(obis):
     elif obis == '0-0:96.1.1':
         return 'meter_id'
     elif obis == '1-0:1.8.1':
-        return 'electra_consumed_tariff_1'
+        return 'meterstandelectra_consumed_tariff1'
     elif obis == '1-0:1.8.2':
-        return 'electra_consumed_tariff_2'
+        return 'meterstandelectra_consumed_tariff2'
     elif obis == '1-0:2.8.1':
-        return 'electra_produced_tariff_1'
+        return 'meterstandelectra_produced_tariff1'
     elif obis == '1-0:2.8.2':
-        return 'electra_produced_tariff_2'
+        return 'meterstandelectra_produced_tariff2'
     elif obis == '0-0:96.14.0':
         return 'current_tariff'
     elif obis == '1-0:1.7.0':
-        return 'current_electra_consumed'
+        return 'actualpower_consumed'
     elif obis == '1-0:2.7.0':
-        return 'current_electra_produced'
+        return 'actualpower_produced'
     elif obis == '0-0:96.7.21':
-        return 'nr_of_power_failures_any_phase'
+        return 'aantalstoringen'
     elif obis == '0-0:96.7.9':
-        return 'nr_of_long_power_failures_any_phase'
+        return 'aantallangdurigestoringen'
     elif obis == '1-0:99.97.0':
         return 'power_failure_events'
     elif obis == '1-0:32.32.0':
-        return 'nr_of_voltage_sags_l1'
+        return 'aantaltelagespanning_l1'
     elif obis == '1-0:52.32.0':
-        return 'nr_of_voltage_sags_l2'
+        return 'aantaltelagespanning_l2'
     elif obis == '1-0:72.32.0':
-        return 'nr_of_voltage_sags_l3'
+        return 'aantaltelagespanning_l3'
     elif obis == '1-0:32.36.0':
-        return 'nr_of_voltage_swells_l1'
+        return 'aantaltehogespanning_l1'
     elif obis == '1-0:52.36.0':
-        return 'nr_of_voltage_swells_l2'
+        return 'aantaltehogespanning_l2'
     elif obis == '1-0:72.36.0':
-        return 'nr_of_voltage_swells_l3'
+        return 'aantaltehogespanning_l3'
     elif obis == '0-0:96.13.0':
         return 'text_message'
     elif obis == '1-0:32.7.0':
-        return 'voltage_l1'
+        return 'instantaneousvoltage_l1'
     elif obis == '1-0:52.7.0':
-        return 'voltage_l2'
+        return 'instantaneousvoltage_l2'
     elif obis == '1-0:72.7.0':
-        return 'voltage_l3'
+        return 'instantaneousvoltage_l3'
     elif obis == '1-0:31.7.0':
-        return 'current_l1'
+        return 'instantaneouscurrent_l1'
     elif obis == '1-0:51.7.0':
-        return 'current_l2'
+        return 'instantaneouscurrent_l2'
     elif obis == '1-0:71.7.0':
-        return 'current_l3'
+        return 'instantaneouscurrent_l3'
     elif obis == '1-0:21.7.0':
-        return 'power_consumed_l1'
+        return 'instantaneouspower_consumed_l1'
     elif obis == '1-0:41.7.0':
-        return 'power_consumed_l2'
+        return 'instantaneouspower_consumed_l2'
     elif obis == '1-0:61.7.0':
-        return 'power_consumed_l3'
+        return 'instantaneouspower_consumed_l3'
     elif obis == '1-0:22.7.0':
-        return 'power_produced_l1'
+        return 'instantaneouspower_produced_l1'
     elif obis == '1-0:42.7.0':
-        return 'power_produced_l2'
+        return 'instantaneouspower_produced_l2'
     elif obis == '1-0:62.7.0':
-        return 'power_produced_l3'
+        return 'instantaneouspower_produced_l3'
     return 'error'
 
 
@@ -87,18 +88,26 @@ class PowerFailureEvent:
         duration_parser.match(duration)
         self._duration_in_sec = int(duration_parser.match(duration).group(1))
 
+    @property
+    def timestamp_end(self):
+        return self._timestamp_end
+
+    @property
+    def duration(self):
+        return self._duration_in_sec, "s"
+
     def __str__(self):
         return str(self._timestamp_end.strftime("%Y-%m-%d %H:%M:%S")) + " " + str(self._duration_in_sec) + " secondes"
 
 
 class MbusDevice:
     def __init__(self):
-        print("MbusDevice")
         self._id = -1
         self._devicetype = -1
         self._timestamp = datetime.datetime.now()
         self._measurement = 0.0
         self._unit = ""
+        self._error = ""
 
     @property
     def id(self):
@@ -107,7 +116,10 @@ class MbusDevice:
     @id.setter
     def id(self, value):
         self._id = int(value[0])
-        print("\tId: " + str(self.id))
+
+    @property
+    def timestamp(self):
+        return self._timestamp
 
     @property
     def devicetype(self):
@@ -116,7 +128,6 @@ class MbusDevice:
     @devicetype.setter
     def devicetype(self, value):
         self._devicetype = int(value[0])
-        print("\tType: " + str(self.devicetype))
 
     @property
     def measurement(self):
@@ -127,12 +138,28 @@ class MbusDevice:
         timestamp = value[0]
         timestamp = timestamp[:-1]
         self._timestamp = datetime.datetime.strptime(timestamp, "%y%m%d%H%M%S")
-        parser = re.compile(r'(\d+\.?\d+)\*(.+?)')
+        parser = re.compile(r'(\d+\.?\d+)\*(.+)')
         meteringvalue = parser.match(value[1])
         if meteringvalue:
             self._measurement = float(meteringvalue.group(1))
             self._unit = meteringvalue.group(2)
-            print("\tmeasurement: " + str(self))
+        else:
+            self.error = "Could not parse measurement for device: " + str(self._devicetype) + " value: " + str(value)
+
+    @property
+    def unit(self):
+        return self._unit
+
+    @property
+    def error(self):
+        return self._error
+
+    @error.setter
+    def error(self, value):
+        if self.error == "":
+            self._error = str(value)
+        else:
+            self._error = self._error + "\n" + str(value)
 
     def __str__(self):
         return str(self._timestamp.strftime("%Y-%m-%d %H:%M:%S")) + " " + str(self.measurement) + " " + self._unit
@@ -145,37 +172,42 @@ class Telegram:
         self._timestamp = datetime.datetime.now()
         self._error = ""
         self._meter_id = -1
-        self._electra_consumed_tariff_1 = -1
-        self._electra_consumed_tariff_2 = -1
-        self._electra_produced_tariff_1 = -1
-        self._electra_produced_tariff_2 = -1
-        self._current_tariff = -1
-        self._current_electra_consumed = -1
-        self._current_electra_produced = -1
-        self._nr_of_power_failures_any_phase = -1
-        self._nr_of_long_power_failures_any_phase = -1
+        self._meterstandelectra_consumed_tariff1 = -1
+        self._meterstandelectra_consumed_tariff2 = -1
+        self._meterstandelectra_produced_tariff1 = -1
+        self._meterstandelectra_produced_tariff2 = -1
+        self._actualtariff = -1
+        self._actualpower_consumed = -1
+        self._actualpower_produced = -1
+        self._aantalstoringen = -1
+        self._aantallangdurigestoringen = -1
         self._power_failure_events = []
-        self._nr_of_voltage_sags_l1 = -1
-        self._nr_of_voltage_sags_l2 = -1
-        self._nr_of_voltage_sags_l3 = -1
-        self._nr_of_voltage_swells_l1 = -1
-        self._nr_of_voltage_swells_l2 = -1
-        self._nr_of_voltage_swells_l3 = -1
-        self._voltage_l1 = -1
-        self._voltage_l2 = -1
-        self._voltage_l3 = -1
-        self._current_l1 = -1
-        self._current_l2 = -1
-        self._current_l3 = -1
-        self._power_consumed_l1 = -1
-        self._power_consumed_l2 = -1
-        self._power_consumed_l3 = -1
-        self._power_produced_l1 = -1
-        self._power_produced_l2 = -1
-        self._power_produced_l3 = -1
+        self._aantaltelagespanning_l1 = -1
+        self._aantaltelagespanning_l2 = -1
+        self._aantaltelagespanning_l3 = -1
+        self._aantaltehogespanning_l1 = -1
+        self._aantaltehogespanning_l2 = -1
+        self._aantaltehogespanning_l3 = -1
+        self._instantaneousvoltage_l1 = -1
+        self._instantaneousvoltage_l2 = -1
+        self._instantaneousvoltage_l3 = -1
+        self._instantaneouscurrent_l1 = -1
+        self._instantaneouscurrent_l2 = -1
+        self._instantaneouscurrent_l3 = -1
+        self._instantaneouspower_consumed_l1 = -1
+        self._instantaneouspower_consumed_l2 = -1
+        self._instantaneouspower_consumed_l3 = -1
+        self._instantaneouspower_produced_l1 = -1
+        self._instantaneouspower_produced_l2 = -1
+        self._instantaneouspower_produced_l3 = -1
         self._text_message = ""
         self._data = {}
         self._mbusdevice = {}
+
+    def is_data_ok(self):
+        if self.error == "":
+            return True
+        return False
 
     def add(self, line):
         if self._manufacture:
@@ -192,7 +224,10 @@ class Telegram:
                         channel_id = mbus_match.group(1)
                         self.set_mbusdevice(channel_id, mbus_match.group(2), measurements)
                     else:
-                        setattr(self, obis2attribute(obis_reference), measurements)
+                        try:
+                            setattr(self, obis2attribute(obis_reference), measurements)
+                        except AttributeError:
+                            self.error = "Can't set attribute for: " + obis_reference
                         if self._error:
                             print("Error: " + str(self._error))
                             print(obis_reference + " : " + str(measurements))
@@ -211,7 +246,9 @@ class Telegram:
         elif obis_subreference == '24.2.1':
             self._mbusdevice[channel_id].measurement = value
         else:
-            print("error: wrong mbusdevice reference value: " + str(channel_id) + str(obis_subreference) + str(value))
+            self.error = "Wrong mbusdevice reference value: " + str(channel_id) + str(obis_subreference) + str(value)
+        if self._mbusdevice[channel_id].error != "":
+            self.error = self._mbusdevice[channel_id].error
 
     @property
     def error(self):
@@ -219,7 +256,10 @@ class Telegram:
 
     @error.setter
     def error(self, value):
-        self._error = value
+        if self.error == "":
+            self._error = str(value)
+        else:
+            self._error = self._error + "\n" + str(value)
 
     @property
     def version(self):
@@ -228,11 +268,14 @@ class Telegram:
     @version.setter
     def version(self, value):
         self._version = int(value[0])
-        print("Version: " + str(self.version))
+
+    @property
+    def manufacture(self):
+        return self._manufacture
 
     @property
     def timestamp(self):
-        return self._timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        return self._timestamp
 
     @timestamp.setter
     def timestamp(self, value):
@@ -240,8 +283,7 @@ class Telegram:
         timestamp = value[0][:-1]
         try:
             self._timestamp = datetime.datetime.strptime(timestamp, "%y%m%d%H%M%S")
-            print("datimetime: " + self.timestamp)
-        except:
+        except ValueError:
             self._error = "Not a valid timestamp: " + timestamp
 
     @property
@@ -251,116 +293,109 @@ class Telegram:
     @meter_id.setter
     def meter_id(self, value):
         self._meter_id = int(value[0])
-        print("Meter ID: " + str(self.meter_id))
 
     @property
-    def electra_consumed_tariff_1(self):
-        return self._electra_consumed_tariff_1
+    def meterstandelectra_consumed_tariff1(self):
+        return self._meterstandelectra_consumed_tariff1, "kWh"
 
-    @electra_consumed_tariff_1.setter
-    def electra_consumed_tariff_1(self, value):
+    @meterstandelectra_consumed_tariff1.setter
+    def meterstandelectra_consumed_tariff1(self, value):
         electra = electra_value(value[0], "kWh")
         if electra is not None:
-            self._electra_consumed_tariff_1 = electra
-            print("Electra consumed 1: " + str(self.electra_consumed_tariff_1) + " kWh")
+            self._meterstandelectra_consumed_tariff1 = electra
         else:
-            print("electra_consumed_tariff_1 parsing failed: " + str(value))
+            self.error = "meterstandelectra_consumed_tariff1 parsing failed: " + str(value)
 
     @property
-    def electra_consumed_tariff_2(self):
-        return self._electra_consumed_tariff_2
+    def meterstandelectra_consumed_tariff2(self):
+        return self._meterstandelectra_consumed_tariff2, "kWh"
 
-    @electra_consumed_tariff_2.setter
-    def electra_consumed_tariff_2(self, value):
+    @meterstandelectra_consumed_tariff2.setter
+    def meterstandelectra_consumed_tariff2(self, value):
         electra = electra_value(value[0], "kWh")
         if electra is not None:
-            self._electra_consumed_tariff_2 = electra
-            print("Electra consumed 2: " + str(self.electra_consumed_tariff_2) + " kWh")
+            self._meterstandelectra_consumed_tariff2 = electra
         else:
-            print("electra_consumed_tariff_2 parsing failed: " + str(value))
+            self.error = "meterstandelectra_consumed_tariff2 parsing failed: " + str(value)
 
     @property
-    def electra_produced_tariff_1(self):
-        return self._electra_produced_tariff_1
+    def meterstandelectra_produced_tariff1(self):
+        return self._meterstandelectra_produced_tariff1, "kWh"
 
-    @electra_produced_tariff_1.setter
-    def electra_produced_tariff_1(self, value):
+    @meterstandelectra_produced_tariff1.setter
+    def meterstandelectra_produced_tariff1(self, value):
         electra = electra_value(value[0], "kWh")
         if electra is not None:
-            self._electra_produced_tariff_1 = electra
-            print("Electra produced 1: " + str(self.electra_produced_tariff_1) + " kWh")
+            self._meterstandelectra_produced_tariff1 = electra
         else:
-            print("electra_produced_tariff_1 parsing failed: " + str(value))
+            self.error = "meterstandelectra_produced_tariff1 parsing failed: " + str(value)
 
     @property
-    def electra_produced_tariff_2(self):
-        return self._electra_produced_tariff_2
+    def meterstandelectra_produced_tariff2(self):
+        return self._meterstandelectra_produced_tariff2, "kWh"
 
-    @electra_produced_tariff_2.setter
-    def electra_produced_tariff_2(self, value):
+    @meterstandelectra_produced_tariff2.setter
+    def meterstandelectra_produced_tariff2(self, value):
         electra = electra_value(value[0], "kWh")
         if electra is not None:
-            self._electra_produced_tariff_2 = electra
-            print("Electra produced 2: " + str(self.electra_produced_tariff_2) + " kWh")
+            self._meterstandelectra_produced_tariff2 = electra
         else:
-            print("electra_produced_tariff_2 parsing failed: " + str(value))
+            self.error = "meterstandelectra_produced_tariff2 parsing failed: " + str(value)
 
     @property
-    def current_tariff(self):
-        return self._current_tariff
+    def actualtariff(self):
+        if self._actualtariff == 1:
+            return "low"
+        elif self._actualtariff == 2:
+            return "high"
 
-    @current_tariff.setter
-    def current_tariff(self, value):
+    @actualtariff.setter
+    def actualtariff(self, value):
         tariff_code = int(value[0])
         if tariff_code in [0, 1]:
-            self._current_tariff = tariff_code
-            print("Current Tariff: " + str(self.current_tariff))
+            self._actualtariff = tariff_code
         else:
-            print("tariff code wrong: " + value[0])
+            self.error = "tariff code wrong: " + value[0]
 
     @property
-    def current_electra_consumed(self):
-        return self._current_electra_consumed
+    def actualpower_consumed(self):
+        return self._actualpower_consumed, "kW"
 
-    @current_electra_consumed.setter
-    def current_electra_consumed(self, value):
+    @actualpower_consumed.setter
+    def actualpower_consumed(self, value):
         electra = electra_value(value[0], "kW")
         if electra is not None:
-            self._current_electra_consumed = electra
-            print("Current electra consumed: " + str(self.current_electra_consumed) + " kW")
+            self._actualpower_consumed = electra
         else:
-            print("Parsing failed current_electra_consumed: " + str(value))
+            self.error = "Parsing failed actualpower_consumed: " + str(value)
 
     @property
-    def current_electra_produced(self):
-        return self._current_electra_produced
+    def actualpower_produced(self):
+        return self._actualpower_produced, "kW"
 
-    @current_electra_produced.setter
-    def current_electra_produced(self, value):
+    @actualpower_produced.setter
+    def actualpower_produced(self, value):
         electra = electra_value(value[0], "kW")
         if electra is not None:
-            self._current_electra_produced = electra
-            print("Current electra produced: " + str(self.current_electra_produced) + " kW")
+            self._actualpower_produced = electra
         else:
-            print("Parsing failed current_electra_produced: " + str(value))
+            self.error = "Parsing failed actualpower_produced: " + str(value)
 
     @property
-    def nr_of_power_failures_any_phase(self):
-        return self._nr_of_power_failures_any_phase
+    def aantalstoringen(self):
+        return self._aantalstoringen
 
-    @nr_of_power_failures_any_phase.setter
-    def nr_of_power_failures_any_phase(self, value):
-        self._nr_of_power_failures_any_phase = int(value[0])
-        print("Number of power failures in any phase: " + str(self._nr_of_power_failures_any_phase))
+    @aantalstoringen.setter
+    def aantalstoringen(self, value):
+        self._aantalstoringen = int(value[0])
 
     @property
-    def nr_of_long_power_failures_any_phase(self):
-        return self._nr_of_long_power_failures_any_phase
+    def aantallangdurigestoringen(self):
+        return self._aantallangdurigestoringen
 
-    @nr_of_long_power_failures_any_phase.setter
-    def nr_of_long_power_failures_any_phase(self, value):
-        self._nr_of_long_power_failures_any_phase = int(value[0])
-        print("Number of long power failures in any phase: " + str(self._nr_of_long_power_failures_any_phase))
+    @aantallangdurigestoringen.setter
+    def aantallangdurigestoringen(self, value):
+        self._aantallangdurigestoringen = int(value[0])
 
     @property
     def power_failure_events(self):
@@ -370,64 +405,56 @@ class Telegram:
     def power_failure_events(self, value):
         nr_of_events = int(value[0])
         for event in range(1, nr_of_events + 1):
-            powerfailure = PowerFailureEvent(value[event*2], value[(event * 2) +1])
+            powerfailure = PowerFailureEvent(value[event*2], value[(event * 2) + 1])
             self._power_failure_events.append(powerfailure)
-        for event in self._power_failure_events:
-            print("\tPower failure event: " + str(event))
 
     @property
-    def nr_of_voltage_sags_l1(self):
-        return self._nr_of_voltage_sags_l1
+    def aantaltelagespanning_l1(self):
+        return self._aantaltelagespanning_l1
 
-    @nr_of_voltage_sags_l1.setter
-    def nr_of_voltage_sags_l1(self, value):
-        self._nr_of_voltage_sags_l1 = int(value[0])
-        print("Number of Voltage dips l1: " + str(self.nr_of_voltage_sags_l1))
-
-    @property
-    def nr_of_voltage_sags_l2(self):
-        return self._nr_of_voltage_sags_l2
-
-    @nr_of_voltage_sags_l2.setter
-    def nr_of_voltage_sags_l2(self, value):
-        self._nr_of_voltage_sags_l2 = int(value[0])
-        print("Number of Voltage dips l2: " + str(self.nr_of_voltage_sags_l2))
+    @aantaltelagespanning_l1.setter
+    def aantaltelagespanning_l1(self, value):
+        self._aantaltelagespanning_l1 = int(value[0])
 
     @property
-    def nr_of_voltage_sags_l3(self):
-        return self._nr_of_voltage_sags_l3
+    def aantaltelagespanning_l2(self):
+        return self._aantaltelagespanning_l2
 
-    @nr_of_voltage_sags_l3.setter
-    def nr_of_voltage_sags_l3(self, value):
-        self._nr_of_voltage_sags_l3 = int(value[0])
-        print("Number of Voltage dips l3: " + str(self.nr_of_voltage_sags_l3))
-
-    @property
-    def nr_of_voltage_swells_l1(self):
-        return self._nr_of_voltage_swells_l1
-
-    @nr_of_voltage_swells_l1.setter
-    def nr_of_voltage_swells_l1(self, value):
-        self._nr_of_voltage_swells_l1 = int(value[0])
-        print("Number of Voltage swells l1: " + str(self.nr_of_voltage_swells_l1))
+    @aantaltelagespanning_l2.setter
+    def aantaltelagespanning_l2(self, value):
+        self._aantaltelagespanning_l2 = int(value[0])
 
     @property
-    def nr_of_voltage_swells_l2(self):
-        return self._nr_of_voltage_swells_l2
+    def aantaltelagespanning_l3(self):
+        return self._aantaltelagespanning_l3
 
-    @nr_of_voltage_swells_l2.setter
-    def nr_of_voltage_swells_l2(self, value):
-        self._nr_of_voltage_swells_l2 = int(value[0])
-        print("Number of Voltage swells l2: " + str(self.nr_of_voltage_swells_l2))
+    @aantaltelagespanning_l3.setter
+    def aantaltelagespanning_l3(self, value):
+        self._aantaltelagespanning_l3 = int(value[0])
 
     @property
-    def nr_of_voltage_swells_l3(self):
-        return self._nr_of_voltage_swells_l3
+    def aantaltehogespanning_l1(self):
+        return self._aantaltehogespanning_l1
 
-    @nr_of_voltage_swells_l3.setter
-    def nr_of_voltage_swells_l3(self, value):
-        self._nr_of_voltage_swells_l3 = int(value[0])
-        print("Number of Voltage swells l3: " + str(self.nr_of_voltage_swells_l3))
+    @aantaltehogespanning_l1.setter
+    def aantaltehogespanning_l1(self, value):
+        self._aantaltehogespanning_l1 = int(value[0])
+
+    @property
+    def aantaltehogespanning_l2(self):
+        return self._aantaltehogespanning_l2
+
+    @aantaltehogespanning_l2.setter
+    def aantaltehogespanning_l2(self, value):
+        self._aantaltehogespanning_l2 = int(value[0])
+
+    @property
+    def aantaltehogespanning_l3(self):
+        return self._aantaltehogespanning_l3
+
+    @aantaltehogespanning_l3.setter
+    def aantaltehogespanning_l3(self, value):
+        self._aantaltehogespanning_l3 = int(value[0])
 
     @property
     def text_message(self):
@@ -436,122 +463,162 @@ class Telegram:
     @text_message.setter
     def text_message(self, value):
         self._text_message = value[0]
-        print("Text Message: " + self.text_message)
 
     @property
-    def voltage_l1(self):
-        return self._voltage_l1
+    def instantaneousvoltage_l1(self):
+        return self._instantaneousvoltage_l1, "V"
 
-    @voltage_l1.setter
-    def voltage_l1(self, value):
+    @instantaneousvoltage_l1.setter
+    def instantaneousvoltage_l1(self, value):
         electra = electra_value(value[0], "V")
         if electra is not None:
-            self._voltage_l1 = electra
-            print("Voltage L1: " + str(self.voltage_l1) + " V")
+            self._instantaneousvoltage_l1 = electra
         else:
-            print("Parsing failed voltage_l1: " + str(value))
+            self.error = "Parsing failed voltage_l1: " + str(value)
 
     @property
-    def voltage_l2(self):
-        return self._voltage_l2
+    def instantaneousvoltage_l2(self):
+        return self._instantaneousvoltage_l2, "V"
 
-    @voltage_l2.setter
-    def voltage_l2(self, value):
+    @instantaneousvoltage_l2.setter
+    def instantaneousvoltage_l2(self, value):
         electra = electra_value(value[0], "V")
         if electra is not None:
-            self._voltage_l2 = electra
-            print("Voltage L2: " + str(self.voltage_l2) + " V")
+            self._instantaneousvoltage_l2 = electra
         else:
-            print("Parsing failed voltage_l2: " + str(value))
+            self.error = "Parsing failed voltage_l2: " + str(value)
 
     @property
-    def voltage_l3(self):
-        return self._voltage_l3
+    def instantaneousvoltage_l3(self):
+        return self._instantaneousvoltage_l3, "V"
 
-    @voltage_l3.setter
-    def voltage_l3(self, value):
+    @instantaneousvoltage_l3.setter
+    def instantaneousvoltage_l3(self, value):
         electra = electra_value(value[0], "V")
         if electra is not None:
-            self._voltage_l3 = electra
-            print("Voltage L3: " + str(self.voltage_l3) + " V")
+            self._instantaneousvoltage_l3 = electra
         else:
-            print("Parsing failed voltage_l3: " + str(value))
+            self.error = "Parsing failed voltage_l3: " + str(value)
 
     @property
-    def current_l1(self):
-        return self._current_l1
+    def instantaneouscurrent_l1(self):
+        return self._instantaneouscurrent_l1, "A"
 
-    @current_l1.setter
-    def current_l1(self, value):
+    @instantaneouscurrent_l1.setter
+    def instantaneouscurrent_l1(self, value):
         electra = electra_value(value[0], "A")
         if electra is not None:
-            self._current_l1 = int(electra)
-            print("Current L1: " + str(self.current_l1) + " A")
+            self._instantaneouscurrent_l1 = int(electra)
         else:
-            print("Parsing failed current_l1: " + str(value))
+            self.error = "Parsing failed instantaneouscurrent_l1: " + str(value)
 
     @property
-    def current_l2(self):
-        return self._current_l2
+    def instantaneouscurrent_l2(self):
+        return self._instantaneouscurrent_l2, "A"
 
-    @current_l2.setter
-    def current_l2(self, value):
+    @instantaneouscurrent_l2.setter
+    def instantaneouscurrent_l2(self, value):
         electra = electra_value(value[0], "A")
         if electra is not None:
-            self._current_l2 = int(electra)
-            print("Current L2: " + str(self.current_l2) + " A")
+            self._instantaneouscurrent_l2 = int(electra)
         else:
-            print("Parsing failed current_l2: " + str(value))
+            self.error = "Parsing failed instantaneouscurrent_l2: " + str(value)
 
     @property
-    def current_l3(self):
-        return self._current_l3
+    def instantaneouscurrent_l3(self):
+        return self._instantaneouscurrent_l3, "A"
 
-    @current_l3.setter
-    def current_l3(self, value):
+    @instantaneouscurrent_l3.setter
+    def instantaneouscurrent_l3(self, value):
         electra = electra_value(value[0], "A")
         if electra is not None:
-            self._current_l3 = int(electra)
-            print("Current L3: " + str(self.current_l3) + " A")
+            self._instantaneouscurrent_l3 = int(electra)
         else:
-            print("Parsing failed current_l3: " + str(value))
+            self.error = "Parsing failed instantaneouscurrent_l3: " + str(value)
 
     @property
-    def power_consumed_l1(self):
-        return self._power_consumed_l1
+    def instantaneouspower_consumed_l1(self):
+        return self._instantaneouspower_consumed_l1, "kW"
 
-    @power_consumed_l1.setter
-    def power_consumed_l1(self, value):
+    @instantaneouspower_consumed_l1.setter
+    def instantaneouspower_consumed_l1(self, value):
         electra = electra_value(value[0], "kW")
         if electra is not None:
-            self._power_consumed_l1 = electra
-            print("Power consumed L1: " + str(self.power_consumed_l1) + " kW")
+            self._instantaneouspower_consumed_l1 = electra
+        else:
+            self.error = "Parsing failed instantaneouspower_consumed_l1: " + str(value)
 
     @property
-    def power_consumed_l2(self):
-        return self._power_consumed_l2
+    def instantaneouspower_consumed_l2(self):
+        return self._instantaneouspower_consumed_l2, "kW"
 
-    @power_consumed_l2.setter
-    def power_consumed_l2(self, value):
+    @instantaneouspower_consumed_l2.setter
+    def instantaneouspower_consumed_l2(self, value):
         electra = electra_value(value[0], "kW")
         if electra is not None:
-            self._power_consumed_l2 = electra
-            print("Power consumed L2: " + str(self.power_consumed_l2) + " kW")
+            self._instantaneouspower_consumed_l2 = electra
+        else:
+            self.error = "Parsing failed instantaneouspower_consumed_l2: " + str(value)
 
     @property
-    def power_consumed_l3(self):
-        return self._power_consumed_l3
+    def instantaneouspower_consumed_l3(self):
+        return self._instantaneouspower_consumed_l3, "kW"
 
-    @power_consumed_l3.setter
-    def power_consumed_l3(self, value):
+    @instantaneouspower_consumed_l3.setter
+    def instantaneouspower_consumed_l3(self, value):
         electra = electra_value(value[0], "kW")
         if electra is not None:
-            self._power_consumed_l3 = electra
-            print("Power consumed L3: " + str(self.power_consumed_l3) + " kW")
+            self._instantaneouspower_consumed_l3 = electra
+        else:
+            self.error = "Parsing failed instantaneouspower_consumed_l3: " + str(value)
 
     @property
-    def gas_meter(self):
+    def instantaneouspower_produced_l1(self):
+        return self._instantaneouspower_produced_l1, "kW"
+
+    @instantaneouspower_produced_l1.setter
+    def instantaneouspower_produced_l1(self, value):
+        electra = electra_value(value[0], "kW")
+        if electra is not None:
+            self._instantaneouspower_produced_l1 = electra
+        else:
+            self.error = "Parsing failed instantaneouspower_produced_l1: " + str(value)
+
+    @property
+    def instantaneouspower_produced_l2(self):
+        return self._instantaneouspower_produced_l2, "kW"
+
+    @instantaneouspower_produced_l2.setter
+    def instantaneouspower_produced_l2(self, value):
+        electra = electra_value(value[0], "kW")
+        if electra is not None:
+            self._instantaneouspower_produced_l2 = electra
+        else:
+            self.error = "Parsing failed instantaneouspower_produced_l2: " + str(value)
+
+    @property
+    def instantaneouspower_produced_l3(self):
+        return self._instantaneouspower_produced_l3, "kW"
+
+    @instantaneouspower_produced_l3.setter
+    def instantaneouspower_produced_l3(self, value):
+        electra = electra_value(value[0], "kW")
+        if electra is not None:
+            self._instantaneouspower_produced_l3 = electra
+        else:
+            self.error = "Parsing failed instantaneouspower_produced_l3: " + str(value)
+
+    @property
+    def gasmeter(self):
         for device in self._mbusdevice.values():
             if device.devicetype == 3:
-                return device
+                return device.timestamp, device.id, device.measurement,  device.unit
         return None
+
+    def get_properties(self):
+        props = []
+        for prop in self.__dir__():
+            if not prop.startswith('_'):
+                if not inspect.ismethod(getattr(self, prop)):
+                    props.append((prop, self.__getattribute__(prop)))
+        return props

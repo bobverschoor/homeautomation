@@ -34,7 +34,7 @@ class Meetwaarde:
         if value >= 0:
             self._waarde = value
         else:
-            raise ValueError("invalid value: " + str(value))
+            raise ValueError("invalid value: " + str(value) + " for " + str(self))
 
     @property
     def timestamp(self):
@@ -61,3 +61,9 @@ class Meetwaarde:
         self._slimmemeter = sm
         self.tags = "meternaam:" + sm.naam
         self.tags = "metertype:" + sm.type
+
+    def __str__(self):
+        tstr = "\n\ttags:"
+        for t in self.tags.keys():
+            tstr = tstr + "\n\t\t" + str(t) + ":" + str(self.tags[t])
+        return str(self.waarde) + " " + self._eenheid + " " + str(self.timestamp) + tstr
