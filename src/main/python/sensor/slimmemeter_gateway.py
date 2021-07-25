@@ -41,7 +41,6 @@ class SlimmemeterGateway:
                             meetwaarde.tags = tag
                     meetwaarde.waarde = waarde
                     meetwaarde.timestamp = timestamp
-                    print(meetwaarde)
                     meetwaardes.append(meetwaarde)
         return meetwaardes
 

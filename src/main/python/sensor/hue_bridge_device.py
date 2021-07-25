@@ -8,4 +8,4 @@ class HueBridgeDevice:
         self.bridge = Bridge(self.bridge_ip)
 
     def get_entities(self):
-        return self.bridge.
+        return self.bridge
