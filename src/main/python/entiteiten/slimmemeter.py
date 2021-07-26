@@ -2,8 +2,10 @@ class Slimmemeter():
     def __init__(self, header):
         header = header.strip()
         header = header.strip('//')
-        self._naam, self._type = header.split('\\')
-
+        try:
+            self._naam, self._type = header.split('\\')
+        except ValueError:
+            print("header of wrong format:" + str(header))
 
     @property
     def naam(self):
