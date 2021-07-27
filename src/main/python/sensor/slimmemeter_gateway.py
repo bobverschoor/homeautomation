@@ -29,7 +29,7 @@ class SlimmemeterGateway:
                         timestamp, meter_id, waarde, v2 = value
                 else:
                     waarde = value
-                    v2 = ""
+                    v2 = "aantal"
                 if type(waarde) in [int, float]:
                     meetwaarde = Meetwaarde(v2)
                     meetwaarde.slimmemeter = Slimmemeter(telegram.manufacture)
@@ -42,6 +42,7 @@ class SlimmemeterGateway:
                     meetwaarde.waarde = waarde
                     meetwaarde.timestamp = timestamp
                     meetwaardes.append(meetwaarde)
+                    print(meetwaarde)
         return meetwaardes
 
     @property
