@@ -16,6 +16,7 @@ class WeerdataController:
             self._databasebase = DatabaseGateway()
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
+            exit(1)
 
     def collect_store(self):
         meetwaarden = self._weerdata.get_meetwaarden()
