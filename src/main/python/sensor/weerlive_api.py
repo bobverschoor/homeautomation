@@ -18,6 +18,7 @@ class WeerLiveDevice:
         weer = Weer()
         if not self.api:
             self.set_api()
+        self.api.request_data()
         weerlivedata = self.api.get_json()
         if "liveweer" in weerlivedata:
             weerlivedata = weerlivedata["liveweer"]

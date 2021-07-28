@@ -14,4 +14,10 @@ class WeerdataController:
 
     def collect_store(self):
         meetwaarden = self._weerdata.get_meetwaarden()
-        print(meetwaarden)
+        for meetwaarde in meetwaarden:
+            self._databasebase.entiteiten = meetwaarde
+            self._databasebase.store()
+
+
+if __name__ == "__main__":
+    WeerdataController('../../main/resources/secrets.ini').collect_store()
