@@ -2,8 +2,8 @@ from persistence.influxdb_device import InFluxDBDevice
 
 
 class DatabaseGateway:
-    def __init__(self):
-        self.repository = InFluxDBDevice()
+    def __init__(self, databasenaam):
+        self.repository = InFluxDBDevice(databasenaam)
         self._entiteiten = []
 
     @property

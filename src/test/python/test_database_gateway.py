@@ -16,7 +16,7 @@ def get_a_electra():
 
 class TestDatabasegateway(unittest.TestCase):
     def test_store_electra_gas(self):
-        db = DatabaseGateway()
+        db = DatabaseGateway("test")
         db.repository = MockInFluxDBDevice()
         electra = get_a_electra()
         db.entiteiten.append(electra)

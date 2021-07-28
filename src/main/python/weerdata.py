@@ -13,7 +13,7 @@ class WeerdataController:
             self._config.read(configfile)
             self._weerdata = WeerGateway()
             self._weerdata.weer_device = WeerLiveDevice(self._config)
-            self._databasebase = DatabaseGateway()
+            self._databasebase = DatabaseGateway("weer")
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)

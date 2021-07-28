@@ -7,7 +7,7 @@ class EnergieMeterController:
     def __init__(self):
         self._slimmemeter = SlimmemeterGateway()
         self._slimmemeter.p1 = DSMR_50()
-        self._databasebase = DatabaseGateway()
+        self._databasebase = DatabaseGateway("p1meter")
 
     def collect_store(self):
         meetwaarden = self._slimmemeter.get_meetwaarden()
