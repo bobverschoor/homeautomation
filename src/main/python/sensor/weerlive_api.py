@@ -2,7 +2,7 @@ from entiteiten.weer import Weer
 from sensor.api import Api
 
 
-class WeerLive:
+class WeerLiveDevice:
     WEERLIVE_BASE_URL = 'https://weerlive.nl/api/json-data-10min.php'
 
     def __init__(self, config):
@@ -12,7 +12,7 @@ class WeerLive:
 
     def set_api(self):
         payload = {'key':self._api_key, 'locatie':self._locatie}
-        self.api = Api(WeerLive.WEERLIVE_BASE_URL, payload)
+        self.api = Api(WeerLiveDevice.WEERLIVE_BASE_URL, payload)
 
     def get_weerentiteit(self):
         weer = Weer()

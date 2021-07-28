@@ -6,6 +6,21 @@ from sensor.p1_device import P1Device
 import json
 
 
+def get_meternaam_metertype_from_manufacture(manufacture):
+    meternaam = ""
+    metertype = ""
+    manufacture = manufacture.strip()
+    manufacture = manufacture.strip('//')
+    if manufacture == "":
+        print("manufacture is empty")
+    else:
+        try:
+            meternaam, metertype = manufacture.split('\\')
+        except ValueError:
+            print("manufacture of wrong format:" + str(manufacture))
+    return meternaam, metertype
+
+
 class SlimmemeterGateway:
     def __init__(self):
         self.p1 = None
@@ -32,7 +47,9 @@ class SlimmemeterGateway:
                     v2 = "aantal"
                 if type(waarde) in [int, float]:
                     meetwaarde = Meetwaarde(v2)
-                    meetwaarde.slimmemeter = Slimmemeter(telegram.manufacture)
+                    meternaam, metertype = get_meternaam_metertype_from_manufacture(telegram.manufacture)
+                    meetwaarde.tags = "meternaam:" + meternaam
+                    meetwaarde.tags = "metertype:" + metertype
                     meetwaarde.tags = "meterid:" + str(meter_id)
                     if property_name == "gasmeter":
                         meetwaarde.tags = "soort:gasmeterstand"

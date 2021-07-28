@@ -1,3 +1,6 @@
+import inspect
+
+
 class Weer:
     def __init__(self):
         self._locatie = ""
@@ -86,11 +89,41 @@ class Weer:
 
     @windrichting.setter
     def windrichting(self, value):
-        if value in ["Noord", "NNO", "NO", "ONO", "Oost", "OZO", "ZO",
-                     "ZZO", "Zuid", "ZZW", "ZW", "WZW", "West", "WNW", "NW", "NWN"]:
-            self._windrichting = value
+        if value == "Noord":
+            value = 0
+        elif value == "NNO":
+            value = 22.5
+        elif value == "NO":
+            value = 45
+        elif value == "ONO":
+            value = 67.5
+        elif value == "Oost":
+            value = 90
+        elif value == "OZO":
+            value = 112.5
+        elif value == "ZO":
+            value = 135
+        elif value == "ZZO":
+            value = 157.5
+        elif value == "Zuid":
+            value = 180
+        elif value == "ZZW":
+            value = 202.5
+        elif value == "ZW":
+            value = 225
+        elif value == "WZW":
+            value = 247.5
+        elif value == "West":
+            value = 270
+        elif value == "WNW":
+            value = 292.5
+        elif value == "NW":
+            value = 315
+        elif value == "NNW":
+            value = 337.5
         else:
-            print("Onbekende windrichting: " + value)
+            self.error = "Onbekende windrichting: " + str(value)
+        self._windrichting = value
 
     @property
     def error(self):
@@ -99,3 +132,11 @@ class Weer:
     @error.setter
     def error(self, value):
         self._error = self._error + "\n" + value
+
+    def get_properties(self):
+        props = []
+        for prop in self.__dir__():
+            if not prop.startswith('_'):
+                if not inspect.ismethod(getattr(self, prop)):
+                    props.append((prop, self.__getattribute__(prop)))
+        return props

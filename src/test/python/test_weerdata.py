@@ -1,22 +1,49 @@
 import unittest
+
+from entiteiten.weer import Weer
 from mock_api import MockAPI
-from sensor.weerlive_api import WeerLive
+from mock_weer_device import MockWeerLiveDevice
+from sensor.weer_gateway import WeerGateway
+from sensor.weerlive_api import WeerLiveDevice
 
 
 class TestWeerdata(unittest.TestCase):
-    def test_weerlive(self):
+    def test_weerlive_api(self):
         config = {'weerlive' : {'api_key': 'demo', 'locatie':'IJmuiden'}}
-        weerdevice = WeerLive(config)
+        weerdevice = WeerLiveDevice(config)
         weerdevice.api = MockAPI()
         weerdevice.api.json = test_data
         weer = weerdevice.get_weerentiteit()
         self.assertEqual(weer.temperatuur, 21.5)
         self.assertEqual(weer.locatie, "IJmuiden")
         self.assertEqual(weer.gevoelstemperatuur, 19.6)
-        self.assertEqual(weer.windrichting, "Zuid")
+        self.assertEqual(weer.windrichting, 180)
         self.assertEqual(weer.windsnelheidms, 4)
         self.assertEqual(weer.luchtvochtigheid, 69)
         self.assertEqual(weer.luchtdruk, 1008.9)
+
+    def test_weer_gateway(self):
+        weergateway = WeerGateway()
+        weergateway.weer_device = MockWeerLiveDevice()
+        weer = Weer()
+        weer.temperatuur = 21.5
+        weer.locatie = "IJmuiden"
+        weer.gevoelstemperatuur = 19.6
+        weer.windrichting = "Zuid"
+        weer.windsnelheidms = 4
+        weer.luchtvochtigheid = 69
+        weer.luchtdruk = 1008.9
+        weergateway.weer_device.weer = weer
+        meetwaardenstr = ""
+        for meetwaarde in weergateway.get_meetwaarden():
+            meetwaardenstr = meetwaardenstr + " " + str(meetwaarde)
+        self.assertEqual(" 21.5 gradencelsius, tags: soort=temperatuur locatie=IJmuiden"
+                         " 19.6 gradencelsius, tags: soort=gevoelstemperatuur locatie=IJmuiden"
+                         " 4.0 m/s, tags: soort=windsnelheid locatie=IJmuiden"
+                         " 69 percentage, tags: soort=luchtvochtigheid locatie=IJmuiden"
+                         " 1008.9 hPa, tags: soort=luchtdruk locatie=IJmuiden"
+                         " 180 graden, tags: soort=windrichting locatie=IJmuiden"
+                         , meetwaardenstr)
 
 
 test_data = '{ "liveweer": [{"plaats": "IJmuiden", "temp": "21.5", "gtemp": "19.6", "samenv": "Geheel bewolkt", ' \
