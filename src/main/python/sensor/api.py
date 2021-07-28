@@ -18,11 +18,14 @@ class Api:
         self.json = {}
 
     def request_data(self):
-        weer = requests.get(self._url, params=self._payload)
-        if weer.status_code == 200:
-            self.json = json.loads(weer.text)
-        else:
-            raise ApiException("Api status code not 200: " + str(weer.status_code) + weer.text)
+        try:
+            weer = requests.get(self._url, params=self._payload, timeout=30)
+            if weer.status_code == 200:
+                self.json = json.loads(weer.text)
+            else:
+                raise ApiException("Api status code not 200: " + str(weer.status_code) + weer.text)
+        except TimeoutError:
+            raise ApiException("Api does not respond in 30 seconds: " + self._url)
 
     def get_json(self):
         if self.json == {}:
