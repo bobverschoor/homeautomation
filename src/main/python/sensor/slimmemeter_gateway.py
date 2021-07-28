@@ -42,7 +42,6 @@ class SlimmemeterGateway:
                     meetwaarde.waarde = waarde
                     meetwaarde.timestamp = timestamp
                     meetwaardes.append(meetwaarde)
-                    print(meetwaarde)
         return meetwaardes
 
     @property
