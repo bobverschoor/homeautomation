@@ -26,4 +26,4 @@ class WeerdataController:
 
 
 if __name__ == "__main__":
-    WeerdataController('../../main/resources/secrets.ini').collect_store()
+    WeerdataController('src/main/resources/secrets.ini').collect_store()
