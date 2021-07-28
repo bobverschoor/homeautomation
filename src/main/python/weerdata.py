@@ -1,4 +1,5 @@
 import configparser
+import datetime
 import os
 
 from persistence.database_gateway import DatabaseGateway
@@ -26,4 +27,5 @@ class WeerdataController:
 
 
 if __name__ == "__main__":
+    print(datetime.datetime.now())
     WeerdataController('src/main/resources/secrets.ini').collect_store()
