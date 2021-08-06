@@ -2,8 +2,9 @@ import unittest
 
 from entiteiten.weer import Weer
 from mock_api import MockAPI
-from mock_weer_device import MockWeerLiveDevice
+from mock_weer_device import MockWeerLiveDevice, MockWeerhuisjeDevice
 from sensor.weer_gateway import WeerGateway
+from sensor.weerhuisjenl import WeerhuisjeDevice
 from sensor.weerlive_api import WeerLiveDevice
 
 
@@ -22,9 +23,17 @@ class TestWeerdata(unittest.TestCase):
         self.assertEqual(weer.luchtvochtigheid, 69)
         self.assertEqual(weer.luchtdruk, 1008.9)
 
+    def test_neerslag_api(self):
+        weerdevice = WeerhuisjeDevice({'weerhuisje' : {'locatie_1' : 'weerstationwijkaanzee'}})
+        weerdevice.api = MockAPI()
+        weerdevice.api.json = test_data_weerhuisje
+        neerslag = weerdevice.get_neerslaghoeveelheid()
+        self.assertEqual(neerslag, 2.1)
+
     def test_weer_gateway(self):
         weergateway = WeerGateway()
         weergateway.weer_device = MockWeerLiveDevice()
+        weergateway.neerslag_device = MockWeerhuisjeDevice()
         weer = Weer()
         weer.temperatuur = 21.5
         weer.locatie = "IJmuiden"
@@ -43,7 +52,9 @@ class TestWeerdata(unittest.TestCase):
                          " 69 percentage, tags: soort=luchtvochtigheid locatie=IJmuiden"
                          " 1008.9 hPa, tags: soort=luchtdruk locatie=IJmuiden"
                          " 180 graden, tags: soort=windrichting locatie=IJmuiden"
+                         " 2.1 mm, tags: soort=neerslaghoeveelheid locatie=weerstationwijkaanzee"
                          , meetwaardenstr)
+
 
 
 test_data = '{ "liveweer": [{"plaats": "IJmuiden", "temp": "21.5", "gtemp": "19.6", "samenv": "Geheel bewolkt", ' \
@@ -61,6 +72,27 @@ test_data = '{ "liveweer": [{"plaats": "IJmuiden", "temp": "21.5", "gtemp": "19.
             '"alarm": "1", "alarmtxt": " Verspreid over het land komen enkele regen- en onweersbuien voor, lokaal ' \
             'met veel neerslag en kans op kleine hagel en windstoten tot ca. 60 km/uur. Hiervan kunnen verkeer en ' \
             'buitenactiviteiten hinder ondervinden. Later vanavond neemt de kans op onweersbuien af.  "}]}'
+
+test_data_weerhuisje = '{"date": "16:39:33", "dateFormat": "m/d/y", "temp": "20.2", "tempTL": "16.4", ' \
+                       '"tempTH": "21.4", "intemp": "24.2", "dew": "15.4", "dewpointTL": "6.7", "dewpointTH": "9.9", ' \
+                       '"apptemp": "24.4", "apptempTL": "24.4", "apptempTH": "24.4", "wchill": "21.8", ' \
+                       '"wchillTL": "4.8", "heatindex": "20.2", "heatindexTH": "20.2", "humidex": "24.4", ' \
+                       '"wlatest": "19.4", "wspeed": "14.8", "wgust": "21.6", "wgustTM": "37.1", "bearing": "248", ' \
+                       '"avgbearing": "212", "press": "998.6", "pressTL": "996.6", "pressTH": "1000.2", ' \
+                       '"pressL": "984.5", "pressH": "1036.3", "rfall": "2.1", "rrate": "0.0", "rrateTM": "0.8", ' \
+                       '"hum": "74", "humTL": "95", "humTH": "99", "inhum": "65.0", "SensorContactLost": "0", ' \
+                       '"forecast": "Conditions updated: 16:39:33", "tempunit": "C", "windunit": "km/h", ' \
+                       '"pressunit": "hPa", "rainunit": "mm", "temptrend": "0.6", "TtempTL": "05:15",' \
+                       ' "TtempTH": "11:14", "TdewpointTL": "05:03", "TdewpointTH": "14:11", "TapptempTL": "00:00", ' \
+                       '"TapptempTH": "00:00", "TwchillTL": "05:22", "TheatindexTH": "n/a", "TrrateTM": "00:00", ' \
+                       '"ThourlyrainTH": "00:00", "LastRainTipISO": "n/a", "hourlyrainTH": "0.0", "ThumTL": "00:00", ' \
+                       '"ThumTH": "09:00", "TpressTL": "06:00", "TpressTH": "00:00", "presstrendval": "0.3", ' \
+                       '"Tbeaufort": "F3", "TwgustTM": "16:06", "windTM": "37.1", "bearingTM": "212", ' \
+                       '"timeUTC": "2021,08,06,23,39,33", "BearingRangeFrom10": "359", "BearingRangeTo10": "0", ' \
+                       '"UV": "--", "UVTH": "--", "SolarRad": "--", "CurrentSolarMax": "--", "SolarTM": "90", ' \
+                       '"domwinddir": "SSW", ' \
+                       '"WindRoseData": "[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]", ' \
+                       '"windrun": "0.0", "version": "5.1", "build": "14426", "ver": "10"}'
 
 
 

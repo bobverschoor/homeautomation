@@ -4,6 +4,7 @@ import os
 
 from persistence.database_gateway import DatabaseGateway
 from sensor.weer_gateway import WeerGateway
+from sensor.weerhuisjenl import WeerhuisjeDevice
 from sensor.weerlive_api import WeerLiveDevice
 
 
@@ -14,6 +15,7 @@ class WeerdataController:
             self._config.read(configfile)
             self._weerdata = WeerGateway()
             self._weerdata.weer_device = WeerLiveDevice(self._config)
+            self._weerdata.neerslag_device = WeerhuisjeDevice(self._config)
             self._databasebase = DatabaseGateway("weer")
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())

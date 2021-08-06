@@ -4,8 +4,23 @@ from entiteiten.meetwaarde import Meetwaarde
 class WeerGateway:
     def __init__(self):
         self.weer_device = None
+        self.neerslag_device = None
 
-    def get_meetwaarden(self):
+    def get_neerslag(self):
+        meetwaarde = None
+        if self.neerslag_device is None:
+            raise ModuleNotFoundError("neerslag device not set")
+        neerslagdata = self.neerslag_device.get_neerslaghoeveelheid()
+        if neerslagdata == -1:
+            print("Fout bij neerslag: " + neerslagdata)
+        else:
+            meetwaarde = Meetwaarde('mm')
+            meetwaarde.waarde = neerslagdata
+            meetwaarde.tags = "soort:neerslaghoeveelheid"
+            meetwaarde.tags = "locatie:" + self.neerslag_device.locatie
+        return meetwaarde
+
+    def get_weerdata(self):
         meetwaarden = []
         if self.weer_device is None:
             raise ModuleNotFoundError("weer device not set")
@@ -49,5 +64,11 @@ class WeerGateway:
                 if meetwaarde is not None:
                     meetwaarden.append(meetwaarde)
         return meetwaarden
+
+    def get_meetwaarden(self):
+        meetwaarden = self.get_weerdata()
+        meetwaarden.append(self.get_neerslag())
+        return meetwaarden
+
 
 
