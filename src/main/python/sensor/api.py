@@ -22,7 +22,10 @@ class Api:
         try:
             weer = requests.get(self._url, params=self._payload, timeout=30)
             if weer.status_code == 200:
-                self.text_output = weer.text
+                if weer.text.startswith('{'):
+                    self.text_output = weer.text
+                else:
+                    raise ApiException("Api not expected output: " + str(self._url) + "\n" + weer.text)
             else:
                 raise ApiException("Api status code not 200: " + str(weer.status_code) + weer.text)
         except TimeoutError:
