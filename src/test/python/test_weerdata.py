@@ -10,26 +10,30 @@ from sensor.weerlive_api import WeerLiveDevice
 
 class TestWeerdata(unittest.TestCase):
     def test_weerlive_api(self):
-        config = {'weerlive' : {'api_key': 'demo', 'locatie':'IJmuiden'}}
+        config = {'weerlive' : {'api_key': 'demo', 'locatie': 'IJmuiden'}}
         weerdevice = WeerLiveDevice(config)
         weerdevice.api = MockAPI()
         weerdevice.api.json = test_data_weerlive
         weer = weerdevice.extend_weerentiteit(Weer())
         self.assertEqual(weer.temperatuur, 21.5)
-        self.assertEqual(weer.locatie, "IJmuiden")
         self.assertEqual(weer.gevoelstemperatuur, 19.6)
         self.assertEqual(weer.windrichting, 180)
         self.assertEqual(weer.windsnelheidms, 4)
         self.assertEqual(weer.luchtvochtigheid, 69)
         self.assertEqual(weer.luchtdruk, 1008.9)
+        for metingtype in ['temperatuur', 'gevoelstemperatuur', 'windrichting', 'windsnelheidms', 'luchtvochtigheid',
+                           'luchtdruk']:
+            self.assertEqual(weer.get_locatie_of_meting(metingtype), 'IJmuiden')
 
     def test_neerslag_api(self):
-        weerdevice = WeerhuisjeDevice({'weerhuisje': {'locatie_1' : 'weerstationwijkaanzee'}})
+        weerdevice = WeerhuisjeDevice({'weerhuisje': {'locatie_1': 'weerstationwijkaanzee'}})
         weerdevice.api = MockAPI()
         weerdevice.api.json = test_data_weerhuisje
         weer = weerdevice.extend_weerentiteit(Weer())
         self.assertEqual(weer.neerslaghoeveelheid24h, 2.1)
         self.assertEqual(weer.neerslagintensiteit, 1.0)
+        for metingtype in ['neerslaghoeveelheid24h', 'neerslagintensiteit']:
+            self.assertEqual(weer.get_locatie_of_meting(metingtype), 'weerstationwijkaanzee')
 
     def test_weer_gateway(self):
         weergateway = WeerGateway()
@@ -37,7 +41,6 @@ class TestWeerdata(unittest.TestCase):
         weergateway.weer_devices.append(MockWeerhuisjeDevice())
         weer = Weer()
         weer.temperatuur = 21.5
-        weer.locatie = "IJmuiden"
         weer.gevoelstemperatuur = 19.6
         weer.windrichting = "Zuid"
         weer.windsnelheidms = 4
@@ -45,6 +48,10 @@ class TestWeerdata(unittest.TestCase):
         weer.luchtdruk = 1008.9
         weer.neerslagintensiteit = 1.0
         weer.neerslaghoeveelheid24h = 2.1
+        weer._locatie = {'temperatuur': 'IJmuiden', 'gevoelstemperatuur': 'IJmuiden', 'windrichting': 'IJmuiden',
+                         'windsnelheidms': 'IJmuiden', 'luchtvochtigheid': 'IJmuiden', 'luchtdruk': 'IJmuiden',
+                         'neerslaghoeveelheid24h': 'weerstationwijkaanzee',
+                         'neerslagintensiteit': 'weerstationwijkaanzee'}
         weergateway.weerdata = weer
         meetwaardenstr = ""
         for meetwaarde in weergateway.get_meetwaarden():
@@ -55,8 +62,8 @@ class TestWeerdata(unittest.TestCase):
                          " 69 percentage, tags: soort=luchtvochtigheid locatie=IJmuiden"
                          " 1008.9 hPa, tags: soort=luchtdruk locatie=IJmuiden"
                          " 180 graden, tags: soort=windrichting locatie=IJmuiden"
-                         " 2.1 mm, tags: soort=neerslaghoeveelheid locatie=IJmuiden"
-                         " 1.0 mm/h, tags: soort=neerslagintensiteit locatie=IJmuiden"
+                         " 2.1 mm, tags: soort=neerslaghoeveelheid locatie=weerstationwijkaanzee"
+                         " 1.0 mm/h, tags: soort=neerslagintensiteit locatie=weerstationwijkaanzee"
                          , meetwaardenstr)
 
 

@@ -3,7 +3,7 @@ import inspect
 
 class Weer:
     def __init__(self):
-        self._locatie = ""
+        self._locatie = {}
         self._temperatuur = 9999.99
         self._gevoelstemperatuur = 9999.99
         self._luchtvochtigheid = -1
@@ -78,14 +78,6 @@ class Weer:
             self._error = "luchtdruk waarde ingeldig: " + str(value)
 
     @property
-    def locatie(self):
-        return self._locatie
-
-    @locatie.setter
-    def locatie(self, value):
-        self._locatie = value
-
-    @property
     def windrichting(self):
         return self._windrichting
 
@@ -152,6 +144,12 @@ class Weer:
                 self._error = "neerslagintensiteit moet groter dan 0 zijn: " + str(self._neerslagintensiteit)
         except ValueError:
             self._error = "neerslagintensiteit waarde ingeldig: " + str(value)
+
+    def set_locatie_for_meting(self, metingtype, locatie):
+        self._locatie[metingtype] = locatie
+
+    def get_locatie_of_meting(self, metingtype):
+        return self._locatie[metingtype]
 
     @property
     def error(self):

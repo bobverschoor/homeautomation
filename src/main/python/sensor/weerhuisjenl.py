@@ -20,10 +20,12 @@ class WeerhuisjeDevice:
         weerdata = self.api.get_json()
         if 'rfall' in weerdata:
             weer.neerslaghoeveelheid24h = weerdata['rfall']
+            weer.set_locatie_for_meting("neerslaghoeveelheid24h", self._locatie1)
         else:
             weer.error = "Geen rfall in API:\n" + str(weerdata)
         if 'rrate' in weerdata:
             weer.neerslagintensiteit = weerdata['rrate']
+            weer.set_locatie_for_meting("neerslagintensiteit", self._locatie1)
         else:
             weer.error = "Geen rrate in API:\n" + str(weerdata)
         return weer

@@ -21,21 +21,29 @@ class WeerLiveDevice:
         if "liveweer" in weerlivedata:
             weerlivedata = weerlivedata["liveweer"]
             weerlivedata = weerlivedata[0]
+            if 'plaats' in weerlivedata:
+                locatie = weerlivedata['plaats']
+            else:
+                locatie = self._locatie
             for weermeting in weerlivedata.keys():
                 if weermeting == 'temp':
                     weer.temperatuur = weerlivedata[weermeting]
-                elif weermeting == 'plaats':
-                    weer.locatie = weerlivedata[weermeting]
+                    weer.set_locatie_for_meting("temperatuur", locatie)
                 elif weermeting == 'gtemp':
                     weer.gevoelstemperatuur = weerlivedata[weermeting]
+                    weer.set_locatie_for_meting("gevoelstemperatuur", locatie)
                 elif weermeting == 'windr':
                     weer.windrichting = weerlivedata[weermeting]
+                    weer.set_locatie_for_meting("windrichting", locatie)
                 elif weermeting == 'windms':
                     weer.windsnelheidms = weerlivedata[weermeting]
+                    weer.set_locatie_for_meting("windsnelheidms", locatie)
                 elif weermeting == 'lv':
                     weer.luchtvochtigheid = weerlivedata[weermeting]
+                    weer.set_locatie_for_meting("luchtvochtigheid", locatie)
                 elif weermeting == 'luchtd':
                     weer.luchtdruk = weerlivedata[weermeting]
+                    weer.set_locatie_for_meting("luchtdruk", locatie)
         else:
             weer.error = "Weerdata ongeldig: " + str(weerlivedata)
         return weer
