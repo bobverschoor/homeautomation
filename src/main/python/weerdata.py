@@ -19,7 +19,9 @@ class WeerdataController:
             self._weerdata.weer_devices.append(WeerLiveDevice(self._config))
             self._weerdata.weer_devices.append(WeerhuisjeDevice(self._config))
             if self._store_in_database:
-                self._databasebase = DatabaseGateway("weer")
+                self._databasebase = DatabaseGateway(self._config['weer']['databasenaam'])
+            else:
+                self._databasebase = DatabaseGateway("dryrun")
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)
@@ -27,11 +29,11 @@ class WeerdataController:
     def collect_store(self):
         meetwaarden = self._weerdata.get_meetwaarden()
         for meetwaarde in meetwaarden:
-            if self._store_in_database:
-                self._databasebase.entiteiten = meetwaarde
-                self._databasebase.store()
-            else:
-                print(meetwaarde)
+            self._databasebase.entiteiten = meetwaarde
+        if self._store_in_database:
+            self._databasebase.store()
+        else:
+            self._databasebase.print()
 
 
 if __name__ == "__main__":

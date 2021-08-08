@@ -5,8 +5,8 @@ class WeerLiveDevice:
     WEERLIVE_BASE_URL = 'https://weerlive.nl/api/json-data-10min.php'
 
     def __init__(self, config):
-        self._api_key = config['weerlive']['api_key']
-        self._locatie = config['weerlive']['locatie']
+        self._api_key = config['weer']['weerlive_api_key']
+        self._locatie = config['weer']['weerlive_locatie']
         self.api = None
 
     def set_api(self):

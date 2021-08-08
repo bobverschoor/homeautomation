@@ -5,7 +5,7 @@ class WeerhuisjeDevice:
     WEERHUISJE_BASE_URL = 'https://www.mijneigenweer.nl/'
 
     def __init__(self, config):
-        self._locatie1 = config['weerhuisje']['locatie_1']
+        self._locatie1 = config['weer']['weerhuisje_locatie_1']
         self.api = None
 
     def set_api(self):

@@ -4,7 +4,7 @@ from entiteiten.telegram import Telegram
 
 
 class DSMR_50:
-    def __init__(self):
+    def __init__(self, config):
         self.serial = serial.Serial()
         self.serial.baudrate = 115200
         self.serial.bytesize = serial.EIGHTBITS
@@ -13,7 +13,7 @@ class DSMR_50:
         self.serial.xonxoff = 0
         self.serial.rtscts = 0
         self.serial.timeout = 20
-        self.serial.port = "/dev/ttyUSB0"
+        self.serial.port = config['p1meter']['serialport']
 
     def read_telegram(self):
         telegram = Telegram()

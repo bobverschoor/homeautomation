@@ -3,7 +3,8 @@ from persistence.influxdb_device import InFluxDBDevice
 
 class DatabaseGateway:
     def __init__(self, databasenaam):
-        self.repository = InFluxDBDevice(databasenaam)
+        self.repository = None
+        self._databasenaam = databasenaam
         self._entiteiten = []
 
     @property
@@ -19,7 +20,7 @@ class DatabaseGateway:
         if not double:
             self._entiteiten.append(new_entiteit)
 
-    def store(self):
+    def get_db_entiteiten(self):
         db_entiteiten = []
         for entiteit in self.entiteiten:
             db_entiteit = {
@@ -27,7 +28,16 @@ class DatabaseGateway:
                 "tags": entiteit.tags,
                 "time": entiteit.timestamp,
                 "fields": {"meetwaarde": entiteit.waarde}
-                }
+            }
             db_entiteiten.append(db_entiteit)
-        self.repository.write(db_entiteiten)
+        return db_entiteiten
+
+    def store(self):
+        if not self.repository:
+            self.repository = InFluxDBDevice(self._databasenaam)
+        self.repository.write(self.get_db_entiteiten())
+
+    def print(self):
+        for entiteit in self.get_db_entiteiten():
+            print(entiteit)
 
