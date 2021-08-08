@@ -12,10 +12,12 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 
 ### Aanpassen van de secrets.ini
 In src/main/resources staat een voorbeeld (secrets.example). 
-Hernoem deze naar secrets.ini en vul de juiste waardes in
+Hernoem deze naar secrets.ini en vul de juiste waardes in.
+
+Voor beide databronnen kun je een andere database kiezen via de configuratie.
 
 #### P1 gegevens
-
+Behalve de database naam kun je alleen nog de port aangeven waarop de data binnen komt.
 
 #### Weer gegevens
 Voor gebruik van weerlive (knmi) gegevens:
@@ -50,6 +52,16 @@ Er is op dit moment alleen ondersteuning van versie 5 van het protocol
 Uitgaande van de root van dit project als werkdirectory kan deze als volgt worden aangeroepen:
 > python src/main/python/energiemeter.py
 
+Om te testen kun je deze ook aanroepen met optie --dryrun, dan wordt de data niet opgeslagen in de database.
+
+De makkelijkste manier om dit geautomatiseerd aan te roepen elke minuut is via een cronjob:
+``` 
+* * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python src/main/python/energiemeter.py >> /home/pi/cron_p1.log 2>&1
+```
+
+
+Op deze manier log je gelijk in de home directory.
+
 ## Weerdata
 Deze leest weer gegevens uit twee (API) bronnen (omdat 1 onvoldoende informatie teruggaf) 
 
@@ -57,3 +69,13 @@ Uitgaande van de root van dit project als werkdirectory kan deze als volgt worde
 > python src/main/python/weerdata.py
 
 Om te testen kun je deze ook aanroepen met optie --dryrun, dan wordt de data niet opgeslagen in de database.
+
+Volgens de gebruiksvoorwaarden mag de weerdata maximaal 300 keer per dag worden opgehaald, 
+vandaar dat elke 10 minuten beter is dan elke minuut (= 144 keer per dag). 
+Veel vaker ophalen heeft overigens toch niet veel zin, omdat het weer nu ook weer niet zo vaak wijzigt.
+
+Ook dit kan weer met een cronjob worden uitgevoerd als volgt:
+
+```
+*/10 * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python src/main/python/weerdata.py >> /home/pi/cron_weer.log 2>&1
+```
