@@ -17,7 +17,7 @@ class TestWeerdata(unittest.TestCase):
         weer = weerdevice.extend_weerentiteit(Weer())
         self.assertEqual(weer.temperatuur, 21.5)
         self.assertEqual(weer.gevoelstemperatuur, 19.6)
-        self.assertEqual(weer.windrichting, 180)
+        self.assertEqual(weer.windrichting, 292.5)
         self.assertEqual(weer.windsnelheidms, 4)
         self.assertEqual(weer.luchtvochtigheid, 69)
         self.assertEqual(weer.luchtdruk, 1008.9)
@@ -42,7 +42,7 @@ class TestWeerdata(unittest.TestCase):
         weer = Weer()
         weer.temperatuur = 21.5
         weer.gevoelstemperatuur = 19.6
-        weer.windrichting = "Zuid"
+        weer.windrichting = "WNW"
         weer.windsnelheidms = 4
         weer.luchtvochtigheid = 69
         weer.luchtdruk = 1008.9
@@ -61,7 +61,7 @@ class TestWeerdata(unittest.TestCase):
                          " 4.0 m/s, tags: soort=windsnelheid locatie=IJmuiden"
                          " 69 percentage, tags: soort=luchtvochtigheid locatie=IJmuiden"
                          " 1008.9 hPa, tags: soort=luchtdruk locatie=IJmuiden"
-                         " 180 graden, tags: soort=windrichting locatie=IJmuiden"
+                         " 292.5 kompasgraden, tags: soort=windrichting locatie=IJmuiden"
                          " 2.1 mm, tags: soort=neerslaghoeveelheid locatie=weerstationwijkaanzee"
                          " 1.0 mm/h, tags: soort=neerslagintensiteit locatie=weerstationwijkaanzee"
                          , meetwaardenstr)
@@ -69,7 +69,7 @@ class TestWeerdata(unittest.TestCase):
 
 test_data_weerlive = \
     '{ "liveweer": [{"plaats": "IJmuiden", "temp": "21.5", "gtemp": "19.6", "samenv": "Geheel bewolkt", "lv": "69", ' \
-    '"windr": "Zuid", "windms": "4", "winds": "3", "windbft": "3", "windknp": "7.8", "windk": "7.8", ' \
+    '"windr": "WNW", "windms": "4", "winds": "3", "windbft": "3", "windknp": "7.8", "windk": "7.8", ' \
     '"windkmh": "14.4", "luchtd": "1008.9", "ldmmhg": "757", "dauwp": "15", "zicht": "35", ' \
     '"verw": "Af en toe zon en enkele buien, vooral vandaag met onweer", "sup": "05:53", "sunder": "21:41", ' \
     '"image": "bewolkt", "d0weer": "bewolkt", "d0tmax": "23", "d0tmin": "16", "d0windk": "2", "d0windknp": "6", ' \

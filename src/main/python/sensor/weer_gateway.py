@@ -50,7 +50,7 @@ class WeerGateway:
                     meetwaarde.tags = "soort:luchtdruk"
                     meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
                 elif property_name == "windrichting":
-                    meetwaarde = Meetwaarde("graden")
+                    meetwaarde = Meetwaarde("kompasgraden")
                     meetwaarde.waarde = value
                     meetwaarde.tags = "soort:windrichting"
                     meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)

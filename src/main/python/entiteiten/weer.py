@@ -7,7 +7,7 @@ class Weer:
         self._temperatuur = 9999.99
         self._gevoelstemperatuur = 9999.99
         self._luchtvochtigheid = -1
-        self._windrichting = ""
+        self._windrichting = -1.0
         self._windsnelheidms = 9999.99
         self._luchtdruk = 9999.99
         self._neerslaghoeveelheid24h = -1.0
@@ -117,7 +117,7 @@ class Weer:
             value = 337.5
         else:
             self.error = "Onbekende windrichting: " + str(value)
-        self._windrichting = value
+        self._windrichting = float(value)
 
     @property
     def neerslaghoeveelheid24h(self):
