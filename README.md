@@ -79,3 +79,9 @@ Ook dit kan weer met een cronjob worden uitgevoerd als volgt:
 ```
 */10 * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python src/main/python/weerdata.py >> /home/pi/cron_weer.log 2>&1
 ```
+
+
+# To Do
+* 1 main maken zodat voor energie meter en weerdata, omdat er veel dubbele code in zit (configuratie file, database aanroep)
+
+* Philips Hue data ophalen en opslaan.
