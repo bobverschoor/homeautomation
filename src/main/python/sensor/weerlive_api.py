@@ -1,4 +1,3 @@
-from entiteiten.weer import Weer
 from sensor.api import Api
 
 
@@ -11,11 +10,10 @@ class WeerLiveDevice:
         self.api = None
 
     def set_api(self):
-        payload = {'key':self._api_key, 'locatie':self._locatie}
+        payload = {'key': self._api_key, 'locatie': self._locatie}
         self.api = Api(WeerLiveDevice.WEERLIVE_BASE_URL, payload)
 
-    def get_weerentiteit(self):
-        weer = Weer()
+    def extend_weerentiteit(self, weer):
         if not self.api:
             self.set_api()
         self.api.request_data()

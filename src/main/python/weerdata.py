@@ -16,8 +16,8 @@ class WeerdataController:
         if os.path.exists(configfile):
             self._config.read(configfile)
             self._weerdata = WeerGateway()
-            self._weerdata.weer_device = WeerLiveDevice(self._config)
-            self._weerdata.neerslag_device = WeerhuisjeDevice(self._config)
+            self._weerdata.weer_devices.append(WeerLiveDevice(self._config))
+            self._weerdata.weer_devices.append(WeerhuisjeDevice(self._config))
             if self._store_in_database:
                 self._databasebase = DatabaseGateway("weer")
         else:

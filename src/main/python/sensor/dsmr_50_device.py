@@ -33,23 +33,3 @@ def lastline(line):
         if line[0] == 33:  # starts with ! Einde telegram eindigt altijd met ! en getal
             return True
     return False
-#
-# #Initialize
-# # stack is mijn list met de 26 regeltjes.
-# p1_teller=0
-# stack=[]
-#
-# while p1_teller < 26:
-#     p1_line=''
-#     #Read 1 line
-#     try:
-#         p1_raw = ser.readline()
-#     except:
-#         sys.exit ("Seriele poort %s kan niet gelezen worden. Programma afgebroken." % ser.name )
-#     p1_str=str(p1_raw)
-#     #p1_str=str(p1_raw, "utf-8")
-#     p1_line=p1_str.strip()
-#     stack.append(p1_line)
-#     # als je alles wil zien moet je de volgende line uncommenten
-#     #    print (p1_line)
-#     p1_teller = p1_teller +1

@@ -10,6 +10,8 @@ class Weer:
         self._windrichting = ""
         self._windsnelheidms = 9999.99
         self._luchtdruk = 9999.99
+        self._neerslaghoeveelheid24h = -1.0
+        self._neerslagintensiteit = -1.0
         self._error = ""
 
     @property
@@ -124,6 +126,32 @@ class Weer:
         else:
             self.error = "Onbekende windrichting: " + str(value)
         self._windrichting = value
+
+    @property
+    def neerslaghoeveelheid24h(self):
+        return self._neerslaghoeveelheid24h
+
+    @neerslaghoeveelheid24h.setter
+    def neerslaghoeveelheid24h(self, value):
+        try:
+            self._neerslaghoeveelheid24h = float(value)
+            if self._neerslaghoeveelheid24h < 0:
+                self._error = "neerslaghoeveelheid moet groter dan 0 zijn: " + str(self._neerslaghoeveelheid24h)
+        except ValueError:
+            self._error = "neerslaghoeveelheid waarde ingeldig: " + str(value)
+
+    @property
+    def neerslagintensiteit(self):
+        return self._neerslagintensiteit
+
+    @neerslagintensiteit.setter
+    def neerslagintensiteit(self, value):
+        try:
+            self._neerslagintensiteit = float(value)
+            if self._neerslagintensiteit < 0:
+                self._error = "neerslagintensiteit moet groter dan 0 zijn: " + str(self._neerslagintensiteit)
+        except ValueError:
+            self._error = "neerslagintensiteit waarde ingeldig: " + str(value)
 
     @property
     def error(self):

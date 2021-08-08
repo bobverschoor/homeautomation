@@ -13,18 +13,22 @@ class WeerhuisjeDevice:
         url = self.WEERHUISJE_BASE_URL + self._locatie1 + "/MBrealtimegauges.txt"
         self.api = Api(url, payload)
 
-    def get_neerslaghoeveelheid(self):
-        hoeveelheid = -1
+    def extend_weerentiteit(self, weer):
         if not self.api:
             self.set_api()
         self.api.request_data()
-        weer = self.api.get_json()
-        if 'rfall' in weer:
-            hoeveelheid = float(weer['rfall'])
-        return hoeveelheid
+        weerdata = self.api.get_json()
+        if 'rfall' in weerdata:
+            weer.neerslaghoeveelheid24h = weerdata['rfall']
+        else:
+            weer.error = "Geen rfall in API:\n" + str(weerdata)
+        if 'rrate' in weerdata:
+            weer.neerslagintensiteit = weerdata['rrate']
+        else:
+            weer.error = "Geen rrate in API:\n" + str(weerdata)
+        return weer
 
     @property
     def locatie(self):
         return self._locatie1
-#        for neerslagtijden in self.api.text_output():
 
