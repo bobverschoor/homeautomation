@@ -5,7 +5,7 @@ from sensor.weerlive_api import WeerLiveDevice
 
 class MockWeerLiveDevice(WeerLiveDevice):
     def __init__(self):
-        super().__init__({'weerlive':{'api_key':"", 'locatie':""}})
+        super().__init__({'weer': {'weerlive_api_key':"", 'weerlive_locatie':""}})
         self.weer = Weer()
 
     def get_weerentiteit(self):
@@ -14,7 +14,7 @@ class MockWeerLiveDevice(WeerLiveDevice):
 
 class MockWeerhuisjeDevice(WeerhuisjeDevice):
     def __init__(self):
-        super().__init__({'weerhuisje':{'locatie_1':"weerstationwijkaanzee"}})
+        super().__init__({'weer':{'weerhuisje_locatie_1':"weerstationwijkaanzee"}})
 
     def get_neerslaghoeveelheid(self):
         return 2.1

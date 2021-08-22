@@ -3,6 +3,10 @@ from sensor.dsmr_50_device import DSMR_50
 
 
 class Mock_DSMR_50_Device(DSMR_50):
+
+    def __init__(self):
+        super().__init__({'p1meter': {'serialport': ''}})
+
     def read_telegram(self):
         telegram = Telegram()
         for line in test_data:
