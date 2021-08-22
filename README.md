@@ -71,7 +71,7 @@ Uitgaande van de root van dit project als werkdirectory kan deze als volgt worde
 Om te testen kun je deze ook aanroepen met optie --dryrun, dan wordt de data niet opgeslagen in de database.
 
 Volgens de gebruiksvoorwaarden mag de weerdata maximaal 300 keer per dag worden opgehaald, 
-vandaar dat elke 10 minuten beter is dan elke minuut (= 144 keer per dag). 
+vandaar dat elke 10 minuten (= 144 keer per dag) beter is dan elke minuut. 
 Veel vaker ophalen heeft overigens toch niet veel zin, omdat het weer nu ook weer niet zo vaak wijzigt.
 
 Ook dit kan weer met een cronjob worden uitgevoerd als volgt:
@@ -82,6 +82,6 @@ Ook dit kan weer met een cronjob worden uitgevoerd als volgt:
 
 
 # To Do
-* 1 main maken zodat voor energie meter en weerdata, omdat er veel dubbele code in zit (configuratie file, database aanroep)
+* 1 main maken voor energie meter en weerdata, en dan aanroepen via een parameter, omdat er veel dubbele code in zit (configuratie file, database aanroep)
 
 * Philips Hue data ophalen en opslaan.

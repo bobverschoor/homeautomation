@@ -10,7 +10,7 @@ from sensor.weerlive_api import WeerLiveDevice
 
 class TestWeerdata(unittest.TestCase):
     def test_weerlive_api(self):
-        config = {'weerlive' : {'api_key': 'demo', 'locatie': 'IJmuiden'}}
+        config = {'weer' : {'weerlive_api_key': 'demo', 'weerlive_locatie': 'IJmuiden'}}
         weerdevice = WeerLiveDevice(config)
         weerdevice.api = MockAPI()
         weerdevice.api.json = test_data_weerlive
@@ -26,7 +26,7 @@ class TestWeerdata(unittest.TestCase):
             self.assertEqual(weer.get_locatie_of_meting(metingtype), 'IJmuiden')
 
     def test_neerslag_api(self):
-        weerdevice = WeerhuisjeDevice({'weerhuisje': {'locatie_1': 'weerstationwijkaanzee'}})
+        weerdevice = WeerhuisjeDevice({'weer': {'weerhuisje_locatie_1': 'weerstationwijkaanzee'}})
         weerdevice.api = MockAPI()
         weerdevice.api.json = test_data_weerhuisje
         weer = weerdevice.extend_weerentiteit(Weer())
