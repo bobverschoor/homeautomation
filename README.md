@@ -10,6 +10,10 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 * P1 naar USB kabel
 * P1 protocol versie 5
 
+### Modules
+Pidfile
+
+
 ### Aanpassen van de secrets.ini
 In src/main/resources staat een voorbeeld (secrets.example). 
 Hernoem deze naar secrets.ini en vul de juiste waardes in.
