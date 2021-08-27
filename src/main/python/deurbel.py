@@ -2,7 +2,7 @@ import argparse
 import configparser
 import datetime
 import os
-from pid import PidFile
+from pid import PidFile, PidFileAlreadyLockedError
 
 from sensor.deurbel_gateway import DeurbelGateway
 
@@ -34,6 +34,6 @@ if __name__ == "__main__":
             args = parser.parse_args()
             print(datetime.datetime.now())
             DeurbelController('src/main/resources/secrets.ini').control_loop()
-    except BlockingIOError as e:
+    except PidFileAlreadyLockedError as e:
         print("Other proces still running (which is OK): " + str(datetime.datetime.now()))
         pass
