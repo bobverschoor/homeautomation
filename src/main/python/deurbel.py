@@ -25,9 +25,9 @@ class DeurbelController:
             try:
                 if self._deurbel.someone_at_the_deur():
                     print("stuur een berichtje")
-                time.sleep(0.1)
+                time.sleep(0.05)
             except Exception as e:
-                print(e)
+                print(str(datetime.datetime.now()) + " " + str(e))
 
 
 if __name__ == "__main__":
