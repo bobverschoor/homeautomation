@@ -1,10 +1,20 @@
-from sensor.raspberrypi import RaspberryPi
+from sensor.raspberrypi import RaspberryPi, RaspberryPiException
 import time
 
+
 class DeurbelKnop:
-    def __init__(self, pinnummer):
+    CONFIG_GPIO_INPUT = 'gpio_pin_input'
+    CONFIG_GPIO_OUTPUT = 'gpio_pin_output'
+
+    def __init__(self, config):
         self._pi = RaspberryPi()
-        self._pinnummer = pinnummer
+        if DeurbelKnop.CONFIG_GPIO_INPUT in config:
+            try:
+                self._pinnummer = int(config[DeurbelKnop.CONFIG_GPIO_INPUT])
+            except ValueError:
+                raise RaspberryPiException('Config: ' + DeurbelKnop.CONFIG_GPIO_INPUT + ' value is not an integer')
+        else:
+            raise RaspberryPiException('Config: Missing ' + DeurbelKnop.CONFIG_GPIO_INPUT)
 
     def is_ingedrukt(self):
         if not self._pi.is_input_setup():
@@ -13,14 +23,20 @@ class DeurbelKnop:
 
 
 class DeurbelGong:
-    def __init__(self, pinnummer):
+    def __init__(self, config):
         self._pi = RaspberryPi()
-        self._pinnummer = pinnummer
+        if DeurbelKnop.CONFIG_GPIO_OUTPUT in config:
+            try:
+                self._pinnummer = int(config[DeurbelKnop.CONFIG_GPIO_OUTPUT])
+            except ValueError:
+                raise RaspberryPiException('Config: ' + DeurbelKnop.CONFIG_GPIO_OUTPUT + ' value is not an integer')
+        else:
+            raise RaspberryPiException('Config: Missing ' + DeurbelKnop.CONFIG_GPIO_OUTPUT)
+        self.stil()
 
-    def ring(self, duration=0.5):
-        if 0.1 > duration > 10:
-            print("duration too long: " + str(duration))
-            duration = 0.5
+    def ring(self, duration=1):
+        if duration > 10 or duration < 0.1:
+            raise RaspberryPiException("duration too long: " + str(duration))
         try:
             if not self._pi.is_output_setup():
                 self._pi.setup_outputpin(self._pinnummer)
