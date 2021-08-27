@@ -14,6 +14,8 @@ class RaspberryPi:
 
     def __init__(self):
         self._gpio = GPIO
+        self._gpio.setmode(GPIO.BOARD)
+        self._gpio.setwarnings(False)
         self._input_pin = -1
         self._output_pin = -1
 
