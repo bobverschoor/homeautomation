@@ -7,11 +7,23 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 ### Randvoorwaarden
 * Python > 3.6 geinstalleerd
 * Influxdb > 1.8.9 geinstalleerd
+
+#### Voor energiemeter
 * P1 naar USB kabel
 * P1 protocol versie 5
 
-### Modules
-Pidfile
+### Extra Python Modules
+
+#### Voor energiemeter
+* influxdb
+
+#### Voor weerdata
+* influxdb
+* requests
+
+#### Voor deurbel
+* Pidfile
+* rpi.GPIO (op de Raspberry pi, voor lokaal ontwikkelen niet nodig)
 
 
 ### Aanpassen van de secrets.ini
@@ -33,6 +45,10 @@ Voor gebruik van weerhuisje.nl kun je een weerstation naam ophalen via:
 https://www.mijneigenweer.nl/participants.php?langchoice=nl
 
 Vul deze naam in bij locatie_1
+
+#### deurbel
+De juiste pin nummer op de raspberrypi (Board nummering) voor de belknop en voor de bel gong.
+Optioneel de duur van de bel per keer. Standaard is dat 1 seconde. Korter kan ook, b.v. 0.6 seconde.
 
 # Scripts
 Tot nu toe zijn er twee scripts die data ophalen en in de influxdb plaatsen, namelijk energiemeter.py en weerdata.py
@@ -84,6 +100,14 @@ Ook dit kan weer met een cronjob worden uitgevoerd als volgt:
 */10 * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python src/main/python/weerdata.py >> /home/pi/cron_weer.log 2>&1
 ```
 
+## Deurbel
+Het main script is een controller die altijd blijft draaien (tenzij gecrashed, maar ook dat wordt zoveel mogelijk voorkomen.)
+Ook dit script is het beste te starten via een cron job, want er zit een beveiliging in dat het script maar 1 keer mag zijn opgestart.
+
+De main loop vraagt aan de deurbel gateway of er iemand bij de deur staat, oftewel iemand op de knoop heeft gedrukt.
+De gateway regelt dat er dan ook altijd de gong afgaat (voor een vaste duur). 
+Dit loopt in een aparte thread waardoor de control loop meteen weet of er iemand op de knop heeft gedrukt, 
+en zonodig ook nog wat anders tegelijk kan doen, zoals het sturen van een bericht.
 
 # To Do
 * 1 main maken voor energie meter en weerdata, en dan aanroepen via een parameter, omdat er veel dubbele code in zit (configuratie file, database aanroep)

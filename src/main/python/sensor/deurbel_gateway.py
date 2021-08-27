@@ -10,6 +10,7 @@ class DeurbelGatewayException(Exception):
 class DeurbelGateway:
     CONFIG_DEURBEL = 'deurbel'
     CONFIG_GONGDURATION = 'gong_duration_ms'
+    CONFIG_GONGDURATION_DEFAULT = 1
 
     def __init__(self, config):
         self._knop = None
@@ -20,7 +21,7 @@ class DeurbelGateway:
             if DeurbelGateway.CONFIG_GONGDURATION in self._config:
                 self._gongduration = self._config[DeurbelGateway.CONFIG_GONGDURATION]
             else:
-                self._gongduration = 1
+                self._gongduration = DeurbelGateway.CONFIG_GONGDURATION_DEFAULT
         else:
             raise DeurbelGatewayException("Config missing deurbel section")
 
