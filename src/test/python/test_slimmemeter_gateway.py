@@ -1,7 +1,7 @@
 import unittest
 
 from mock_dsmr_device import Mock_DSMR_50_Device, nr_of_atts
-from device.slimmemeter_gateway import SlimmemeterGateway
+from gateways.slimmemeter_gateway import SlimmemeterGateway
 
 
 class TestSlimmemeterGateway(unittest.TestCase):

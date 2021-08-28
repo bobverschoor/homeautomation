@@ -5,7 +5,7 @@ import os
 
 from persistence.database_gateway import DatabaseGateway
 from device.dsmr_50_device import DSMR_50
-from device.slimmemeter_gateway import SlimmemeterGateway
+from gateways.slimmemeter_gateway import SlimmemeterGateway
 
 
 class EnergieMeterController:

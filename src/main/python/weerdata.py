@@ -4,7 +4,7 @@ import datetime
 import os
 
 from persistence.database_gateway import DatabaseGateway
-from device.weer_gateway import WeerGateway
+from gateways.weer_gateway import WeerGateway
 from device.weerhuisjenl import WeerhuisjeDevice
 from device.weerlive_api import WeerLiveDevice
 

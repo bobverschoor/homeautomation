@@ -1,7 +1,7 @@
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    import RPi_dev.GPIO as GPIO
+    import device.RPi_dev.GPIO as GPIO
 
 
 class RaspberryPiException(Exception):
