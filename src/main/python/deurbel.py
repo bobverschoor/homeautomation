@@ -2,6 +2,7 @@ import argparse
 import configparser
 import datetime
 import os
+import sys
 import time
 
 from pid import PidFile, PidFileAlreadyLockedError
@@ -36,6 +37,7 @@ if __name__ == "__main__":
             parser = argparse.ArgumentParser(description='Start the waiting for deurbel.')
             args = parser.parse_args()
             print(datetime.datetime.now())
+            sys.stdout.flush()
             DeurbelController('src/main/resources/secrets.ini').control_loop()
     except PidFileAlreadyLockedError as e:
         print("Other proces still running (which is OK): " + str(datetime.datetime.now()))
