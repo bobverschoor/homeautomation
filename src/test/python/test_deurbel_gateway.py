@@ -22,6 +22,7 @@ class MockDeurbelGong:
         self.gong_rang = True
         time.sleep(duration)
         self.gong_duration = round(time.time() - now, 1)
+        self.gong_rang = False
 
 
 class DeurbelGatewaytest(unittest.TestCase):
@@ -38,19 +39,24 @@ class DeurbelGatewaytest(unittest.TestCase):
         deurbel = DeurbelGateway({DeurbelGateway.CONFIG_DEURBEL: {DeurbelGateway.CONFIG_GONGDURATION: gong_duration}})
         deurbel._knop = MockDeurbelKnop()
         deurbel._gong = MockDeurbelGong()
+        # als niet ingedrukt, dan niemand aan de deur
         deurbel._knop.knopwaarde = False
         self.assertFalse(deurbel.someone_at_the_deur())
         self.assertFalse(deurbel._gong.gong_rang)
+        # als wel ingedrukt, dan moet de gong ringen voor een bepaalde tijd, en mag er maximaal 1 keer doorkomen dat er
+        # iemand aan de deur staat
         deurbel._knop.knopwaarde = True
         now = time.time()
         self.assertTrue(deurbel.someone_at_the_deur())
         knop_duration = round(time.time() - now, 1)
         self.assertEqual(0, knop_duration)
-        self.assertTrue(deurbel._gong.gong_rang)
+        self.assertTrue(deurbel._ringing)
         self.assertEqual(-1, deurbel._gong.gong_duration)
-        while deurbel._gong.gong_duration == -1:
-            pass
+        while deurbel._gong.gong_duration == -1 and deurbel.already_ringing():
+            self.assertFalse(deurbel.someone_at_the_deur())
+            deurbel._knop.knopwaarde = False
         self.assertEqual(gong_duration, deurbel._gong.gong_duration)
+        self.assertFalse(deurbel.already_ringing())
 
 
 if __name__ == '__main__':

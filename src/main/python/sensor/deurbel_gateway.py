@@ -15,7 +15,7 @@ class DeurbelGateway:
     def __init__(self, config):
         self._knop = None
         self._gong = None
-        self._when_pressed = None
+        self._ringing = False
         if DeurbelGateway.CONFIG_DEURBEL in config:
             self._config = config[DeurbelGateway.CONFIG_DEURBEL]
             if DeurbelGateway.CONFIG_GONGDURATION in self._config:
@@ -30,15 +30,23 @@ class DeurbelGateway:
         self._knop = DeurbelKnop(self._config)
 
     def ringing(self):
+        self._ringing = True
         self._gong.ring(self._gongduration)
+        self._ringing = False
+
+    def already_ringing(self):
+        return self._ringing
 
     def someone_at_the_deur(self):
         if not (self._knop or self._gong):
             self.set_deurbel()
         if self._knop.is_ingedrukt():
-            t = threading.Thread(target=self.ringing)
-            t.setDaemon(True)
-            t.start()
-            return True
-        else:
-            return False
+            if self.already_ringing():
+                # Returns only once if pressed during ringing
+                return False
+            else:
+                t = threading.Thread(target=self.ringing)
+                t.setDaemon(True)
+                t.start()
+                return True
+        return False
