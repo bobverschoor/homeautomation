@@ -11,7 +11,7 @@ class ApiException(Exception):
 
 
 class Api:
-    def __init__(self, url, payload, expected_startsymbol='{'):
+    def __init__(self, url, payload="", expected_startsymbol='{'):
         self._url = url
         self._payload = payload
         self._expected_startsymbol_output = expected_startsymbol
@@ -20,22 +20,30 @@ class Api:
 
     def request_data(self):
         try:
-            weer = requests.get(self._url, params=self._payload, timeout=30)
-            if weer.status_code == 200:
-                if weer.text.startswith(self._expected_startsymbol_output):
-                    self.text_output = weer.text
-                else:
-                    raise ApiException("Api not expected output: " + str(self._url) + "\n" + weer.text)
-            else:
-                raise ApiException("Api status code not 200: " + str(weer.status_code) + weer.text)
+            self.handle_result(requests.get(self._url, params=self._payload, timeout=30))
         except TimeoutError:
             raise ApiException("Api does not respond in 30 seconds: " + self._url)
+
+    def post_data(self, body):
+        try:
+            self.handle_result(requests.post(self._url, data=body, timeout=30))
+        except TimeoutError:
+            raise ApiException("Api does not respond in 30 seconds: " + self._url)
+
+    def handle_result(self, result):
+        if result.status_code == 200:
+            if result.text.startswith(self._expected_startsymbol_output):
+                self.text_output = result.text
+            else:
+                raise ApiException("Api not expected output: " + str(self._url) + "\n" + result.text)
+        else:
+            raise ApiException("Api status code not 200: " + str(result.status_code) + result.text)
 
     def get_text_output(self):
         return self.text_output
 
     def get_json(self):
         if self.text_output == "":
-            raise ApiException("Text not loaded, try request data first.")
+            raise ApiException("Text not loaded, try request or post data first.")
         self.json = json.loads(self.text_output)
         return self.json

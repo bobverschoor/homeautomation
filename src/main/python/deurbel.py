@@ -6,7 +6,9 @@ import time
 
 from pid import PidFile, PidFileAlreadyLockedError
 
+from device.telegram_device import TelegramDevice
 from gateways.deurbel_gateway import DeurbelGateway
+from gateways.messenger_gateway import MessengerGateway
 
 
 class DeurbelController:
@@ -16,6 +18,8 @@ class DeurbelController:
         if os.path.exists(configfile):
             self._config.read(configfile)
             self._deurbel = DeurbelGateway(self._config)
+            self._messenger = MessengerGateway()
+            self._messenger.setup(TelegramDevice(self._config))
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)
@@ -24,7 +28,7 @@ class DeurbelController:
         while True:
             try:
                 if self._deurbel.someone_at_the_deur():
-                    print("stuur een berichtje")
+                    self._messenger.send("Er staat iemand voor de deur.")
                 time.sleep(0.05)
             except Exception as e:
                 print(str(datetime.datetime.now()) + " " + str(e))

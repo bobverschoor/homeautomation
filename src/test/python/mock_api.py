@@ -12,6 +12,9 @@ class MockAPI(Api):
     def request_data(self):
         pass
 
+    def post_data(self, body):
+        pass
+
     def get_json(self):
         return json.loads(self.json)
 
