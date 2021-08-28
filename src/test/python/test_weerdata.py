@@ -1,11 +1,26 @@
 import unittest
-
-from entiteiten.weer import Weer
 from mock_api import MockAPI
-from mock_weer_device import MockWeerLiveDevice, MockWeerhuisjeDevice
 from gateways.weer_gateway import WeerGateway
+from entiteiten.weer import Weer
 from device.weerhuisjenl import WeerhuisjeDevice
 from device.weerlive_api import WeerLiveDevice
+
+
+class MockWeerLiveDevice(WeerLiveDevice):
+    def __init__(self):
+        super().__init__({'weer': {'weerlive_api_key': "", 'weerlive_locatie': ""}})
+        self.weer = Weer()
+
+    def get_weerentiteit(self):
+        return self.weer
+
+
+class MockWeerhuisjeDevice(WeerhuisjeDevice):
+    def __init__(self):
+        super().__init__({'weer':{'weerhuisje_locatie_1': "weerstationwijkaanzee"}})
+
+    def get_neerslaghoeveelheid(self):
+        return 2.1
 
 
 class TestWeerdata(unittest.TestCase):
