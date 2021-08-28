@@ -37,10 +37,13 @@ class DeurbelGateway:
     def already_ringing(self):
         return self._ringing
 
+    def knop_ingedrukt(self):
+        return self._knop.is_ingedrukt()
+
     def someone_at_the_deur(self):
         if not (self._knop or self._gong):
             self.set_deurbel()
-        if self._knop.is_ingedrukt():
+        if self.knop_ingedrukt():
             if self.already_ringing():
                 # Returns only once if pressed during ringing
                 return False

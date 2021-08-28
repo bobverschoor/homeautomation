@@ -20,6 +20,7 @@ class DeurbelController:
             self._deurbel = DeurbelGateway(self._config)
             self._messenger = MessengerGateway()
             self._messenger.setup(TelegramDevice(self._config))
+            self._testing = False
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)
@@ -30,6 +31,8 @@ class DeurbelController:
                 if self._deurbel.someone_at_the_deur():
                     self._messenger.send("Er staat iemand voor de deur.")
                 time.sleep(0.05)
+                if self._testing:
+                    break
             except Exception as e:
                 print(str(datetime.datetime.now()) + " " + str(e))
 

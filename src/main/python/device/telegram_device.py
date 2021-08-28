@@ -35,7 +35,7 @@ class TelegramDevice:
         return self._message_send_date
 
     def send_message(self, message):
-        body = {'chat_id': "-100" + self._channel_id,
+        body = {'chat_id': self._channel_id,
                 'text': message}
         try:
             self._api.post_data(body)
