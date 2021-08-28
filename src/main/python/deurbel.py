@@ -32,7 +32,7 @@ class DeurbelController:
 
 if __name__ == "__main__":
     try:
-        with PidFile("deurbel.py"):
+        with PidFile("/tmp/deurbel.py"):
             parser = argparse.ArgumentParser(description='Start the waiting for deurbel.')
             args = parser.parse_args()
             print(datetime.datetime.now())
