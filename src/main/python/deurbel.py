@@ -32,11 +32,10 @@ class DeurbelController:
 
 if __name__ == "__main__":
     try:
-        with PidFile():
+        with PidFile("deurbel.py"):
             parser = argparse.ArgumentParser(description='Start the waiting for deurbel.')
             args = parser.parse_args()
             print(datetime.datetime.now())
             DeurbelController('src/main/resources/secrets.ini').control_loop()
     except PidFileAlreadyLockedError as e:
         print("Other proces still running (which is OK): " + str(datetime.datetime.now()))
-        pass
