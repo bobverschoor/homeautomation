@@ -1,5 +1,5 @@
 from entiteiten.telegram import Telegram
-from sensor.dsmr_50_device import DSMR_50
+from device.dsmr_50_device import DSMR_50
 
 
 class Mock_DSMR_50_Device(DSMR_50):

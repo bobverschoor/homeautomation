@@ -1,7 +1,7 @@
 import unittest
 
-from sensor.deurbel_device import DeurbelKnop, DeurbelGong
-from sensor.raspberrypi import RaspberryPiException, RaspberryPi
+from device.deurbel_device import DeurbelKnop, DeurbelGong
+from device.raspberrypi import RaspberryPiException, RaspberryPi
 
 
 class MockRaspberryPi(RaspberryPi):

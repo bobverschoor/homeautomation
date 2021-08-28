@@ -1,4 +1,4 @@
-from sensor.api import Api
+from device.api import Api
 
 
 class WeerLiveDevice:

@@ -1,5 +1,5 @@
 import threading
-from sensor.deurbel_device import DeurbelGong, DeurbelKnop
+from device.deurbel_device import DeurbelGong, DeurbelKnop
 
 
 class DeurbelGatewayException(Exception):

@@ -1,6 +1,6 @@
 from entiteiten.weer import Weer
-from sensor.weerhuisjenl import WeerhuisjeDevice
-from sensor.weerlive_api import WeerLiveDevice
+from device.weerhuisjenl import WeerhuisjeDevice
+from device.weerlive_api import WeerLiveDevice
 
 
 class MockWeerLiveDevice(WeerLiveDevice):

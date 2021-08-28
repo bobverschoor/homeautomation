@@ -1,7 +1,7 @@
 import unittest
 
 from mock_gpio import MockGpio
-from sensor.raspberrypi import RaspberryPi, RaspberryPiException
+from device.raspberrypi import RaspberryPi, RaspberryPiException
 
 
 class RaspberryPiTest(unittest.TestCase):

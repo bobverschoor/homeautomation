@@ -1,6 +1,6 @@
 import json
 
-from sensor.api import Api
+from device.api import Api
 
 
 class MockAPI(Api):

@@ -1,4 +1,4 @@
-from sensor.raspberrypi import RaspberryPi, RaspberryPiException
+from device.raspberrypi import RaspberryPi, RaspberryPiException
 import time
 
 

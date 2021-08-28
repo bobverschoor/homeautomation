@@ -6,7 +6,7 @@ import time
 
 from pid import PidFile, PidFileAlreadyLockedError
 
-from sensor.deurbel_gateway import DeurbelGateway
+from device.deurbel_gateway import DeurbelGateway
 
 
 class DeurbelController:

@@ -4,9 +4,9 @@ import datetime
 import os
 
 from persistence.database_gateway import DatabaseGateway
-from sensor.weer_gateway import WeerGateway
-from sensor.weerhuisjenl import WeerhuisjeDevice
-from sensor.weerlive_api import WeerLiveDevice
+from device.weer_gateway import WeerGateway
+from device.weerhuisjenl import WeerhuisjeDevice
+from device.weerlive_api import WeerLiveDevice
 
 
 class WeerdataController:

@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from sensor.deurbel_gateway import DeurbelGateway, DeurbelGatewayException
+from device.deurbel_gateway import DeurbelGateway, DeurbelGatewayException
 
 
 class MockDeurbelKnop:

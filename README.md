@@ -54,13 +54,13 @@ Optioneel de duur van de bel per keer. Standaard is dat 1 seconde. Korter kan oo
 Tot nu toe zijn er twee scripts die data ophalen en in de influxdb plaatsen, namelijk energiemeter.py en weerdata.py
 
 ## Algemene Software Architectuur
-Het main script (controller) roept een sensor gateway aan, die op zijn beurt afhankelijk is van een device waar de echte meting plaatsvindt. 
-De sensor gateway heeft als doel om de specifiek gemeten waardes om te zetten naar een algemene 'meetwaarde' entiteit.
+Het main script (controller) roept een device gateway aan, die op zijn beurt afhankelijk is van een device waar de echte meting plaatsvindt. 
+De device gateway heeft als doel om de specifiek gemeten waardes om te zetten naar een algemene 'meetwaarde' entiteit.
 De controller ontvangt deze meetwaardes en sluist die door naar de database gateway (persistence), 
 die als doel heeft om de meetdata in influxdb te zetten.
 
 Per script wordt er een database aangemaakt, en als measurement wordt uitgegaan van de eenheid van de meting.
-Door middel van tags (geleverd dus door de sensor gateway, want die is bekend met de meting) 
+Door middel van tags (geleverd dus door de device gateway, want die is bekend met de meting) 
 is daarmee dan nog een specifieke selectie te maken zodat b.v. Grafana dit eenvoudig in een grafiek kan zetten.
 
 
@@ -76,7 +76,7 @@ Om te testen kun je deze ook aanroepen met optie --dryrun, dan wordt de data nie
 
 De makkelijkste manier om dit geautomatiseerd aan te roepen elke minuut is via een cronjob:
 ``` 
-* * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python src/main/python/energiemeter.py >> /home/pi/cron_p1.log 2>&1
+* * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python -u src/main/python/energiemeter.py >> /home/pi/cron_p1.log 2>&1
 ```
 
 
@@ -104,10 +104,18 @@ Ook dit kan weer met een cronjob worden uitgevoerd als volgt:
 Het main script is een controller die altijd blijft draaien (tenzij gecrashed, maar ook dat wordt zoveel mogelijk voorkomen.)
 Ook dit script is het beste te starten via een cron job, want er zit een beveiliging in dat het script maar 1 keer mag zijn opgestart.
 
-De main loop vraagt aan de deurbel gateway of er iemand bij de deur staat, oftewel iemand op de knoop heeft gedrukt.
+De -u parameter is om te zorgen dat de prints niet worden gebuffered. 
+Gebleken is dat de combinatie met pidfile (voor de beveiliging dat er maar 1 proces tegelijkertijd kan draaien) er anders 
+voor zorgt dat er niet meteen gelogd wordt.
+``` 
+* * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python -u src/main/python/deurbel.py >> /home/pi/cron_deurbel.log 2>&1
+```
+
+De main loop vraagt aan de deurbel gateway of er iemand bij de deur staat, oftewel iemand op de knop heeft gedrukt.
 De gateway regelt dat er dan ook altijd de gong afgaat (voor een vaste duur). 
-Dit loopt in een aparte thread waardoor de control loop meteen weet of er iemand op de knop heeft gedrukt, 
+Dit loopt in een aparte thread waardoor de control loop meteen weet of er iemand op de knop heeft gedrukt (asynchroon dus), 
 en zonodig ook nog wat anders tegelijk kan doen, zoals het sturen van een bericht.
+De gateway zorgt er ook voor dat er altijd maar 1 keer binnen de periode van de ring, door komt dat er op de knop gedrukt is.
 
 # To Do
 * 1 main maken voor energie meter en weerdata, en dan aanroepen via een parameter, omdat er veel dubbele code in zit (configuratie file, database aanroep)
