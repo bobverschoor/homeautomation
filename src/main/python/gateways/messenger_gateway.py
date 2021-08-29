@@ -8,8 +8,9 @@ class MessengerGateway:
     DEFAULT_TEXT_SOMEONE_AT_THE_DOOR = "Er staat iemand bij de voordeur."
     DEFAULT_SILENCE_WINDOW = 60
 
-    def __init__(self, config):
+    def __init__(self, config, debug=False):
         self._messengerdevice = None
+        self._debug = debug
         silence_window = MessengerGateway.DEFAULT_SILENCE_WINDOW
         text_someone_at_the_door = MessengerGateway.DEFAULT_TEXT_SOMEONE_AT_THE_DOOR
         if MessengerGateway.CONFIG_MESSENGER in config:
@@ -39,3 +40,5 @@ class MessengerGateway:
         if self.allowed_to_send():
             if self._messengerdevice.message_send(self._messengerdevice):
                 self._lastmessage_send = datetime.datetime.now()
+                if self._debug:
+                    print("Sending last message at: " + str(self._lastmessage_send))
