@@ -31,7 +31,7 @@ class DeurbelController:
                 print(str(datetime.datetime.now()) + " Someone at the door")
             self._messenger.send_text_someone_at_the_door()
 
-    def control_loop(self, response_time=0.05):
+    def control_loop(self, response_time=0.1):
         while True:
             try:
                 self.answer_door()
