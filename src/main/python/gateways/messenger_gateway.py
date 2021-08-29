@@ -38,7 +38,7 @@ class MessengerGateway:
         if not self._messengerdevice:
             raise ModuleNotFoundError("Messenger not initialised")
         if self.allowed_to_send():
-            if self._messengerdevice.message_send(self._messengerdevice):
+            if self._messengerdevice.message_send(self._text_someone_at_the_door):
                 self._lastmessage_send = datetime.datetime.now()
                 if self._debug:
                     print("Sending last message at: " + str(self._lastmessage_send))
