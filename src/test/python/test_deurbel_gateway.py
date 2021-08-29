@@ -35,7 +35,7 @@ class DeurbelGatewaytest(unittest.TestCase):
         self.assertEqual(deurbel._gongduration, 2)
 
     def test_parallel_aanroep_gong(self):
-        gong_duration = 0.9
+        gong_duration = 0.4
         deurbel = DeurbelGateway({DeurbelGateway.CONFIG_DEURBEL: {DeurbelGateway.CONFIG_GONGDURATION: gong_duration}})
         deurbel._knop = MockDeurbelKnop()
         deurbel._gong = MockDeurbelGong()

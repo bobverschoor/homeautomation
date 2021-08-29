@@ -117,6 +117,15 @@ Dit loopt in een aparte thread waardoor de control loop meteen weet of er iemand
 en zonodig ook nog wat anders tegelijk kan doen, zoals het sturen van een bericht.
 De gateway zorgt er ook voor dat er altijd maar 1 keer binnen de periode van de ring, door komt dat er op de knop gedrukt is.
 
+### Messenger
+Als messenger om te notificeren als er iemand voor de deur staat wordt gebruikt gemaakt van Telegram.
+Via de BotFather moet een bot gemaakt worden. Dit is een account dat gebruikt wordt voor het script. 
+De Botfather levert uiteindelijk een token op. De token moet worden ingevuld in de ini file. 
+Daarnaast moet er een channel aangemaakt worden, en de bot moet admin van die channel worden.
+Het channel ID kan achterhaald worden door eerst als de bot een melding in het channel te maken, en vervolgens via
+https://api.telegram.org/bot{BOT_TOKEN}/getUpdates kan dan het channel ID achterhaald worden.
+
+
 # To Do
 * 1 main maken voor energie meter en weerdata, en dan aanroepen via een parameter, omdat er veel dubbele code in zit (configuratie file, database aanroep)
 

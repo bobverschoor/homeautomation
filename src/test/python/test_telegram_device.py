@@ -15,7 +15,7 @@ class TestTelegramDevice(unittest.TestCase):
         mock_api = MockAPI()
         tg._api = mock_api
         mock_api.json = testdata
-        self.assertTrue(tg.send_message("Er staat iemand aan de voordeur."))
+        self.assertTrue(tg.message_send("Er staat iemand aan de voordeur."))
 
 
 testdata = '{"ok":true,"result":{"message_id":2024,"sender_chat":{"id":-1001215881016,"title":"Ps5-alerter-nl",' \

@@ -34,7 +34,7 @@ class TelegramDevice:
     def get_last_message_send(self):
         return self._message_send_date
 
-    def send_message(self, message):
+    def message_send(self, message):
         body = {'chat_id': self._channel_id,
                 'text': message}
         try:

@@ -18,31 +18,31 @@ class DeurbelController:
         if os.path.exists(configfile):
             self._config.read(configfile)
             self._deurbel = DeurbelGateway(self._config)
-            self._messenger = MessengerGateway()
+            self._messenger = MessengerGateway(self._config)
             self._messenger.setup(TelegramDevice(self._config))
-            self._testing = False
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)
 
-    def control_loop(self):
+    def answer_door(self):
+        if self._deurbel.someone_at_the_deur():
+            self._messenger.send_text_someone_at_the_door()
+
+    def control_loop(self, response_time=0.05):
         while True:
             try:
-                if self._deurbel.someone_at_the_deur():
-                    self._messenger.send("Er staat iemand voor de deur.")
-                time.sleep(0.05)
-                if self._testing:
-                    break
-            except Exception as e:
-                print(str(datetime.datetime.now()) + " " + str(e))
+                self.answer_door()
+                time.sleep(response_time)
+            except Exception as exc:
+                print(str(datetime.datetime.now()) + " " + str(exc))
 
 
 if __name__ == "__main__":
     try:
-        with PidFile("deurbel.py"):
+        with PidFile("/tmp/deurbel.py"):
             parser = argparse.ArgumentParser(description='Start the waiting for deurbel.')
             args = parser.parse_args()
             print(datetime.datetime.now())
             DeurbelController('src/main/resources/secrets.ini').control_loop()
-    except PidFileAlreadyLockedError as e:
+    except PidFileAlreadyLockedError:
         print("Other proces still running (which is OK): " + str(datetime.datetime.now()))
