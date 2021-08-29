@@ -42,8 +42,8 @@ class DeurbelController:
 
 if __name__ == "__main__":
     try:
+        debug_arg = False
         with PidFile("/tmp/deurbel.py"):
-            debug_arg = False
             parser = argparse.ArgumentParser(description='Start the waiting for deurbel.')
             parser.add_argument('--debug', help='Log extra information.', action="store_true")
             args = parser.parse_args()
@@ -52,4 +52,5 @@ if __name__ == "__main__":
             print(datetime.datetime.now())
             DeurbelController('src/main/resources/secrets.ini', debug=debug_arg).control_loop()
     except PidFileAlreadyLockedError:
-        print("Other proces still running (which is OK): " + str(datetime.datetime.now()))
+        if debug_arg:
+            print("Other proces still running (which is OK): " + str(datetime.datetime.now()))
