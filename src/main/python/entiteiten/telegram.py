@@ -165,6 +165,11 @@ class MbusDevice:
         return str(self._timestamp.strftime("%Y-%m-%d %H:%M:%S")) + " " + str(self.measurement) + " " + self._unit
 
 
+class TelegramEntityException(Exception):
+    def __init__(self, message):
+        super(TelegramEntityException, self).__init__(message)
+
+
 class Telegram:
     def __init__(self):
         self._manufacture = ""
@@ -229,12 +234,15 @@ class Telegram:
                         except AttributeError:
                             self.error = "Can't set attribute for: " + obis_reference
                         if self._error:
-                            print("Error: " + str(self._error))
                             print(obis_reference + " : " + str(measurements))
+                            raise TelegramEntityException(self.error)
                 else:
                     print("MAG NIET: " + line)
         else:
-            self._manufacture = line
+            if '\\' in line:
+                self._manufacture = line
+            else:
+                raise TelegramEntityException("Wrong format of manufacture line: " + str(line))
 
     def set_mbusdevice(self, channel_id, obis_subreference, value):
         if channel_id not in self._mbusdevice:

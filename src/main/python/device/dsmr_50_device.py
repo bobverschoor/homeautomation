@@ -1,6 +1,6 @@
 import serial
 
-from entiteiten.telegram import Telegram
+from entiteiten.telegram import Telegram, TelegramEntityException
 
 
 class DSMR_50:
@@ -24,7 +24,12 @@ class DSMR_50:
                     break
                 p1_line = str(p1_raw_line.strip(b'\r\n '), 'UTF-8')
                 if p1_line != b'\x00' and len(p1_line) > 1:
-                    telegram.add(p1_line)
+                    try:
+                        telegram.add(p1_line)
+                    except TelegramEntityException as tee:
+                        print(tee)
+                        print(p1_line)
+                        print(str(ser))
         return telegram
 
 
