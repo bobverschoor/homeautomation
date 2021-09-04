@@ -17,9 +17,11 @@ class DSMR_50:
 
     def read_telegram(self):
         telegram = Telegram()
+        rawdata = []
         with self.serial as ser:
             while True:
                 p1_raw_line = ser.readline()
+                rawdata.append(p1_raw_line)
                 if lastline(p1_raw_line):
                     break
                 p1_line = str(p1_raw_line.strip(b'\r\n '), 'UTF-8')
@@ -28,6 +30,10 @@ class DSMR_50:
                         telegram.add(p1_line)
                     except TelegramEntityException as tee:
                         print(tee)
+                        print("##### Start Raw Data #####")
+                        for l in rawdata:
+                            print('\t' + str(l))
+                        print("##### End   Raw Data #####")
                         print(p1_line)
                         print(str(ser))
         return telegram
