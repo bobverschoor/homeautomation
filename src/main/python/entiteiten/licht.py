@@ -5,10 +5,18 @@ class LichtException(Exception):
 
 class Licht:
     def __init__(self, volgnr):
+        try:
+            self._volgnr = int(volgnr)
+        except ValueError as ve:
+            raise LichtException(ve)
         self._unique_id = ""
-        self._volgnr = volgnr
         self._aan = None
+        self._bereikbaar = None
         self._naam = ""
+
+    @property
+    def volgnr(self):
+        return self._volgnr
 
     @property
     def naam(self):
@@ -36,6 +44,18 @@ class Licht:
             self._aan = value
         else:
             raise LichtException("Incorrect value voor aan: " + str(value))
+
+    @property
+    def bereikbaar(self):
+        return self._bereikbaar
+
+    @bereikbaar.setter
+    def bereikbaar(self, value):
+        if str(value) in ['True', 'False']:
+            self._bereikbaar = value
+        else:
+            raise LichtException("Incorrect value voor bereikbaarheid: " + str(value))
+
 
     def __str__(self):
         return self._unique_id + " " + self._naam + " : " + str(self._aan)

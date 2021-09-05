@@ -36,7 +36,8 @@ class HueBridgeDevice:
         for volgnr in light.keys():
             licht = Licht(volgnr)
             licht.naam = light[volgnr]['name']
-            if light[volgnr]['state']['reachable']:
+            licht.bereikbaar = light[volgnr]['state']['reachable']
+            if licht.bereikbaar:
                 licht.aan = light[volgnr]['state']['on']
             else:
                 licht.aan = False
