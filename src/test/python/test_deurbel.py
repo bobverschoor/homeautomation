@@ -3,6 +3,7 @@ import unittest
 
 from deurbel import DeurbelController
 from device.telegram_device import TelegramDevice
+from entiteiten.meetwaarde import Meetwaarde
 from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway
 
@@ -15,7 +16,9 @@ class MockDeurbelGateway(DeurbelGateway):
         self._gong = "iets"
 
     def someone_at_the_deur(self):
-        return True
+        meetwaarde = Meetwaarde('test')
+        meetwaarde.waarde = True
+        return meetwaarde
 
 
 class MockTelegram(TelegramDevice):

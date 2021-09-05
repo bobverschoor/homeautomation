@@ -1,6 +1,7 @@
 import datetime
 import threading
 from device.deurbel_device import DeurbelGong, DeurbelKnop
+from entiteiten.meetwaarde import Meetwaarde
 
 
 class DeurbelGatewayException(Exception):
@@ -12,6 +13,7 @@ class DeurbelGateway:
     CONFIG_DEURBEL = 'deurbel'
     CONFIG_GONGDURATION = 'gong_duration_ms'
     CONFIG_GONGDURATION_DEFAULT = 1
+    CONFIG_DATABASENAAM = 'databasenaam'
 
     def __init__(self, config, debug=False):
         self._knop = None
@@ -45,6 +47,10 @@ class DeurbelGateway:
         return self._knop.is_ingedrukt()
 
     def someone_at_the_deur(self):
+        meetwaarde = Meetwaarde('deurbel')
+        meetwaarde.timestamp = datetime.datetime.now()
+        meetwaarde.waarde = False
+        meetwaarde.tags = "naam: deurbel"
         if not (self._knop or self._gong):
             self.set_deurbel()
         if self.knop_ingedrukt():
@@ -52,10 +58,10 @@ class DeurbelGateway:
                 print(str(datetime.datetime.now()) + " Knop is ingedrukt.")
             if self.already_ringing():
                 # Returns only once if pressed during ringing
-                return False
+                meetwaarde.waarde = False
             else:
                 t = threading.Thread(target=self.ringing)
                 t.setDaemon(True)
                 t.start()
-                return True
-        return False
+                meetwaarde.waarde = True
+        return meetwaarde

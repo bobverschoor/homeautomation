@@ -9,32 +9,44 @@ from pid import PidFile, PidFileAlreadyLockedError
 from device.telegram_device import TelegramDevice
 from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway
+from persistence.database_gateway import DatabaseGateway
 
 
 class DeurbelController:
 
     def __init__(self, configfile, debug=False):
-        self._config = configparser.ConfigParser()
+        config = configparser.ConfigParser()
         self._debug = debug
         if os.path.exists(configfile):
-            self._config.read(configfile)
-            self._deurbel = DeurbelGateway(self._config,  debug=debug)
-            self._messenger = MessengerGateway(self._config, debug=debug)
-            self._messenger.setup(TelegramDevice(self._config))
+            config.read(configfile)
+            self._deurbel = DeurbelGateway(config,  debug=debug)
+            self._messenger = MessengerGateway(config, debug=debug)
+            self._messenger.setup(TelegramDevice(config))
+            if DeurbelGateway.CONFIG_DATABASENAAM in config[DeurbelGateway.CONFIG_DEURBEL]:
+                self._databasebase = DatabaseGateway(
+                    config[DeurbelGateway.CONFIG_DEURBEL][DeurbelGateway.CONFIG_DATABASENAAM])
+            else:
+                print("Databasenaam not in config, therefore not storing results in database.")
+                self._databasebase = None
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)
 
     def answer_door(self):
-        if self._deurbel.someone_at_the_deur():
+        meetwaarde = self._deurbel.someone_at_the_deur()
+        if meetwaarde.waarde:
             if self._debug:
                 print(str(datetime.datetime.now()) + " Someone at the door")
             self._messenger.send_text_someone_at_the_door()
+        return meetwaarde
 
     def control_loop(self, response_time=0.1):
         while True:
             try:
-                self.answer_door()
+                meetwaarde = self.answer_door()
+                if self._databasebase:
+                    self._databasebase.entiteiten = meetwaarde
+                    self._databasebase.store()
                 time.sleep(response_time)
             except Exception as exc:
                 print(str(datetime.datetime.now()) + " " + str(exc))
