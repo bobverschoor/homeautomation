@@ -3,7 +3,7 @@ import datetime
 from entiteiten.meetwaarde import Meetwaarde
 
 
-class HomeGateway:
+class WoningGateway:
 
     def __init__(self):
         self.bridge = None

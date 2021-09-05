@@ -2,7 +2,7 @@ import unittest
 
 from device.hue_bridge_device import HueBridgeDevice
 from entiteiten.licht import Licht
-from gateways.home_gateway import HomeGateway
+from gateways.woning_gateway import WoningGateway
 
 
 class MockBridge(HueBridgeDevice):
@@ -17,9 +17,9 @@ class MockBridge(HueBridgeDevice):
         return [licht]
 
 
-class HomeGatewayTest(unittest.TestCase):
+class WoningGatewayTest(unittest.TestCase):
     def test_get_meetwaarden(self):
-        hg = HomeGateway()
+        hg = WoningGateway()
         hg.bridge = MockBridge()
         meetwaarden = hg.get_meetwaarden()
         self.assertEqual(1, len(meetwaarden))
