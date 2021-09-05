@@ -211,7 +211,8 @@ class Telegram:
 
     def is_data_ok(self):
         if self.error == "":
-            return True
+            if len(self.manufacture) > 0:
+                return True
         return False
 
     def add(self, line):
