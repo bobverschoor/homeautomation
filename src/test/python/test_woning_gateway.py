@@ -14,6 +14,7 @@ class MockBridge(HueBridgeDevice):
         licht = Licht("1")
         licht.naam = "plafond lamp"
         licht.aan = True
+        licht.unique_id = "00:17:88:01:04:55:54:7d-0b"
         return [licht]
 
 
@@ -23,7 +24,8 @@ class WoningGatewayTest(unittest.TestCase):
         hg.bridge = MockBridge()
         meetwaarden = hg.get_meetwaarden()
         self.assertEqual(1, len(meetwaarden))
-        self.assertEqual("True licht_aan, tags: naam=plafond lamp", str(meetwaarden.pop()))
+        self.assertEqual("True licht_aan, tags: naam=plafond lamp id=001788010455547d0b",
+                         str(meetwaarden.pop()))
 
 
 if __name__ == '__main__':

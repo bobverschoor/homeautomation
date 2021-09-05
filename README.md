@@ -25,22 +25,24 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 * Pidfile
 * rpi.GPIO (op de Raspberry pi, voor lokaal ontwikkelen niet nodig)
 
+#### Voor Woning
+* requests
 
 ### Aanpassen van de secrets.ini
 In src/main/resources staat een voorbeeld (secrets.example). 
 Hernoem deze naar secrets.ini en vul de juiste waardes in.
 
-Voor beide databronnen kun je een andere database kiezen via de configuratie.
+Voor de databronnen kun je een andere databasenaam kiezen via de configuratie.
 
 #### P1 gegevens
-Behalve de database naam kun je alleen nog de port aangeven waarop de data binnen komt.
+Behalve de database naam kun je alleen nog de port aangeven waarop de P1 data binnen komt.
 
 #### Weer gegevens
 Voor gebruik van weerlive (knmi) gegevens:
 Haal een API key op via: https://weerlive.nl/delen.php
 Daar vind je ook de juiste benaming voor de locatie.
 
-Om een of andere reden kan je op deze manier niet heerslag gevevens ophalen. 
+Om een of andere reden kan je op deze manier niet heerslag gegevens ophalen, daarom weerhuisje. 
 Voor gebruik van weerhuisje.nl kun je een weerstation naam ophalen via:
 https://www.mijneigenweer.nl/participants.php?langchoice=nl
 
@@ -50,8 +52,15 @@ Vul deze naam in bij locatie_1
 De juiste pin nummer op de raspberrypi (Board nummering) voor de belknop en voor de bel gong.
 Optioneel de duur van de bel per keer. Standaard is dat 1 seconde. Korter kan ook, b.v. 0.6 seconde.
 
+#### telegram
+Deze wordt gebruikt voor het versturen van een telegram bericht. Hiervoor is dus een token nodig om in te kunnen loggen, en een channel_id
+De token kan je ophalen via de fatherbot (je moet dus een nieuwe bot maken).
+Daarnaast moet je een channel maken waarnaar gepost gaat worden. Je moet de bot toevoegen als admin, en het ID kun je vervolgens weer ophalen via b.v. browser (URL).
+Googlen, want het wijzigt nogal eens...
+
 # Scripts
-Tot nu toe zijn er twee scripts die data ophalen en in de influxdb plaatsen, namelijk energiemeter.py en weerdata.py
+Er zijn 4 hoofdscripts die het beste via cron gestart kunnen worden (details onder).
+
 
 ## Algemene Software Architectuur
 Het main script (controller) roept een device gateway aan, die op zijn beurt afhankelijk is van een device waar de echte meting plaatsvindt. 
@@ -79,8 +88,7 @@ De makkelijkste manier om dit geautomatiseerd aan te roepen elke minuut is via e
 * * * * * cd /home/pi/homeautomation;/home/pi/.pyenv/shims/python -u src/main/python/energiemeter.py >> /home/pi/cron_p1.log 2>&1
 ```
 
-
-Op deze manier log je gelijk in de home directory.
+Op deze manier log je gelijk in de home directory of het proces nog loopt.
 
 ## Weerdata
 Deze leest weer gegevens uit twee (API) bronnen (omdat 1 onvoldoende informatie teruggaf) 
@@ -125,8 +133,12 @@ Daarnaast moet er een channel aangemaakt worden, en de bot moet admin van die ch
 Het channel ID kan achterhaald worden door eerst als de bot een melding in het channel te maken, en vervolgens via
 https://api.telegram.org/bot{BOT_TOKEN}/getUpdates kan dan het channel ID achterhaald worden.
 
+## Woning
+De woning is op dit moment alleen het ophalen van de status van de lichten via een Hue Bridge.
+Als er een andere bridge gebruikt wordt, moet je een andere bridge device schrijven, en die via de controller aan de gateway hangen.
+Er wordt alleen gekeken of een lamp aan of uit staat, en dat wordt in de database opgeslagen met als tags de naam en ID van lamp.
+
+
 
 # To Do
 * 1 main maken voor energie meter en weerdata, en dan aanroepen via een parameter, omdat er veel dubbele code in zit (configuratie file, database aanroep)
-
-* Philips Hue data ophalen en opslaan.
