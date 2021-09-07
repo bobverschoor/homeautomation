@@ -41,14 +41,22 @@ class DeurbelController:
         return meetwaarde
 
     def control_loop(self, response_time=0.1):
-        while True:
+        loopcount = 0
+        # elke minuut loggen. 1 / response_time
+        while response_time > 0:
             try:
                 meetwaarde = self.answer_door()
+                elke_1_minuut_loggen = int((1 / response_time) * 60)
                 if self._databasebase:
                     if meetwaarde.waarde:
                         self._databasebase.entiteiten = meetwaarde
                         self._databasebase.store()
+                    elif loopcount > elke_1_minuut_loggen:
+                        self._databasebase.entiteiten = meetwaarde
+                        self._databasebase.store()
+                        loopcount = 0
                 time.sleep(response_time)
+                loopcount += 1
             except Exception as exc:
                 print(str(datetime.datetime.now()) + " " + str(exc))
 
