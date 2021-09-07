@@ -45,8 +45,9 @@ class DeurbelController:
             try:
                 meetwaarde = self.answer_door()
                 if self._databasebase:
-                    self._databasebase.entiteiten = meetwaarde
-                    self._databasebase.store()
+                    if meetwaarde.waarde:
+                        self._databasebase.entiteiten = meetwaarde
+                        self._databasebase.store()
                 time.sleep(response_time)
             except Exception as exc:
                 print(str(datetime.datetime.now()) + " " + str(exc))
