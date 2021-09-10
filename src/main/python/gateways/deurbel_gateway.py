@@ -50,7 +50,7 @@ class DeurbelGateway:
         meetwaarde = Meetwaarde('deurbel')
         meetwaarde.timestamp = datetime.datetime.now()
         meetwaarde.waarde = False
-        meetwaarde.tags = "naam: deurbel"
+        meetwaarde.tags = "naam:deurbel"
         if not (self._knop or self._gong):
             self.set_deurbel()
         if self.knop_ingedrukt():
