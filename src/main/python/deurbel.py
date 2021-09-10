@@ -46,12 +46,12 @@ class DeurbelController:
         while response_time > 0:
             try:
                 meetwaarde = self.answer_door()
-                elke_1_minuut_loggen = int((1 / response_time) * 60)
+                elke_10_minuut_loggen = int((1 / response_time) * 600)
                 if self._databasebase:
                     if meetwaarde.waarde:
                         self._databasebase.entiteiten = meetwaarde
                         self._databasebase.store()
-                    elif loopcount > elke_1_minuut_loggen:
+                    elif loopcount > elke_10_minuut_loggen:
                         self._databasebase.entiteiten = meetwaarde
                         self._databasebase.store()
                         loopcount = 0
