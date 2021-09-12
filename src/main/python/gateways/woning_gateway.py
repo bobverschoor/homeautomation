@@ -22,11 +22,11 @@ class WoningGateway:
             meetwaarden.append(meetwaarde)
         return meetwaarden
 
-    def alarmeer_lichten_in_groep(self, groepnaam):
+    def alarmeer_lichten_in_groep(self):
         if self.bridge is None:
             raise ModuleNotFoundError("Bridge device not set")
         lights2alert = []
-        for licht in self.bridge.get_alle_lichten_in_groep(groepnaam):
+        for licht in self.bridge.get_alle_lichten_in_alarmeergroep():
             lights2alert.append(licht)
         self.bridge.alert_lights(lights2alert)
 

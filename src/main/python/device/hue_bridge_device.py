@@ -16,6 +16,7 @@ class HueBridgeDevice:
     CONFIG_IP = 'ipadress'
     CONFIG_USERNAME = 'username'
     CONFIG_ALERTTIMES = 'aantal_keer_knipperen_per_alarm'
+    CONFIG_ALERTGROUP = 'alarmeer_groepnaam'
     DEFAULT_ALERTTIMES = 5
     WAIT_SECS = 0.5 # is minimale waarde voor knipperen
 
@@ -32,6 +33,11 @@ class HueBridgeDevice:
             else:
                 raise HueBridgeException("Config section [" + HueBridgeDevice.CONFIG_HUEBRIDGE + "] missing " +
                                          HueBridgeDevice.CONFIG_USERNAME)
+            if HueBridgeDevice.CONFIG_ALERTGROUP in config:
+                self._alertgroupname = config[HueBridgeDevice.CONFIG_ALERTGROUP]
+            else:
+                raise HueBridgeException("Config section [" + HueBridgeDevice.CONFIG_HUEBRIDGE + "] missing " +
+                                         HueBridgeDevice.CONFIG_ALERTGROUP)
             if HueBridgeDevice.CONFIG_ALERTTIMES in config:
                 self._nr_of_alert = config[HueBridgeDevice.CONFIG_ALERTTIMES]
             else:
@@ -58,14 +64,14 @@ class HueBridgeDevice:
             lichten.append(licht)
         return lichten
 
-    def get_alle_lichten_in_groep(self, groupname):
+    def get_alle_lichten_in_groep(self):
         lichten = []
         self._groups_api.request_data()
         group = self._groups_api.get_json()
         gevondengroep = None
         for groupnr in group.keys():
             groep = group[groupnr]
-            if groupname == groep['name']:
+            if groep['name'] == self._alertgroupname:
                 gevondengroep = groep
                 break
         if gevondengroep:

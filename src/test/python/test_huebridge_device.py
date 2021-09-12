@@ -13,7 +13,8 @@ class HueBridgeTest(unittest.TestCase):
 
     def test_get_all_lights(self):
         hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
-                                                                  HueBridgeDevice.CONFIG_USERNAME: ""}})
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
+                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: ""}})
         mockapi = MockAPI()
         hue._lichts_api = mockapi
         mockapi.json = testdata_lights
@@ -42,16 +43,26 @@ class HueBridgeTest(unittest.TestCase):
 
     def test_get_alle_lichten_in_groep(self):
         hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
-                                                                  HueBridgeDevice.CONFIG_USERNAME: ""}})
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
+                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: "onbekendegroep"}})
         mockapilight = MockAPI()
         mockapigroup = MockAPI()
         hue._lichts_api = mockapilight
         hue._groups_api = mockapigroup
         mockapigroup.json = testdata_groups
         mockapilight.json = testdata_lights
-        lichten = hue.get_alle_lichten_in_groep('onbekendegroep')
+        lichten = hue.get_alle_lichten_in_groep()
         self.assertEqual(0, len(lichten))
-        lichten = hue.get_alle_lichten_in_groep('Deurbel')
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
+                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: "Deurbel"}})
+        mockapilight = MockAPI()
+        mockapigroup = MockAPI()
+        hue._lichts_api = mockapilight
+        hue._groups_api = mockapigroup
+        mockapigroup.json = testdata_groups
+        mockapilight.json = testdata_lights
+        lichten = hue.get_alle_lichten_in_groep()
         self.assertEqual(2, len(lichten))
         for licht in lichten:
             self.assertTrue(licht.naam in ["Lamp gang beneden", "Studiekamer"])
@@ -59,6 +70,7 @@ class HueBridgeTest(unittest.TestCase):
     def test_alert_lights(self):
         hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "192.168.1.40",
                                                                   HueBridgeDevice.CONFIG_USERNAME: "demo",
+                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: "Deurbel",
                                                                   HueBridgeDevice.CONFIG_ALERTTIMES: 2}})
         mockapilight = MockAPI(hue._lichts_api._url)
         hue._lichts_api = mockapilight

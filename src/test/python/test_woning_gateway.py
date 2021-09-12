@@ -7,8 +7,9 @@ from gateways.woning_gateway import WoningGateway
 
 class MockBridge(HueBridgeDevice):
     def __init__(self):
-        super().__init__({HueBridgeDevice.CONFIG_HUEBRIDGE:
-                              {HueBridgeDevice.CONFIG_IP:"", HueBridgeDevice.CONFIG_USERNAME:""}})
+        super().__init__({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP:"",
+                                                             HueBridgeDevice.CONFIG_USERNAME:"",
+                                                             HueBridgeDevice.CONFIG_ALERTGROUP:""}})
 
     def get_alle_lichten(self):
         licht = Licht("1")

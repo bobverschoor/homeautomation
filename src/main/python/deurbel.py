@@ -6,7 +6,7 @@ import time
 
 from pid import PidFile, PidFileAlreadyLockedError
 
-from device.hue_bridge_device import HueBridgeDevice
+from device.hue_bridge_device import HueBridgeDevice, HueBridgeException
 from device.telegram_device import TelegramDevice
 from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway
@@ -30,8 +30,13 @@ class DeurbelController:
             else:
                 print("Databasenaam not in config, therefore not storing results in database.")
                 self._databasebase = None
-            self._woning = WoningGateway()
-            self._woning.bridge = HueBridgeDevice(config)
+            try:
+                self._woning = WoningGateway()
+                self._woning.bridge = HueBridgeDevice(config)
+            except HueBridgeException as hbe:
+                self._woning = None
+                print(hbe)
+                print("Skipping hue")
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)
@@ -50,6 +55,8 @@ class DeurbelController:
         while response_time > 0:
             try:
                 meetwaarde = self.answer_door()
+                if self._woning:
+                    self._woning.alarmeer_lichten_in_groep()
                 elke_10_minuut_loggen = int((1 / response_time) * 600)
                 if self._databasebase:
                     if meetwaarde.waarde:
