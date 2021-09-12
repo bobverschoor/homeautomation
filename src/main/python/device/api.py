@@ -24,18 +24,29 @@ class Api:
         except TimeoutError:
             raise ApiException("Api does not respond in 30 seconds: " + self._url)
 
-    def post_data(self, body):
+    def post_data(self, body, additionalpath=""):
         try:
-            self.handle_result(requests.post(self._url, data=body, timeout=30))
+            url = self._url + additionalpath
+            self.handle_result(requests.post(url, data=body, timeout=30))
+        except TimeoutError:
+            raise ApiException("Api does not respond in 30 seconds: " + self._url)
+
+    def put_data(self, body, additionalpath=""):
+        try:
+            url = self._url + additionalpath
+            self.handle_result(requests.put(url, data=body, timeout=30))
         except TimeoutError:
             raise ApiException("Api does not respond in 30 seconds: " + self._url)
 
     def handle_result(self, result):
         if result.status_code == 200:
-            if result.text.startswith(self._expected_startsymbol_output):
-                self.text_output = result.text
+            if self._expected_startsymbol_output:
+                if result.text.startswith(self._expected_startsymbol_output):
+                    self.text_output = result.text
+                else:
+                    raise ApiException("Api not expected output: " + str(self._url) + "\n" + result.text)
             else:
-                raise ApiException("Api not expected output: " + str(self._url) + "\n" + result.text)
+                self.text_output = result.text
         else:
             raise ApiException("Api status code not 200: " + str(result.status_code) + result.text)
 

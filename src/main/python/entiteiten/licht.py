@@ -40,7 +40,7 @@ class Licht:
 
     @aan.setter
     def aan(self, value):
-        if str(value) in ['True', 'False']:
+        if is_boolean(value):
             self._aan = value
         else:
             raise LichtException("Incorrect value voor aan: " + str(value))
@@ -56,6 +56,11 @@ class Licht:
         else:
             raise LichtException("Incorrect value voor bereikbaarheid: " + str(value))
 
-
     def __str__(self):
         return self._unique_id + " " + self._naam + " : " + str(self._aan)
+
+
+def is_boolean(value):
+    if str(value) in ['True', 'False']:
+        return True
+    return False

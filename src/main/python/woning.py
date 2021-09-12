@@ -2,6 +2,7 @@ import argparse
 import configparser
 import datetime
 import os
+import time
 
 from device.hue_bridge_device import HueBridgeDevice
 from gateways.woning_gateway import WoningGateway
@@ -33,12 +34,21 @@ class WoningController:
         else:
             self._databasebase.print()
 
+    def alarmeer_groep(self, groupname):
+        self._woning.alarmeer_lichten_in_groep(groupname)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Collect woning data and stores it in a database.')
     parser.add_argument('--dryrun', help='collect data but do not store in database.', action="store_true")
+    parser.add_argument('--testalerting', help='Test the alerting of lights', action="store_true")
     args = parser.parse_args()
     if args.dryrun:
         print("dryrun mode" )
     print(datetime.datetime.now())
-    WoningController('src/main/resources/secrets.ini', dryrun=args.dryrun).collect_store()
+    controller = WoningController('src/main/resources/secrets.ini', dryrun=args.dryrun)
+    controller.collect_store()
+    if args.testalerting:
+        print("test alerting of lights")
+        controller.alarmeer_groep("Deurbel")
+        time.sleep(5)

@@ -6,9 +6,11 @@ import time
 
 from pid import PidFile, PidFileAlreadyLockedError
 
+from device.hue_bridge_device import HueBridgeDevice
 from device.telegram_device import TelegramDevice
 from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway
+from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
 
 
@@ -28,6 +30,8 @@ class DeurbelController:
             else:
                 print("Databasenaam not in config, therefore not storing results in database.")
                 self._databasebase = None
+            self._woning = WoningGateway()
+            self._woning.bridge = HueBridgeDevice(config)
         else:
             print("Config file does not exist: " + str(configfile) + ", cwd: " + os.getcwd())
             exit(1)

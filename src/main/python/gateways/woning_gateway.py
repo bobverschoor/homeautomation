@@ -22,6 +22,14 @@ class WoningGateway:
             meetwaarden.append(meetwaarde)
         return meetwaarden
 
+    def alarmeer_lichten_in_groep(self, groepnaam):
+        if self.bridge is None:
+            raise ModuleNotFoundError("Bridge device not set")
+        lights2alert = []
+        for licht in self.bridge.get_alle_lichten_in_groep(groepnaam):
+            lights2alert.append(licht)
+        self.bridge.alert_lights(lights2alert)
+
 
 def non_alphanumeric_chars(input):
     output = re.sub(r'\W+', '', input)

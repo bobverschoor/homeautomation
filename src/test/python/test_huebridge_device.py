@@ -1,11 +1,9 @@
+import time
 import unittest
 
 from device.hue_bridge_device import HueBridgeDevice, HueBridgeException
+from entiteiten.licht import Licht
 from mock_api import MockAPI
-
-
-class HueBridgeDeviceException:
-    pass
 
 
 class HueBridgeTest(unittest.TestCase):
@@ -17,8 +15,8 @@ class HueBridgeTest(unittest.TestCase):
         hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
                                                                   HueBridgeDevice.CONFIG_USERNAME: ""}})
         mockapi = MockAPI()
-        hue._getlights_api = mockapi
-        mockapi.json = testdata
+        hue._lichts_api = mockapi
+        mockapi.json = testdata_lights
         lichten = hue.get_alle_lichten()
         self.assertEqual(5, len(lichten))
         licht = lichten.pop()
@@ -42,8 +40,42 @@ class HueBridgeTest(unittest.TestCase):
         self.assertFalse(licht.aan)
         self.assertTrue(licht.bereikbaar)
 
+    def test_get_alle_lichten_in_groep(self):
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: ""}})
+        mockapilight = MockAPI()
+        mockapigroup = MockAPI()
+        hue._lichts_api = mockapilight
+        hue._groups_api = mockapigroup
+        mockapigroup.json = testdata_groups
+        mockapilight.json = testdata_lights
+        lichten = hue.get_alle_lichten_in_groep('onbekendegroep')
+        self.assertEqual(0, len(lichten))
+        lichten = hue.get_alle_lichten_in_groep('Deurbel')
+        self.assertEqual(2, len(lichten))
+        for licht in lichten:
+            self.assertTrue(licht.naam in ["Lamp gang beneden", "Studiekamer"])
 
-testdata = \
+    def test_alert_lights(self):
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "192.168.1.40",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "demo",
+                                                                  HueBridgeDevice.CONFIG_ALERTTIMES: 2}})
+        mockapilight = MockAPI(hue._lichts_api._url)
+        hue._lichts_api = mockapilight
+        licht = Licht(3)
+        licht.aan = False
+        licht.naam = "studie"
+        hue.alert_lights([licht])
+        while len(mockapilight.record) < 3:
+            # Due to threading wait some time to finish the thread by itself
+            time.sleep(0.1)
+        self.assertEqual(mockapilight.record.pop(), 'http://192.168.1.40/api/demo/lights/3/state?{"alert": "none"}')
+        self.assertEqual(mockapilight.record.pop(), 'http://192.168.1.40/api/demo/lights/3/state?{"alert": "select"}')
+        self.assertEqual(mockapilight.record.pop(), 'http://192.168.1.40/api/demo/lights/3/state?{"alert": "select"}')
+        self.assertEqual(0, len(mockapilight.record))
+
+
+testdata_lights = \
     '{"1": { "state": {"on": false, "bri": 254, "alert": "select", "mode": "homeautomation", "reachable": true}, ' \
     '"swupdate": {"state": "noupdates", "lastinstall": "2021-08-17T18:50:54"}, "type": "Dimmable light", ' \
     '"name": "Lamp gang beneden", "modelid": "LWB010", "manufacturername": "Signify Netherlands B.V.", ' \
@@ -85,6 +117,24 @@ testdata = \
     '"function": "functional", "direction": "downwards", "startup": {"mode": "safety", "configured": true}}, ' \
     '"uniqueid": "00:17:88:01:04:55:54:7d-0b", "swversion": "1.50.2_r30933", "swconfigid": "19789229", "productid": ' \
     '"ENA_LTC001_1_BeingCeiling_v1"}} '
+
+
+testdata_groups = \
+    '{"1": {"name": "Woonkamer", "lights": [], "sensors": [], "type": "Room","state": {"all_on": false, ' \
+        '"any_on": false}, "recycle": false, "class": "Other", "action": { "on": false, "alert": "none"}},' \
+    '"2": {"name": "Alice Slaapkamer", "lights": ["4"],"sensors": [],"type": "Room", "state": { "all_on": true,' \
+        '"any_on": true}, "recycle": false, "class": "Kids bedroom", "action": { "on": true, "bri": 254, "ct": 443,' \
+        '"alert": "select", "colormode": "ct"}}, ' \
+    '"3": {"name": "Studie kamer", "lights": ["2"], "sensors": [], "type": "Room", "state": { "all_on": false,' \
+        '"any_on": false},"recycle": false, "class": "Office","action": {"on": false,"bri": 254,"alert": "select"}},' \
+    '"4": {"name": "Ben Slaapkamer", "lights": ["5"], "sensors": [], "type": "Room","state": {"all_on": false,' \
+        '"any_on": false},"recycle": false,"class": "Kids bedroom","action": {"on": false,"bri": 1,"ct": 447,' \
+        '"alert": "select","colormode": "ct"}},' \
+    '"5": {"name": "Gang Beneden","lights": ["1"],"sensors": [],"type": "Room","state": {"all_on": false,' \
+        '"any_on": false},"recycle": false,"class": "Hallway","action": {"on": false,"bri": 254,"alert": "select"}},' \
+    '"6": {"name": "Deurbel","lights": ["2","1"],"sensors": [],"type": "Zone","state": {"all_on": false,' \
+        '"any_on": false},"recycle": false,"class": "Front door","action": {"on": false,"bri": 254,"alert": "select"}}}'
+
 
 if __name__ == '__main__':
     unittest.main()
