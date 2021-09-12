@@ -64,7 +64,7 @@ class HueBridgeDevice:
             lichten.append(licht)
         return lichten
 
-    def get_alle_lichten_in_groep(self):
+    def get_alle_lichten_in_alarmeergroep(self):
         lichten = []
         self._groups_api.request_data()
         group = self._groups_api.get_json()

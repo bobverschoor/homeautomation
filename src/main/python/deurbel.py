@@ -55,7 +55,7 @@ class DeurbelController:
         while response_time > 0:
             try:
                 meetwaarde = self.answer_door()
-                if self._woning:
+                if self._woning and meetwaarde.waarde:
                     self._woning.alarmeer_lichten_in_groep()
                 elke_10_minuut_loggen = int((1 / response_time) * 600)
                 if self._databasebase:

@@ -51,7 +51,7 @@ class HueBridgeTest(unittest.TestCase):
         hue._groups_api = mockapigroup
         mockapigroup.json = testdata_groups
         mockapilight.json = testdata_lights
-        lichten = hue.get_alle_lichten_in_groep()
+        lichten = hue.get_alle_lichten_in_alarmeergroep()
         self.assertEqual(0, len(lichten))
         hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
                                                                   HueBridgeDevice.CONFIG_USERNAME: "",
@@ -62,7 +62,7 @@ class HueBridgeTest(unittest.TestCase):
         hue._groups_api = mockapigroup
         mockapigroup.json = testdata_groups
         mockapilight.json = testdata_lights
-        lichten = hue.get_alle_lichten_in_groep()
+        lichten = hue.get_alle_lichten_in_alarmeergroep()
         self.assertEqual(2, len(lichten))
         for licht in lichten:
             self.assertTrue(licht.naam in ["Lamp gang beneden", "Studiekamer"])
