@@ -14,7 +14,7 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 
 ### Extra Python Modules
 
-    python -m pip install influxdb, requests, pid, pyserial, RPi.GPIO
+    python -m pip install influxdb, requests, pid, pyserial, RPi.GPIO, fastapi, 'uvicorn[standard]'
 
 #### Voor energiemeter
 * influxdb
@@ -31,6 +31,13 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 
 #### Voor Woning
 * requests
+* fastapi
+* uvicorn[standard]
+
+
+    sudo python -m uvicorn arp:app --reload
+
+
 
 ### Aanpassen van de secrets.ini
 In src/main/resources staat een voorbeeld (secrets.example). 
