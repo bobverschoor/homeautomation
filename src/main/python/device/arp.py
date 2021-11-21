@@ -1,9 +1,10 @@
+from fastapi import FastAPI
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 
 
 class Arp:
-    def __init__(self, local_ip_range):
+    def __init__(self):
         self.interface = '192.168.1.0/24'
         self.broadcast_address = "ff:ff:ff:ff:ff:ff"
 
@@ -17,3 +18,12 @@ class Arp:
                 for element in rcv:
                     found_mac[str(element.hwsrc)] = str(element.psrc)
         return found_mac
+
+
+app = FastAPI()
+arp = Arp()
+
+
+@app.get("/")
+async def root():
+    return arp.get_active_local_mac_ip_addresses()

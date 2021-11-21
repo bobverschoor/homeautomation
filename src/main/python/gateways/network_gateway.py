@@ -49,7 +49,8 @@ class NetworkGateway:
         if self._network_device is None:
             raise NetworkGatewayException("network device not set")
         if scan_cache_is_old(self._last_scan_datetime, self._cache_ttl):
-            self._scan = self._network_device.get_active_local_mac_ip_addresses()
+            self._network_device.request_data()
+            self._scan = self._network_device.get_json()
             self._last_scan_datetime = datetime.now()
         for active_mac in self._scan.keys():
             active_mac = active_mac.replace(' ', '').replace(':', '').lower()

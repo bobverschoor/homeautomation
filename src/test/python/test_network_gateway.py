@@ -1,17 +1,17 @@
 import time
 import unittest
 
-from device.arp import Arp
+from device.api import Api
 from entiteiten.user import User
 from gateways.network_gateway import NetworkGatewayException, NetworkGateway
 
 
-class MockArp(Arp):
-    def __init__(self, local_ip_range):
-        super().__init__(local_ip_range)
+class MockArp(Api):
+    def __init__(self, url):
+        super().__init__(url)
         self._scan = None
 
-    def get_active_local_mac_ip_addresses(self):
+    def request_data(self):
         if self._scan is not None:
             output = {}
         else:
@@ -36,6 +36,8 @@ class MockArp(Arp):
         self._scan = {}
         for key in output.keys():
             self._scan[output[key]] = key
+
+    def get_json(self):
         return self._scan
 
 
