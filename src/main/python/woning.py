@@ -37,9 +37,9 @@ class WoningController:
         woningmeetwaarden = self._woning.get_meetwaarden()
         for meetwaarde in woningmeetwaarden:
             self._databasebase.entiteiten = meetwaarde
-        networkmeetwaarden = self._network.get_meetwaarden()
-        for meetwaarde in networkmeetwaarden:
-            self._databasebase.entiteiten = meetwaarde
+        # networkmeetwaarden = self._network.get_meetwaarden()
+        # for meetwaarde in networkmeetwaarden:
+        #     self._databasebase.entiteiten = meetwaarde
         if self._store_in_database:
             self._databasebase.store()
         else:
