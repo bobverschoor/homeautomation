@@ -4,7 +4,7 @@ import datetime
 import os
 import time
 
-from device.arp import Arp
+from device.api import Api
 from device.hue_bridge_device import HueBridgeDevice
 from entiteiten.user import User
 from gateways.network_gateway import NetworkGateway
@@ -24,7 +24,7 @@ class WoningController:
             self._woning.bridge = HueBridgeDevice(self._config)
             self._users = self.get_users_from_config()
             self._network = NetworkGateway(self._config, self._users)
-            self._network.set_network_device(Arp(self._config))
+            self._network.set_network_device(Api('http://127.0.0.1:8000'))
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config[HueBridgeDevice.CONFIG_HUEBRIDGE]['databasenaam'])
             else:
@@ -37,9 +37,9 @@ class WoningController:
         woningmeetwaarden = self._woning.get_meetwaarden()
         for meetwaarde in woningmeetwaarden:
             self._databasebase.entiteiten = meetwaarde
-        # networkmeetwaarden = self._network.get_meetwaarden()
-        # for meetwaarde in networkmeetwaarden:
-        #     self._databasebase.entiteiten = meetwaarde
+        networkmeetwaarden = self._network.get_meetwaarden()
+        for meetwaarde in networkmeetwaarden:
+            self._databasebase.entiteiten = meetwaarde
         if self._store_in_database:
             self._databasebase.store()
         else:
