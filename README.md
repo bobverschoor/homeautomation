@@ -5,7 +5,7 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 ## Algemeen gebruik
 
 ### Randvoorwaarden
-* Python > 3.6 geinstalleerd
+* Python > 3.8 geinstalleerd
 * Influxdb > 1.8.9 geinstalleerd
 
 #### Voor energiemeter
@@ -14,15 +14,19 @@ Een verzameling tools om zaken binnenshuis te kunnen automatiseren.
 
 ### Extra Python Modules
 
+    python -m pip install influxdb, requests, pid, pyserial, RPi.GPIO
+
 #### Voor energiemeter
 * influxdb
+* pyserial
+* RPi.GPIO
 
 #### Voor weerdata
 * influxdb
 * requests
 
 #### Voor deurbel
-* Pidfile
+* pid
 * rpi.GPIO (op de Raspberry pi, voor lokaal ontwikkelen niet nodig)
 
 #### Voor Woning

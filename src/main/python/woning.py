@@ -4,12 +4,17 @@ import datetime
 import os
 import time
 
+from device.arp import Arp
 from device.hue_bridge_device import HueBridgeDevice
+from entiteiten.user import User
+from gateways.network_gateway import NetworkGateway
 from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
 
 
 class WoningController:
+    CONFIG_PRE_USER = 'user_'
+
     def __init__(self, configfile, dryrun=False):
         self._store_in_database = not dryrun
         self._config = configparser.ConfigParser()
@@ -17,6 +22,9 @@ class WoningController:
             self._config.read(configfile)
             self._woning = WoningGateway()
             self._woning.bridge = HueBridgeDevice(self._config)
+            self._users = self.get_users_from_config()
+            self._network = NetworkGateway(self._config, self._users)
+            self._network.set_network_device(Arp(self._config))
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config[HueBridgeDevice.CONFIG_HUEBRIDGE]['databasenaam'])
             else:
@@ -26,16 +34,27 @@ class WoningController:
             exit(1)
 
     def collect_store(self):
-        meetwaarden = self._woning.get_meetwaarden()
-        for meetwaarde in meetwaarden:
+        woningmeetwaarden = self._woning.get_meetwaarden()
+        for meetwaarde in woningmeetwaarden:
+            self._databasebase.entiteiten = meetwaarde
+        networkmeetwaarden = self._network.get_meetwaarden()
+        for meetwaarde in networkmeetwaarden:
             self._databasebase.entiteiten = meetwaarde
         if self._store_in_database:
             self._databasebase.store()
         else:
             self._databasebase.print()
 
-    def alarmeer_groep(self, groupname):
-        self._woning.alarmeer_lichten_in_groep(groupname)
+    def alarmeer_groep(self):
+        self._woning.alarmeer_lichten_in_groep()
+
+    def get_users_from_config(self):
+        users = []
+        for user_id in range(1,10):
+            usersection = WoningController.CONFIG_PRE_USER + str(user_id)
+            if self._config.has_section(usersection):
+                users.append(User(self._config[usersection]))
+        return users
 
 
 if __name__ == "__main__":
@@ -50,5 +69,5 @@ if __name__ == "__main__":
     controller.collect_store()
     if args.testalerting:
         print("test alerting of lights")
-        controller.alarmeer_groep("Deurbel")
+        controller.alarmeer_groep()
         time.sleep(5)
