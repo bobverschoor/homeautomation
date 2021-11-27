@@ -1,5 +1,6 @@
 import json
 import requests
+from requests import RequestException
 
 
 class ApiException(Exception):
@@ -23,6 +24,8 @@ class Api:
             self.handle_result(requests.get(self._url, params=self._payload, timeout=30))
         except TimeoutError:
             raise ApiException("Api does not respond in 30 seconds: " + self._url)
+        except RequestException as e:
+            raise ApiException("No connection to Api: " + self._url + "\n" + str(e))
 
     def post_data(self, body, additionalpath=""):
         try:
@@ -30,6 +33,8 @@ class Api:
             self.handle_result(requests.post(url, data=body, timeout=30))
         except TimeoutError:
             raise ApiException("Api does not respond in 30 seconds: " + self._url)
+        except RequestException as e:
+            raise ApiException("No connection to Api: " + self._url + "\n" + str(e))
 
     def put_data(self, body, additionalpath=""):
         try:

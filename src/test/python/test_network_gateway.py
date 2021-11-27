@@ -66,6 +66,13 @@ class NetworkGatewayTest(unittest.TestCase):
         self.assertTrue(meetwaarde.waarde)
         self.assertEqual({'naam': 'Bob'}, meetwaarde.tags)
 
+    def test_get_meetwaarden_with_api_unavailable(self):
+        users = [User({'chat_id': '', 'username': 'Bob', 'mac_addresses': '4e:fb:6b:ff:ec:96, 22:c5:a4:be:ec:8c'})]
+        network = NetworkGateway({NetworkGateway.CONFIG_NETWORK: {'local_ip_range': 'test', 'cache_ttl': 0.1}}, users)
+        network.set_network_device(Api('http://127.0.0.1:8000'))
+        meetwaarde = network.get_meetwaarden().pop()
+        self.assertFalse(meetwaarde.waarde)
+
 
 if __name__ == '__main__':
     unittest.main()

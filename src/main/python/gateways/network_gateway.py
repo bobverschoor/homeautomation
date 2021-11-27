@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from device.api import ApiException
 from entiteiten.meetwaarde import Meetwaarde
 
 
@@ -49,8 +50,12 @@ class NetworkGateway:
         if self._network_device is None:
             raise NetworkGatewayException("network device not set")
         if scan_cache_is_old(self._last_scan_datetime, self._cache_ttl):
-            self._network_device.request_data()
-            self._scan = self._network_device.get_json()
+            try:
+                self._network_device.request_data()
+                self._scan = self._network_device.get_json()
+            except ApiException as e:
+                print("API not available\n" + str(e))
+                self._scan = {}
             self._last_scan_datetime = datetime.now()
         for active_mac in self._scan.keys():
             active_mac = active_mac.replace(' ', '').replace(':', '').lower()
