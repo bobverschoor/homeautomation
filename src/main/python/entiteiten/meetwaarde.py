@@ -30,7 +30,7 @@ class Meetwaarde:
 
     @waarde.setter
     def waarde(self, value):
-        if value >= 0:
+        if isinstance(value, int) or isinstance(value, float):
             self._waarde = value
         else:
             raise ValueError("invalid value: " + str(value) + " for " + str(self))
