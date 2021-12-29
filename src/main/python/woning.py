@@ -4,10 +4,8 @@ import datetime
 import os
 import time
 
-from device.api import Api
 from device.hue_bridge_device import HueBridgeDevice
 from entiteiten.user import User
-from gateways.network_gateway import NetworkGateway
 from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
 
@@ -24,8 +22,6 @@ class WoningController:
             self._woning.bridge = HueBridgeDevice(self._config)
             self._users = self.get_users_from_config()
             self._network = None
-            self._network = NetworkGateway(self._config, self._users)
-            self._network.set_network_device(Api('http://127.0.0.1:8000'))
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config[HueBridgeDevice.CONFIG_HUEBRIDGE]['databasenaam'])
             else:

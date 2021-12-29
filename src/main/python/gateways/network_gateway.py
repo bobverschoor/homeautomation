@@ -70,7 +70,6 @@ class NetworkGateway:
             raise ModuleNotFoundError("Network device not set")
         for user in self._users:
             meetwaarde = Meetwaarde('aanwezig')
-            meetwaarde.timestamp = datetime.now()
             meetwaarde.tags = "naam:" + user.name
             meetwaarde.waarde = False
             for mac_address in user.macadresses:

@@ -1,4 +1,3 @@
-import datetime
 import re
 
 from entiteiten.meetwaarde import Meetwaarde
@@ -15,7 +14,6 @@ class WoningGateway:
             raise ModuleNotFoundError("Bridge device not set")
         for licht in self.bridge.get_alle_lichten():
             meetwaarde = Meetwaarde('licht_aan')
-            meetwaarde.timestamp = datetime.datetime.now()
             meetwaarde.waarde = licht.aan
             meetwaarde.tags = "naam:" + licht.naam
             meetwaarde.tags = "id:" + non_alphanumeric_chars(licht.unique_id)
