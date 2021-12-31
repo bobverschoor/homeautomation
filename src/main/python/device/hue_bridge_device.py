@@ -4,6 +4,7 @@ import time
 
 from device.api import Api
 from entiteiten.licht import Licht
+from entiteiten.sensor import Schakelaar, BewegingSchakelaar, TemperatuurSensor, LichtSensor
 
 
 class HueBridgeException(Exception):
@@ -47,6 +48,7 @@ class HueBridgeDevice:
         self._lichts_api = Api("http://" + self._ipadress + "/api/" + self._api_key + "/lights",
                                expected_startsymbol="")
         self._groups_api = Api("http://" + self._ipadress + "/api/" + self._api_key + "/groups")
+        self._sensors_api = Api("http://" + self._ipadress + "/api/" + self._api_key + "/sensors")
 
     def get_alle_lichten(self):
         lichten = []
@@ -63,6 +65,36 @@ class HueBridgeDevice:
             licht.unique_id = light[volgnr]['uniqueid']
             lichten.append(licht)
         return lichten
+
+    def get_alle_sensors(self):
+        sensors = []
+        self._sensors_api.request_data()
+        sensors_json = self._sensors_api.get_json()
+        for volgnr in sensors_json.keys():
+            sensor_json = sensors_json[volgnr]
+            sensor_state = sensor_json['state']
+            sensor_config = sensor_json['config']
+            if sensor_json['type'] == 'ZLLSwitch':
+                sensor = Schakelaar(volgnr)
+                sensor.knop_id = sensor_state['buttonevent']
+            elif sensor_json['type'] == 'ZLLPresence':
+                sensor = BewegingSchakelaar(volgnr)
+                sensor.beweging_gesignaleerd = sensor_state['presence']
+            elif sensor_json['type'] == 'ZLLTemperature':
+                sensor = TemperatuurSensor(volgnr)
+                sensor.temperature = sensor_state['temperature']
+            elif sensor_json['type'] == 'ZLLLightLevel':
+                sensor = LichtSensor(volgnr)
+                sensor.lichtniveau = sensor_state['lightlevel']
+            else:
+                continue
+            sensor.naam = sensor_json['name']
+            sensor.unique_id = sensor_json['uniqueid']
+            sensor.bereikbaar = sensor_config['reachable']
+            sensor.batterijpercentage = sensor_config['battery']
+            sensor.tijdstip_meting = sensor_state['lastupdated']
+            sensors.append(sensor)
+        return sensors
 
     def get_alle_lichten_in_alarmeergroep(self):
         lichten = []
