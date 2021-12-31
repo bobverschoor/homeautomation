@@ -118,7 +118,7 @@ class HueBridgeTest(unittest.TestCase):
         self.assertEqual(sensor_temperature.batterijpercentage, 100)
         sensor_knop_2 = sensors.pop()
         self.assertTrue(isinstance(sensor_knop_2, Schakelaar))
-        self.assertEqual(sensor_knop_2.knop_waarde, 'dimmer omhoog')
+        self.assertEqual(sensor_knop_2.knop_waarde, 'dimmer_omhoog')
         self.assertEqual(sensor_knop_2.batterijpercentage, 5)
         sensor_knop_3 = sensors.pop()
         self.assertTrue(isinstance(sensor_knop_3, Schakelaar))

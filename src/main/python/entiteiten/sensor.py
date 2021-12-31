@@ -95,9 +95,9 @@ class Schakelaar(Sensor):
         if self._knop_id == Schakelaar.AAN:
             return 'aan'
         elif self._knop_id == Schakelaar.DIMMER_OMHOOG:
-            return 'dimmer omhoog'
+            return 'dimmer_omhoog'
         elif self._knop_id == Schakelaar.DIMMER_OMLAAG:
-            return 'dimmer omlaag'
+            return 'dimmer_omlaag'
         elif self._knop_id == Schakelaar.UIT:
             return 'uit'
 
