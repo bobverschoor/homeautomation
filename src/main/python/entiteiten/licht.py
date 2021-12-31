@@ -47,11 +47,13 @@ class Licht:
 
     @property
     def bereikbaar(self):
+        if self._bereikbaar is None:
+            return False
         return self._bereikbaar
 
     @bereikbaar.setter
     def bereikbaar(self, value):
-        if str(value) in ['True', 'False']:
+        if is_boolean(value):
             self._bereikbaar = value
         else:
             raise LichtException("Incorrect value voor bereikbaarheid: " + str(value))

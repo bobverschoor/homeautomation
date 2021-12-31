@@ -17,12 +17,15 @@ class Meetwaarde:
         return self._tags
 
     @tags.setter
-    def tags(self, value):
-        if ":" in value:
-            tagnaam, tagvalue = value.split(":")
-            self._tags[tagnaam] = tagvalue
-        else:
-            raise ValueError("invalid tag: " + str(value))
+    def tags(self, values):
+        if isinstance(values, str):
+            values = [values]
+        for value in values:
+            if ":" in value:
+                tagnaam, tagvalue = value.split(":")
+                self._tags[tagnaam] = tagvalue
+            else:
+                raise ValueError("invalid tag: " + str(value))
 
     @property
     def waarde(self):

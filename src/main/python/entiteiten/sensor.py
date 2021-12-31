@@ -71,13 +71,19 @@ class Schakelaar(Sensor):
     def __init__(self, volgnr):
         super(Schakelaar, self).__init__(volgnr)
         self._knop_id = -1
+        self._knop_event = -1
 
     @property
     def knop_id(self):
         return self._knop_id
 
+    @property
+    def knop_event(self):
+        return self._knop_event
+
     @knop_id.setter
     def knop_id(self, value):
+        self._knop_event = value
         value = str(value)[0]
         if value in [Schakelaar.AAN, Schakelaar.DIMMER_OMHOOG, Schakelaar.DIMMER_OMLAAG, Schakelaar.UIT]:
             self._knop_id = value
