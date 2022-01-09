@@ -67,7 +67,10 @@ class SpeedtestDevice:
 
     def _gettest_data(self):
         if self._testdata is None:
-            self._testdata = json.loads(subprocess.check_output([self._speedtest_path, '--json']))
+            try:
+                self._testdata = json.loads(subprocess.check_output([self._speedtest_path, '--json']))
+            except subprocess.CalledProcessError:
+                raise SpeedtestDeviceException("Speedtest failed.")
         return self._testdata
 
 
