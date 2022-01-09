@@ -159,8 +159,8 @@ class LichtSensor(Sensor):
     @property
     def lichtniveau_lux(self):
         if self._lichtniveau == 0:
-            return 0
-        return math.log10(self._lichtniveau)
+            return float(0.0)
+        return float(math.log10(self._lichtniveau))
 
     @property
     def lichtwaarde(self):
