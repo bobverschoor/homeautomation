@@ -26,6 +26,8 @@ class TestInternetGateway(unittest.TestCase):
         self.assertEqual(22.615, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['naam'], 'ping')
         self.assertEqual(meetwaarde.tags['server_id'], '5252')
+        self.assertEqual(meetwaarde.tags['server_naam'], 'Arnhem')
+        self.assertEqual(meetwaarde.tags['server_afstand'], '104.06065955630943')
         self.assertEqual(meetwaarde.tags['client_ip'], '217.123.109.107')
         meetwaarde = meetwaarden.pop()
         self.assertEqual(27485708.776732102, meetwaarde.waarde)

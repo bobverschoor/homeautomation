@@ -1,10 +1,4 @@
-# {"download": 91706271.43394412, "upload": 27485708.776732102, "ping": 22.615,
-#  "server": {"url": "http://speedtest.breedband.nl:8080/speedtest/upload.php", "lat": "51.9833", "lon": "5.9167",
-#             "name": "Arnhem", "country": "Netherlands", "cc": "NL", "sponsor": "Breedband", "id": "5252",
-#             "host": "speedtest.breedband.nl:8080", "d": 104.06065955630943, "latency": 22.615},
-#  "timestamp": "2022-01-08T15:15:14.942401Z", "bytes_sent": 34512896, "bytes_received": 114977956, "share": null,
-#  "client": {"ip": "217.123.109.107", "lat": "52.4594", "lon": "4.6015", "isp": "Ziggo", "isprating": "3.7",
-#             "rating": "0", "ispdlavg": "0", "ispulavg": "0", "loggedin": "0", "country": "NL"}}
+
 import json
 import os.path
 import subprocess
@@ -25,30 +19,44 @@ class SpeedtestDevice:
     def get_download_speed(self):
         data = self._gettest_data()
         if 'download' in data:
-            return data['download']
+            return float(data['download'])
         else:
             raise SpeedtestDeviceException("Download data not found: " + str(data))
 
     def get_upload_speed(self):
         data = self._gettest_data()
         if 'upload' in data:
-            return data['upload']
+            return float(data['upload'])
         else:
             raise SpeedtestDeviceException("Upload data not found: " + str(data))
 
     def get_ping_speed(self):
         data = self._gettest_data()
         if 'ping' in data:
-            return data['ping']
+            return float(data['ping'])
         else:
             raise SpeedtestDeviceException("Ping data not found: " + str(data))
 
     def get_server_id(self):
         data = self._gettest_data()
         if 'server' in data and 'id' in data['server']:
-            return data['server']['id']
+            return int(data['server']['id'])
         else:
             raise SpeedtestDeviceException("Server Id data not found: " + str(data))
+
+    def get_server_name(self):
+        data = self._gettest_data()
+        if 'server' in data and 'name' in data['server']:
+            return data['server']['name']
+        else:
+            raise SpeedtestDeviceException("Server name data not found: " + str(data))
+
+    def get_server_distance(self):
+        data = self._gettest_data()
+        if 'server' in data and 'd' in data['server']:
+            return float(data['server']['d'])
+        else:
+            raise SpeedtestDeviceException("Server d data not found: " + str(data))
 
     def get_client_ip(self):
         data = self._gettest_data()
