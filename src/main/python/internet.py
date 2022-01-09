@@ -17,7 +17,7 @@ class InternetController:
         if os.path.exists(configfile):
             self._config.read(configfile)
             self._internet = InternetGateway()
-            self._internet.device = SpeedtestDevice(self._config)
+            self._internet.device = SpeedtestDevice(self._config['internet'])
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config['internet']['databasenaam'])
             else:
