@@ -4,6 +4,7 @@ import datetime
 import os
 
 from device.speedtest import SpeedtestDevice
+from device.wifi import WifiDevice
 from gateways.internet_gateway import InternetGateway
 from persistence.database_gateway import DatabaseGateway
 
@@ -17,7 +18,8 @@ class InternetController:
         if os.path.exists(configfile):
             self._config.read(configfile)
             self._internet = InternetGateway()
-            self._internet.device = SpeedtestDevice(self._config['internet'])
+            self._internet.devices.append(SpeedtestDevice(self._config['internet']))
+            self._internet.devices.append(WifiDevice(self._config['internet']))
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config['internet']['databasenaam'])
             else:
