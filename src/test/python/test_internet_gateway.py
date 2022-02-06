@@ -2,7 +2,7 @@ import json
 import unittest
 
 from device.speedtest import SpeedtestDevice
-from device.wifi import WifiDevice
+from device.wifi_device import WifiDevice
 from gateways.internet_gateway import InternetGateway
 
 
