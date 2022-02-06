@@ -28,7 +28,7 @@ class WifiDevice:
 
     def _scan_wifi(self):
         try:
-            return subprocess.check_output([self._iwlist_path, self._wifi_interface, 'scanning'])
+            return subprocess.check_output([self._iwlist_path, self._wifi_interface, 'scanning'], text=True)
         except subprocess.CalledProcessError:
             raise WifiDeviceException("Wifi scan failed.")
 
