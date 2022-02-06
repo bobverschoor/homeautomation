@@ -37,7 +37,7 @@ class WifiNetwerk:
     @quality_percentage.setter
     def quality_percentage(self, value):
         t, n = value.split('/')
-        self._quality_percentage = int(t) / int(n)
+        self._quality_percentage = (int(t) / int(n)) * 100
 
     @property
     def signallevel_dbm(self):

@@ -44,7 +44,7 @@ class TestInternetGateway(unittest.TestCase):
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(22.615, meetwaarde.waarde)
         meetwaarde = meetwaarden.pop(0)
-        self.assertEqual(43/70, meetwaarde.waarde)
+        self.assertEqual((43/70)*100, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['ssid'], 'thuis_zolder')
         self.assertEqual(meetwaarde.tags['channel'], '8')
         self.assertEqual(meetwaarde.tags['frequency'], '2.447')
@@ -53,7 +53,7 @@ class TestInternetGateway(unittest.TestCase):
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(8, meetwaarde.waarde)
         meetwaarde = meetwaarden.pop(0)
-        self.assertEqual(70/70, meetwaarde.waarde)
+        self.assertEqual((70/70)*100, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['ssid'], 'thuis_24g')
 
 
