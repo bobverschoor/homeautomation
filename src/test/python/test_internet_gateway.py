@@ -2,6 +2,7 @@ import json
 import unittest
 
 from device.speedtest import SpeedtestDevice
+from device.wifi import WifiDevice
 from gateways.internet_gateway import InternetGateway
 
 
@@ -15,24 +16,45 @@ class MockSpeedtestDevice(SpeedtestDevice):
         return self._testdata
 
 
+class SpyWifi(WifiDevice):
+    def _scan_wifi(self):
+        with open("wifi_scanning.txt") as f:
+            scan = f.read()
+        return scan
+
+
 class TestInternetGateway(unittest.TestCase):
 
     def test_get_meetwaarde(self):
         internet = InternetGateway()
-        internet.device = MockSpeedtestDevice({'cli_path': '.'})
+        internet.devices.append(MockSpeedtestDevice({'cli_path': '.'}))
+        internet.devices.append(SpyWifi({'iwlist_path': '', 'wifi_interface': '', 'wifi_id_1': 'thuis_24g',
+                                         'wifi_id_2': 'thuis_zolder'}))
         meetwaarden = internet.get_meetwaarden()
-        self.assertEqual(3, len(meetwaarden))
-        meetwaarde = meetwaarden.pop()
-        self.assertEqual(22.615, meetwaarde.waarde)
-        self.assertEqual(meetwaarde.tags['naam'], 'ping')
+        self.assertEqual(9, len(meetwaarden))
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(91706271.43394412, meetwaarde.waarde)
+        self.assertEqual(meetwaarde.tags['naam'], 'download')
         self.assertEqual(meetwaarde.tags['server_id'], '5252')
         self.assertEqual(meetwaarde.tags['server_naam'], 'Arnhem')
         self.assertEqual(meetwaarde.tags['server_afstand'], '104.06065955630943')
         self.assertEqual(meetwaarde.tags['client_ip'], '217.123.109.107')
-        meetwaarde = meetwaarden.pop()
+        meetwaarde = meetwaarden.pop(0)
         self.assertEqual(27485708.776732102, meetwaarde.waarde)
-        meetwaarde = meetwaarden.pop()
-        self.assertEqual(91706271.43394412, meetwaarde.waarde)
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(22.615, meetwaarde.waarde)
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(43/70, meetwaarde.waarde)
+        self.assertEqual(meetwaarde.tags['ssid'], 'thuis_zolder')
+        self.assertEqual(meetwaarde.tags['channel'], '8')
+        self.assertEqual(meetwaarde.tags['frequency'], '2.447')
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(-67, meetwaarde.waarde)
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(8, meetwaarde.waarde)
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(70/70, meetwaarde.waarde)
+        self.assertEqual(meetwaarde.tags['ssid'], 'thuis_24g')
 
 
 test_data = '{"download": 91706271.43394412, "upload": 27485708.776732102, "ping": 22.615,\

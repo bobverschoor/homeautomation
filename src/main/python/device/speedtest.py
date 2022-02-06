@@ -13,6 +13,7 @@ class SpeedtestDevice:
     def __init__(self, config):
         self._testdata = None
         self._speedtest_path = config['cli_path']
+        self.type = "speedtest"
         if not os.path.exists(self._speedtest_path):
             raise ModuleNotFoundError
 
