@@ -38,13 +38,14 @@ class InternetGateway:
 
 
 def get_speedtest_tags(device, name):
-    return ["naam:" + name, "server_id:" + str(device.get_server_id()),
+    return ["naam:" + name, "server_id:" + str(device.get_server_id()), "bron:" + device.type,
             "client_ip:" + device.get_client_ip(), "server_naam:" + device.get_server_name(),
             "server_afstand:" + str(device.get_server_distance())]
 
 
-def get_wifi_tags(netwerk):
-    return ["ssid:" + netwerk.essid, "channel:" + str(netwerk.channel), "frequency:" + str(netwerk.frequency_ghz)]
+def get_wifi_tags(netwerk, bron):
+    return ["ssid:" + netwerk.essid, "channel:" + str(netwerk.channel), "frequency:" + str(netwerk.frequency_ghz),
+            "bron:" + bron]
 
 
 def get_speedtest_meetwaarden(device):
@@ -69,15 +70,15 @@ def get_wifi_meetwaarden(device):
     for netwerk in device.get_netwerken():
         meetwaarde = Meetwaarde('kwaliteit_percentage')
         meetwaarde.waarde = netwerk.quality_percentage
-        meetwaarde.tags = get_wifi_tags(netwerk)
+        meetwaarde.tags = get_wifi_tags(netwerk, device.type)
         meetwaarden.append(meetwaarde)
         meetwaarde = Meetwaarde('signallevel_dbm')
         meetwaarde.waarde = netwerk.signallevel_dbm
-        meetwaarde.tags = get_wifi_tags(netwerk)
+        meetwaarde.tags = get_wifi_tags(netwerk, device.type)
         meetwaarden.append(meetwaarde)
         meetwaarde = Meetwaarde('kanaal')
         meetwaarde.waarde = netwerk.channel
-        meetwaarde.tags = get_wifi_tags(netwerk)
+        meetwaarde.tags = get_wifi_tags(netwerk, device.type)
         meetwaarden.append(meetwaarde)
     return meetwaarden
 
@@ -87,9 +88,11 @@ def get_fastcom_meetwaarden(device):
     meetwaarde = Meetwaarde('snelheid_bit_s')
     meetwaarde.waarde = device.get_download_speed()
     meetwaarde.tags = "naam:download"
+    meetwaarde.tags = "bron:" + device.type
     meetwaarden.append(meetwaarde)
     meetwaarde = Meetwaarde('latentie_ms')
     meetwaarde.waarde = device.get_ping_speed()
     meetwaarde.tags = "naam:ping"
+    meetwaarde.tags = "bron:" + device.type
     meetwaarden.append(meetwaarde)
     return meetwaarden

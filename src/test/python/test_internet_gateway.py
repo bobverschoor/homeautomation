@@ -63,6 +63,7 @@ class TestInternetGateway(unittest.TestCase):
         self.assertEqual(meetwaarde.tags['server_naam'], 'Arnhem')
         self.assertEqual(meetwaarde.tags['server_afstand'], '104.06065955630943')
         self.assertEqual(meetwaarde.tags['client_ip'], '217.123.109.107')
+        self.assertEqual(meetwaarde.tags['bron'], 'speedtest')
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(27485708.776732102, meetwaarde.waarde)
         meetwaarde = meetwaarden.pop(0)
@@ -72,6 +73,7 @@ class TestInternetGateway(unittest.TestCase):
         self.assertEqual(meetwaarde.tags['ssid'], 'thuis_zolder')
         self.assertEqual(meetwaarde.tags['channel'], '8')
         self.assertEqual(meetwaarde.tags['frequency'], '2.447')
+        self.assertEqual(meetwaarde.tags['bron'], 'wifi')
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(-67, meetwaarde.waarde)
         meetwaarde = meetwaarden.pop(0)
@@ -87,6 +89,7 @@ class TestInternetGateway(unittest.TestCase):
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(0.03, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['naam'], 'ping')
+        self.assertEqual(meetwaarde.tags['bron'], 'fast_com')
 
 
 test_data = '{"download": 91706271.43394412, "upload": 27485708.776732102, "ping": 22.615,\

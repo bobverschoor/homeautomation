@@ -25,7 +25,6 @@ class SpeedtestDevice:
                 return True
         return False
 
-
     def get_download_speed(self):
         data = self._gettest_data()
         if 'download' in data:
