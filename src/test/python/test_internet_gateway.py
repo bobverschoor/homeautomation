@@ -1,6 +1,8 @@
 import json
+import time
 import unittest
 
+from device.fast_com import FastComDevice
 from device.speedtest import SpeedtestDevice
 from device.wifi_device import WifiDevice
 from gateways.internet_gateway import InternetGateway
@@ -23,6 +25,21 @@ class SpyWifi(WifiDevice):
         return scan
 
 
+class MockFastComDevice(FastComDevice):
+    def __init__(self, config):
+        super().__init__(config)
+
+    def _get_downloadbytes_latency(self, url, token):
+        time.sleep(0.1)
+        return 120063, 0.03
+
+    def _get_token(self):
+        return "nnnn"
+
+    def _get_targets(self, url, token):
+        return [{'url': '1'}, {'url': '2'}, {'url': '3'}]
+
+
 class TestInternetGateway(unittest.TestCase):
 
     def test_get_meetwaarde(self):
@@ -30,8 +47,9 @@ class TestInternetGateway(unittest.TestCase):
         internet.devices.append(MockSpeedtestDevice({'cli_path': '.'}))
         internet.devices.append(SpyWifi({'iwlist_path': '', 'wifi_interface': '', 'wifi_id_1': 'thuis_24g',
                                          'wifi_id_2': 'thuis_zolder'}))
+        internet.devices.append(MockFastComDevice({'fast_com_token_url': '.', 'fast_com_speedtest_url': '.'}))
         meetwaarden = internet.get_meetwaarden()
-        self.assertEqual(9, len(meetwaarden))
+        self.assertEqual(11, len(meetwaarden))
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(91706271.43394412, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['naam'], 'download')
@@ -55,6 +73,14 @@ class TestInternetGateway(unittest.TestCase):
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual((70/70)*100, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['ssid'], 'thuis_24g')
+        meetwaarden.pop(0)
+        meetwaarden.pop(0)
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(11, int(meetwaarde.waarde / 100000))
+        self.assertEqual(meetwaarde.tags['naam'], 'download')
+        meetwaarde = meetwaarden.pop(0)
+        self.assertEqual(0.03, meetwaarde.waarde)
+        self.assertEqual(meetwaarde.tags['naam'], 'ping')
 
 
 test_data = '{"download": 91706271.43394412, "upload": 27485708.776732102, "ping": 22.615,\

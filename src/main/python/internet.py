@@ -3,6 +3,7 @@ import configparser
 import datetime
 import os
 
+from device.fast_com import FastComDevice
 from device.speedtest import SpeedtestDevice
 from device.wifi_device import WifiDevice
 from gateways.internet_gateway import InternetGateway
@@ -20,6 +21,7 @@ class InternetController:
             self._internet = InternetGateway()
             self._internet.devices.append(SpeedtestDevice(self._config['internet']))
             self._internet.devices.append(WifiDevice(self._config['internet']))
+            self._internet.devices.append(FastComDevice(self._config['internet']))
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config['internet']['databasenaam'])
             else:

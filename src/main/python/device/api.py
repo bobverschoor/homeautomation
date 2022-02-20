@@ -19,6 +19,10 @@ class Api:
         self.json = {}
         self.text_output = ""
 
+    def download_nr_of_bytes_elapsed_time(self):
+        r = requests.get(self._url, params=self._payload)
+        return int(r.headers['Content-Length']), r.elapsed.total_seconds()
+
     def request_data(self):
         try:
             self.handle_result(requests.get(self._url, params=self._payload, timeout=30))

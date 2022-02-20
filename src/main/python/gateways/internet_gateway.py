@@ -39,6 +39,15 @@ class InternetGateway:
                         meetwaarde.waarde = netwerk.channel
                         meetwaarde.tags = get_wifi_tags(netwerk)
                         meetwaarden.append(meetwaarde)
+                elif device.type == "fast_com":
+                    meetwaarde = Meetwaarde('snelheid_bit_s')
+                    meetwaarde.waarde = device.get_download_speed()
+                    meetwaarde.tags = "naam:download"
+                    meetwaarden.append(meetwaarde)
+                    meetwaarde = Meetwaarde('latentie_ms')
+                    meetwaarde.waarde = device.get_ping_speed()
+                    meetwaarde.tags = "naam:ping"
+                    meetwaarden.append(meetwaarde)
         except SpeedtestDeviceException:
             print("Geen meetwaarden")
         return meetwaarden
