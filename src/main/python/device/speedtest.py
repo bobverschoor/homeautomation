@@ -10,12 +10,21 @@ class SpeedtestDeviceException(Exception):
 
 
 class SpeedtestDevice:
+    SPEEDTEST_PATH = 'cli_path'
+
     def __init__(self, config):
         self._testdata = None
-        self._speedtest_path = config['cli_path']
+        self._config = config
+        self._speedtest_path = None
         self.type = "speedtest"
-        if not os.path.exists(self._speedtest_path):
-            raise ModuleNotFoundError
+
+    def loaded(self):
+        if SpeedtestDevice.SPEEDTEST_PATH in self._config:
+            self._speedtest_path = self._config[SpeedtestDevice.SPEEDTEST_PATH]
+            if os.path.exists(self._speedtest_path):
+                return True
+        return False
+
 
     def get_download_speed(self):
         data = self._gettest_data()

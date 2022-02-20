@@ -43,11 +43,17 @@ class MockFastComDevice(FastComDevice):
 class TestInternetGateway(unittest.TestCase):
 
     def test_get_meetwaarde(self):
-        internet = InternetGateway()
-        internet.devices.append(MockSpeedtestDevice({'cli_path': '.'}))
-        internet.devices.append(SpyWifi({'iwlist_path': '', 'wifi_interface': '', 'wifi_id_1': 'thuis_24g',
-                                         'wifi_id_2': 'thuis_zolder'}))
-        internet.devices.append(MockFastComDevice({'fast_com_token_url': '.', 'fast_com_speedtest_url': '.'}))
+        internet = InternetGateway({})
+        device = MockSpeedtestDevice({'cli_path': '.'})
+        device.loaded()
+        internet._devices.append(device)
+        device = SpyWifi({'iwlist_path': '', 'wifi_interface': '', 'wifi_id_1': 'thuis_24g',
+                          'wifi_id_2': 'thuis_zolder'})
+        device.loaded()
+        internet._devices.append(device)
+        device = MockFastComDevice({'fast_com_token_url': '.', 'fast_com_speedtest_url': '.'})
+        device.loaded()
+        internet._devices.append(device)
         meetwaarden = internet.get_meetwaarden()
         self.assertEqual(11, len(meetwaarden))
         meetwaarde = meetwaarden.pop(0)

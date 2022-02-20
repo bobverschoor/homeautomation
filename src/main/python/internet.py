@@ -3,9 +3,6 @@ import configparser
 import datetime
 import os
 
-from device.fast_com import FastComDevice
-from device.speedtest import SpeedtestDevice
-from device.wifi_device import WifiDevice
 from gateways.internet_gateway import InternetGateway
 from persistence.database_gateway import DatabaseGateway
 
@@ -18,10 +15,8 @@ class InternetController:
         self._config = configparser.ConfigParser()
         if os.path.exists(configfile):
             self._config.read(configfile)
-            self._internet = InternetGateway()
-            self._internet.devices.append(SpeedtestDevice(self._config['internet']))
-            self._internet.devices.append(WifiDevice(self._config['internet']))
-            self._internet.devices.append(FastComDevice(self._config['internet']))
+            self._internet = InternetGateway(self._config['internet'])
+            self._internet.load_devices()
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config['internet']['databasenaam'])
             else:

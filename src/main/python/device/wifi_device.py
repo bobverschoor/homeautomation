@@ -15,16 +15,32 @@ class WifiDevice:
     ESSID = re.compile(r"\s+ESSID:\"(.+)\"")
     FREQUENCY = re.compile(r"\s+Frequency:(\d+.\d+)\sGHz")
     QUAL_SLEVEL = re.compile(r"\s+Quality=(\d+/\d+)\s+Signal\slevel=(-?\d+)\sdBm")
+    IWLIST_PATH = 'iwlist_path'
+    WIFI_IFC= 'wifi_interface'
 
     def __init__(self, config):
         self.type = "wifi"
-        self._iwlist_path = config['iwlist_path']
-        self._wifi_interface = config['wifi_interface']
+        self._config = config
+        self._iwlist_path = None
+        self._wifi_interface = None
         self._bekende_netwerken = []
+
+    def loaded(self):
+        if WifiDevice.IWLIST_PATH in self._config:
+            self._iwlist_path = self._config[WifiDevice.IWLIST_PATH]
+        else:
+            return False
+        if WifiDevice.WIFI_IFC in self._config:
+            self._wifi_interface = self._config[WifiDevice.WIFI_IFC]
+        else:
+            return False
         for i in range(1,5):
             wifi_configkey = 'wifi_id_' + str(i)
-            if wifi_configkey in config:
-                self._bekende_netwerken.append(config[wifi_configkey])
+            if wifi_configkey in self._config:
+                self._bekende_netwerken.append(self._config[wifi_configkey])
+            else:
+                return False
+        return True
 
     def _scan_wifi(self):
         try:

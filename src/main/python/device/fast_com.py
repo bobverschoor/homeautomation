@@ -17,12 +17,27 @@ def parse_token(text):
 
 
 class FastComDevice:
+    TOKEN_URL = 'fast_com_token_url'
+    SPEEDTEST_URL = 'fast_com_speedtest_url'
+
     def __init__(self, config):
-        self._token_url = config['fast_com_token_url']
-        self._url = config['fast_com_speedtest_url']
+        self._config = config
         self.type = "fast_com"
+        self._token_url = None
+        self._url = None
         self._download_b_s = -1
         self._latency_ms = -1
+
+    def loaded(self):
+        if FastComDevice.TOKEN_URL in self._config:
+            self._token_url = self._config[FastComDevice.TOKEN_URL]
+        else:
+            return False
+        if FastComDevice.SPEEDTEST_URL in self._config:
+            self._url = self._config[FastComDevice.SPEEDTEST_URL]
+        else:
+            return False
+        return True
 
     def get_download_speed(self):
         if self._download_b_s == -1:
