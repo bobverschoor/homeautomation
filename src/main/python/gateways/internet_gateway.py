@@ -10,13 +10,13 @@ class InternetGateway:
         self._devices = []
 
     def load_devices(self):
-        device = SpeedtestDevice(self._config['internet'])
+        device = SpeedtestDevice(self._config)
         if device.loaded():
             self._devices.append(device)
-        device = WifiDevice(self._config['internet'])
+        device = WifiDevice(self._config)
         if device.loaded():
             self._devices.append(device)
-        device = FastComDevice(self._config['internet'])
+        device = FastComDevice(self._config)
         if device.loaded():
             self._devices.append(device)
 
