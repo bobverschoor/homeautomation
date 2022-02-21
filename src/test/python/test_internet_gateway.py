@@ -84,7 +84,7 @@ class TestInternetGateway(unittest.TestCase):
         meetwaarden.pop(0)
         meetwaarden.pop(0)
         meetwaarde = meetwaarden.pop(0)
-        self.assertEqual(11, int(meetwaarde.waarde / 100000))
+        self.assertEqual(9, int(meetwaarde.waarde / 1000000))
         self.assertEqual(meetwaarde.tags['naam'], 'download')
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(0.03, meetwaarde.waarde)

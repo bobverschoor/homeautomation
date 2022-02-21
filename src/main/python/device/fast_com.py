@@ -62,7 +62,7 @@ class FastComDevice:
             bytes_sec = nr_of_bytes/total_time
             download_times.append(bytes_sec)
             latency_times.append(latency)
-        self._download_b_s = average_list(download_times)
+        self._download_b_s = average_list(download_times) * 8 # bits/s
         self._latency_ms = average_list(latency_times)
 
     def _get_downloadbytes_latency(self, url, token):
