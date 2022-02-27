@@ -38,7 +38,7 @@ class InternetGateway:
 
 
 def get_speedtest_tags(device, name):
-    return ["naam:" + name, "server_id:" + str(device.get_server_id()), "bron:" + device.type,
+    return ["naam:" + name, "bron:" + device.type,
             "client_ip:" + device.get_client_ip(), "server_naam:" + device.get_server_name(),
             "server_afstand:" + str(device.get_server_distance())]
 

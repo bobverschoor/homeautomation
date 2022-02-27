@@ -11,10 +11,13 @@ from gateways.internet_gateway import InternetGateway
 class MockSpeedtestDevice(SpeedtestDevice):
     def __init__(self, config):
         super().__init__(config)
+        self._times_called = 0
 
     def _gettest_data(self):
         if self._testdata is None:
             self._testdata = json.loads(test_data)
+            self._testdata["server"]["d"] -= self._times_called
+        self._times_called += 1
         return self._testdata
 
 
@@ -59,9 +62,8 @@ class TestInternetGateway(unittest.TestCase):
         meetwaarde = meetwaarden.pop(0)
         self.assertEqual(91706271.43394412, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['naam'], 'download')
-        self.assertEqual(meetwaarde.tags['server_id'], '5252')
         self.assertEqual(meetwaarde.tags['server_naam'], 'Arnhem')
-        self.assertEqual(meetwaarde.tags['server_afstand'], '104.06065955630943')
+        self.assertEqual(meetwaarde.tags['server_afstand'], '109')
         self.assertEqual(meetwaarde.tags['client_ip'], '217.123.109.107')
         self.assertEqual(meetwaarde.tags['bron'], 'speedtest')
         meetwaarde = meetwaarden.pop(0)
@@ -96,7 +98,7 @@ test_data = '{"download": 91706271.43394412, "upload": 27485708.776732102, "ping
              "server": {"url": "http://speedtest.breedband.nl:8080/speedtest/upload.php", "lat": "51.9833",\
                         "lon": "5.9167",\
                         "name": "Arnhem", "country": "Netherlands", "cc": "NL", "sponsor": "Breedband", "id": "5252",\
-                        "host": "speedtest.breedband.nl:8080", "d": 104.06065955630943, "latency": 22.615},\
+                        "host": "speedtest.breedband.nl:8080", "d": 114.06065955630943, "latency": 22.615},\
              "timestamp": "2022-01-08T15:15:14.942401Z", "bytes_sent": 34512896, "bytes_received": 114977956,\
              "share": null,\
              "client": {"ip": "217.123.109.107", "lat": "52.4594", "lon": "4.6015", "isp": "Ziggo", "isprating": "3.7",\
