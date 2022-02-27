@@ -11,12 +11,12 @@ class WifiDeviceException(Exception):
 
 class WifiDevice:
     CHANNEl = re.compile(r"\s+Channel:(\d+)")
-    STARTNETWERK = re.compile("\s+Cell\s+\d+ - Address")
+    STARTNETWERK = re.compile(r"\s+Cell\s+\d+ - Address")
     ESSID = re.compile(r"\s+ESSID:\"(.+)\"")
     FREQUENCY = re.compile(r"\s+Frequency:(\d+.\d+)\sGHz")
     QUAL_SLEVEL = re.compile(r"\s+Quality=(\d+/\d+)\s+Signal\slevel=(-?\d+)\sdBm")
     IWLIST_PATH = 'iwlist_path'
-    WIFI_IFC= 'wifi_interface'
+    WIFI_IFC = 'wifi_interface'
 
     def __init__(self, config):
         self.type = "wifi"
@@ -34,7 +34,7 @@ class WifiDevice:
             self._wifi_interface = self._config[WifiDevice.WIFI_IFC]
         else:
             return False
-        for i in range(1,5):
+        for i in range(1, 5):
             wifi_configkey = 'wifi_id_' + str(i)
             if wifi_configkey in self._config:
                 self._bekende_netwerken.append(self._config[wifi_configkey])
