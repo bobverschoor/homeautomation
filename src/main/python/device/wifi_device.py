@@ -38,8 +38,8 @@ class WifiDevice:
             wifi_configkey = 'wifi_id_' + str(i)
             if wifi_configkey in self._config:
                 self._bekende_netwerken.append(self._config[wifi_configkey])
-            else:
-                return False
+        if not self._bekende_netwerken:
+            return False
         return True
 
     def _scan_wifi(self):

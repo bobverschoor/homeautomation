@@ -13,12 +13,18 @@ class InternetGateway:
         device = SpeedtestDevice(self._config)
         if device.loaded():
             self._devices.append(device)
+        else:
+            print("SpeedtestDevice not loaded")
         device = WifiDevice(self._config)
         if device.loaded():
             self._devices.append(device)
+        else:
+            print("WifiDevice is not loaded")
         device = FastComDevice(self._config)
         if device.loaded():
             self._devices.append(device)
+        else:
+            print("FastComDevice is not loaded")
 
     def get_meetwaarden(self):
         meetwaarden = []
