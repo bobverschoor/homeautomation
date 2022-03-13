@@ -19,7 +19,7 @@ class HueBridgeDevice:
     CONFIG_ALERTTIMES = 'aantal_keer_knipperen_per_alarm'
     CONFIG_ALERTGROUP = 'alarmeer_groepnaam'
     DEFAULT_ALERTTIMES = 5
-    WAIT_SECS = 0.5 # is minimale waarde voor knipperen
+    WAIT_SECS = 0.5  # is minimale waarde voor knipperen
 
     def __init__(self, config):
         if HueBridgeDevice.CONFIG_HUEBRIDGE in config:

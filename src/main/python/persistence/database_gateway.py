@@ -40,4 +40,3 @@ class DatabaseGateway:
     def print(self):
         for entiteit in self.get_db_entiteiten():
             print(entiteit)
-

@@ -1,6 +1,7 @@
 import datetime
 import math
 
+
 class SensorException(Exception):
     def __init__(self, message):
         super(SensorException, self).__init__(message)

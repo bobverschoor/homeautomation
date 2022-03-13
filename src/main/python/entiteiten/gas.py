@@ -1,4 +1,3 @@
-
 from entiteiten.meetwaarde import Meetwaarde
 
 

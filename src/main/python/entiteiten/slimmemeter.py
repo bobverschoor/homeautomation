@@ -1,4 +1,4 @@
-class Slimmemeter():
+class Slimmemeter:
     def __init__(self, header):
         header = header.strip()
         header = header.strip('//')

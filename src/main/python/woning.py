@@ -48,7 +48,7 @@ class WoningController:
 
     def get_users_from_config(self):
         users = []
-        for user_id in range(1,10):
+        for user_id in range(1, 10):
             usersection = WoningController.CONFIG_PRE_USER + str(user_id)
             if self._config.has_section(usersection):
                 users.append(User(self._config[usersection]))
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     parser.add_argument('--testalerting', help='Test the alerting of lights', action="store_true")
     args = parser.parse_args()
     if args.dryrun:
-        print("dryrun mode" )
+        print("dryrun mode")
     print(datetime.datetime.now())
     controller = WoningController('src/main/resources/secrets.ini', dryrun=args.dryrun)
     controller.collect_store()

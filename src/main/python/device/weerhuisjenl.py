@@ -33,4 +33,3 @@ class WeerhuisjeDevice:
     @property
     def locatie(self):
         return self._locatie1
-

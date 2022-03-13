@@ -5,7 +5,7 @@ from device.api import Api
 
 
 def parse_for_url(text):
-    return re.findall(r'<script src="(.+?)"',text)
+    return re.findall(r'<script src="(.+?)"', text)
 
 
 def parse_token(text):
@@ -59,10 +59,10 @@ class FastComDevice:
             nr_of_bytes, latency = self._get_downloadbytes_latency(target['url'], token)
             end = timer()
             total_time = end - start
-            bytes_sec = nr_of_bytes/total_time
+            bytes_sec = nr_of_bytes / total_time
             download_times.append(bytes_sec)
             latency_times.append(latency)
-        self._download_b_s = average_list(download_times) * 8 # bits/s
+        self._download_b_s = average_list(download_times) * 8  # bits/s
         self._latency_ms = average_list(latency_times)
 
     def _get_downloadbytes_latency(self, url, token):
@@ -95,4 +95,3 @@ def average_list(av_list):
     for el in av_list:
         av += el
     return av / len(av_list)
-

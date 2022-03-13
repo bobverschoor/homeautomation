@@ -98,5 +98,3 @@ class SpeedtestDevice:
             except subprocess.CalledProcessError:
                 raise SpeedtestDeviceException("Speedtest failed.")
         return self._testdata
-
-

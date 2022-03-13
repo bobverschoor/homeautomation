@@ -4,6 +4,7 @@ import inspect
 # https://api.waqi.info/api/feed/@5387/aqi.json
 
 class Weer:
+
     def __init__(self):
         self._locatie = {}
         self._temperatuur = 9999.99

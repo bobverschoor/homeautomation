@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--dryrun', help='collect data but do not store in database.', action="store_true")
     args = parser.parse_args()
     if args.dryrun:
-        print("dryrun mode" )
+        print("dryrun mode")
     print(datetime.datetime.now())
     controller = InternetController('src/main/resources/secrets.ini', dryrun=args.dryrun)
     controller.collect_store()

@@ -56,8 +56,8 @@ class DSMR_50:
                 except TelegramEntityException as tee:
                     print(tee)
                     print("##### Start Raw Data #####")
-                    for l in raw_telegram:
-                        print('\t' + str(l))
+                    for line in raw_telegram:
+                        print('\t' + str(line))
                     print("##### End   Raw Data #####")
                     print(p1_line)
         return telegram
@@ -75,4 +75,3 @@ def raw_telegram_ok(raw_telegram):
         if raw_telegram[0].startswith('/'):
             return True
     return False
-
