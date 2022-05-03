@@ -5,7 +5,6 @@ import os
 import time
 
 from device.hue_bridge_device import HueBridgeDevice
-from entiteiten.user import User
 from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
 
@@ -20,8 +19,6 @@ class WoningController:
             self._config.read(configfile)
             self._woning = WoningGateway()
             self._woning.bridge = HueBridgeDevice(self._config)
-            self._users = self.get_users_from_config()
-            self._network = None
             if self._store_in_database:
                 self._databasebase = DatabaseGateway(self._config[HueBridgeDevice.CONFIG_HUEBRIDGE]['databasenaam'])
             else:
@@ -34,10 +31,6 @@ class WoningController:
         woningmeetwaarden = self._woning.get_meetwaarden()
         for meetwaarde in woningmeetwaarden:
             self._databasebase.entiteiten = meetwaarde
-        if self._network:
-            networkmeetwaarden = self._network.get_meetwaarden()
-            for meetwaarde in networkmeetwaarden:
-                self._databasebase.entiteiten = meetwaarde
         if self._store_in_database:
             self._databasebase.store()
         else:
@@ -45,14 +38,6 @@ class WoningController:
 
     def alarmeer_groep(self):
         self._woning.alarmeer_lichten_in_groep()
-
-    def get_users_from_config(self):
-        users = []
-        for user_id in range(1, 10):
-            usersection = WoningController.CONFIG_PRE_USER + str(user_id)
-            if self._config.has_section(usersection):
-                users.append(User(self._config[usersection]))
-        return users
 
 
 if __name__ == "__main__":

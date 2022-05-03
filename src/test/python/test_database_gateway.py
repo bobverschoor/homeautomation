@@ -17,10 +17,7 @@ class MockInFluxDBDevice(InFluxDBDevice):
 
 
 def get_a_electra():
-    electra = Electra()
-    electra.richting = Electra.VERBRUIKT
-    electra.tarief = Electra.LAAGTARIEF
-    electra.waarde = 34224
+    electra = Electra(waarde=34224, richting=Electra.VERBRUIKT, tarief=Electra.LAAGTARIEF, tags={})
     return electra
 
 
@@ -30,8 +27,7 @@ class TestDatabasegateway(unittest.TestCase):
         db.repository = MockInFluxDBDevice()
         electra = get_a_electra()
         db.entiteiten.append(electra)
-        gas = Gas()
-        gas.waarde = 4312
+        gas = Gas(waarde=4312, tags={})
         db.entiteiten.append(gas)
         db.store()
         self.assertEqual([

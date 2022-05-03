@@ -1,4 +1,4 @@
-from entiteiten.meetwaarde import Meetwaarde
+from entiteiten.meetwaarde import Meetwaarde, convert2tags
 from entiteiten.weer import Weer
 
 
@@ -25,45 +25,37 @@ class WeerGateway:
         else:
             for property_name, value in self.weerdata.get_properties():
                 if property_name == "temperatuur":
-                    meetwaarde = Meetwaarde("gradencelsius")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:temperatuur"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="gradencelsius", waarde=value, tags=convert2tags(
+                        ["soort:temperatuur", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "gevoelstemperatuur":
-                    meetwaarde = Meetwaarde("gradencelsius")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:gevoelstemperatuur"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="gradencelsius", waarde=value, tags=convert2tags(
+                        ["soort:gevoelstemperatuur", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "windsnelheidms":
-                    meetwaarde = Meetwaarde("m/s")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:windsnelheid"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="m/s", waarde=value, tags=convert2tags(
+                        ["soort:windsnelheid", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "luchtvochtigheid":
-                    meetwaarde = Meetwaarde("percentage")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:luchtvochtigheid"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="percentage", waarde=value, tags=convert2tags(
+                        ["soort:luchtvochtigheid", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "luchtdruk":
-                    meetwaarde = Meetwaarde("hPa")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:luchtdruk"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="hPa", waarde=value, tags=convert2tags(
+                        ["soort:luchtdruk", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "windrichting":
-                    meetwaarde = Meetwaarde("kompasgraden")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:windrichting"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="kompasgraden", waarde=value, tags=convert2tags(
+                        ["soort:windrichting", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "neerslaghoeveelheid24h":
-                    meetwaarde = Meetwaarde("mm")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:neerslaghoeveelheid"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="mm", waarde=value, tags=convert2tags(
+                        ["soort:neerslaghoeveelheid", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 elif property_name == "neerslagintensiteit":
-                    meetwaarde = Meetwaarde("mm/h")
-                    meetwaarde.waarde = value
-                    meetwaarde.tags = "soort:neerslagintensiteit"
-                    meetwaarde.tags = "locatie:" + self.weerdata.get_locatie_of_meting(property_name)
+                    meetwaarde = Meetwaarde(eenheid="mm/h", waarde=value, tags=convert2tags(
+                        ["soort:neerslagintensiteit", "locatie:" + self.weerdata.get_locatie_of_meting(property_name)]
+                    ))
                 else:
                     meetwaarde = None
                 if meetwaarde:

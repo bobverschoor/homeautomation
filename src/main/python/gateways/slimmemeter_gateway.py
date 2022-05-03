@@ -1,5 +1,5 @@
 from entiteiten.electra import Electra
-from entiteiten.meetwaarde import Meetwaarde
+from entiteiten.meetwaarde import Meetwaarde, convert2tags
 
 
 def get_meternaam_metertype_from_manufacture(manufacture):
@@ -39,18 +39,14 @@ class SlimmemeterGateway:
                     waarde = value
                     v2 = "aantal"
                 if type(waarde) in [int, float]:
-                    meetwaarde = Meetwaarde(v2)
                     meternaam, metertype = get_meternaam_metertype_from_manufacture(telegram.manufacture)
-                    meetwaarde.tags = "meternaam:" + meternaam
-                    meetwaarde.tags = "metertype:" + metertype
-                    meetwaarde.tags = "meterid:" + str(meter_id)
+                    tags = ["meternaam:" + meternaam, "metertype:" + metertype, "meterid:" + str(meter_id)]
                     if property_name == "gasmeter":
-                        meetwaarde.tags = "soort:gasmeterstand"
+                        tags.append("soort:gasmeterstand")
                     else:
                         for tag in get_tags_from_property_name(property_name):
-                            meetwaarde.tags = tag
-                    meetwaarde.waarde = waarde
-                    meetwaarde.timestamp = timestamp
+                            tags.append(tag)
+                    meetwaarde = Meetwaarde(waarde=waarde, eenheid=v2, timestamp=timestamp, tags=convert2tags(tags))
                     meetwaardes.append(meetwaarde)
         return meetwaardes
 

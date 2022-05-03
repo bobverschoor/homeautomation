@@ -17,15 +17,12 @@ class MockWeerLiveDevice(WeerLiveDevice):
 
 class MockWeerhuisjeDevice(WeerhuisjeDevice):
     def __init__(self):
-        super().__init__({'weer':{'weerhuisje_locatie_1': "weerstationwijkaanzee"}})
-
-    def get_neerslaghoeveelheid(self):
-        return 2.1
+        super().__init__({'weer': {'weerhuisje_locatie_1': "weerstationwijkaanzee"}})
 
 
 class TestWeerdata(unittest.TestCase):
     def test_weerlive_api(self):
-        config = {'weer' : {'weerlive_api_key': 'demo', 'weerlive_locatie': 'IJmuiden'}}
+        config = {'weer': {'weerlive_api_key': 'demo', 'weerlive_locatie': 'IJmuiden'}}
         weerdevice = WeerLiveDevice(config)
         weerdevice.api = MockAPI()
         weerdevice.api.json = test_data_weerlive
@@ -78,8 +75,8 @@ class TestWeerdata(unittest.TestCase):
                          " 1008.9 hPa, tags: soort=luchtdruk locatie=IJmuiden"
                          " 292.5 kompasgraden, tags: soort=windrichting locatie=IJmuiden"
                          " 2.1 mm, tags: soort=neerslaghoeveelheid locatie=weerstationwijkaanzee"
-                         " 1.0 mm/h, tags: soort=neerslagintensiteit locatie=weerstationwijkaanzee"
-                         , meetwaardenstr)
+                         " 1.0 mm/h, tags: soort=neerslagintensiteit locatie=weerstationwijkaanzee",
+                         meetwaardenstr)
 
 
 test_data_weerlive = \

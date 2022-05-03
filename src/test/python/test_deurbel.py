@@ -16,9 +16,7 @@ class MockDeurbelGateway(DeurbelGateway):
         self._gong = "iets"
 
     def someone_at_the_deur(self):
-        meetwaarde = Meetwaarde('test')
-        meetwaarde.waarde = True
-        return meetwaarde
+        return Meetwaarde(eenheid='test', waarde=True, tags={})
 
 
 class MockTelegram(TelegramDevice):
