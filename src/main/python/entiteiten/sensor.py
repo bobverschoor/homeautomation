@@ -7,6 +7,24 @@ class SensorException(Exception):
         super(SensorException, self).__init__(message)
 
 
+def factory_get_sensor(sensortype, volgnr, sensor_state):
+    if sensortype == Schakelaar.NAME:
+        sensor = Schakelaar(volgnr)
+        sensor.knop_id = sensor_state['buttonevent']
+    elif sensortype == BewegingSchakelaar.NAME:
+        sensor = BewegingSchakelaar(volgnr)
+        sensor.beweging_gesignaleerd = sensor_state['presence']
+    elif sensortype == TemperatuurSensor.NAME:
+        sensor = TemperatuurSensor(volgnr)
+        sensor.temperature = sensor_state['temperature']
+    elif sensortype == LichtSensor.NAME:
+        sensor = LichtSensor(volgnr)
+        sensor.lichtniveau = sensor_state['lightlevel']
+    else:
+        sensor = None
+    return sensor
+
+
 class Sensor:
     def __init__(self, volgnr):
         self._volgr = volgnr
@@ -65,9 +83,14 @@ class Sensor:
 
 class Schakelaar(Sensor):
     AAN = '1'
+    AAN_TXT = 'aan'
     DIMMER_OMHOOG = '2'
+    DIMMER_OMHOOG_TXT = 'dimmer_omhoog'
     DIMMER_OMLAAG = '3'
+    DIMMER_OMLAAG_TXT = 'dimmer_omlaag'
     UIT = '4'
+    UIT_TXT = 'uit'
+    NAME = "ZLLSwitch"
 
     def __init__(self, volgnr):
         super(Schakelaar, self).__init__(volgnr)
@@ -94,16 +117,18 @@ class Schakelaar(Sensor):
     @property
     def knop_waarde(self):
         if self._knop_id == Schakelaar.AAN:
-            return 'aan'
+            return Schakelaar.AAN_TXT
         elif self._knop_id == Schakelaar.DIMMER_OMHOOG:
-            return 'dimmer_omhoog'
+            return Schakelaar.DIMMER_OMHOOG_TXT
         elif self._knop_id == Schakelaar.DIMMER_OMLAAG:
-            return 'dimmer_omlaag'
+            return Schakelaar.DIMMER_OMLAAG_TXT
         elif self._knop_id == Schakelaar.UIT:
-            return 'uit'
+            return Schakelaar.UIT_TXT
 
 
 class BewegingSchakelaar(Sensor):
+    NAME = "ZLLPresence"
+
     def __init__(self, volgnr):
         super(BewegingSchakelaar, self).__init__(volgnr)
         self._beweging_gesignaleerd = False
@@ -118,6 +143,8 @@ class BewegingSchakelaar(Sensor):
 
 
 class TemperatuurSensor(Sensor):
+    NAME = "ZLLTemperature"
+
     def __init__(self, volgnr):
         super(TemperatuurSensor, self).__init__(volgnr)
         self._temperature = -1
@@ -139,6 +166,8 @@ class TemperatuurSensor(Sensor):
 
 
 class LichtSensor(Sensor):
+    NAME = "ZLLLightLevel"
+
     def __init__(self, volgnr):
         super(LichtSensor, self).__init__(volgnr)
         self._lichtniveau = -1
@@ -163,22 +192,22 @@ class LichtSensor(Sensor):
             return float(0.0)
         return float(math.log10(self._lichtniveau))
 
-    @property
-    def lichtwaarde(self):
-        if self._lichtniveau < 3000:
-            return "Nacht licht"
-        elif self._lichtniveau < 10000:
-            return "Gedimmed licht"
-        elif self._lichtniveau < 17000:
-            return "Gezellig licht"
-        elif self._lichtniveau < 22000:
-            return "Normaal licht"
-        elif self._lichtniveau < 25500:
-            return "Werk of lees licht"
-        elif self._lichtniveau < 28500:
-            return "Gespecialiseerd fel licht"
-        else:
-            return "Maximum licht"
+    # @property
+    # def lichtwaarde(self):
+    #     if self._lichtniveau < 3000:
+    #         return "Nacht licht"
+    #     elif self._lichtniveau < 10000:
+    #         return "Gedimmed licht"
+    #     elif self._lichtniveau < 17000:
+    #         return "Gezellig licht"
+    #     elif self._lichtniveau < 22000:
+    #         return "Normaal licht"
+    #     elif self._lichtniveau < 25500:
+    #         return "Werk of lees licht"
+    #     elif self._lichtniveau < 28500:
+    #         return "Gespecialiseerd fel licht"
+    #     else:
+    #         return "Maximum licht"
 
 
 def set_boolean(value):

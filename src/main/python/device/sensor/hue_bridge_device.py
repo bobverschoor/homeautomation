@@ -4,7 +4,7 @@ import time
 
 from device.api import Api
 from entiteiten.licht import Licht
-from entiteiten.sensor import Schakelaar, BewegingSchakelaar, TemperatuurSensor, LichtSensor
+from entiteiten.sensor import factory_get_sensor
 
 
 class HueBridgeException(Exception):
@@ -24,22 +24,22 @@ class HueBridgeDevice:
     def __init__(self, config):
         if HueBridgeDevice.CONFIG_HUEBRIDGE in config:
             config = config[HueBridgeDevice.CONFIG_HUEBRIDGE]
-            if HueBridgeDevice.CONFIG_IP in config:
+            if HueBridgeDevice.CONFIG_IP in config and config[HueBridgeDevice.CONFIG_IP]:
                 self._ipadress = config[HueBridgeDevice.CONFIG_IP]
             else:
                 raise HueBridgeException("Config section [" + HueBridgeDevice.CONFIG_HUEBRIDGE + "] missing " +
                                          HueBridgeDevice.CONFIG_IP)
-            if HueBridgeDevice.CONFIG_USERNAME in config:
+            if HueBridgeDevice.CONFIG_USERNAME in config and config[HueBridgeDevice.CONFIG_USERNAME]:
                 self._api_key = config[HueBridgeDevice.CONFIG_USERNAME]
             else:
                 raise HueBridgeException("Config section [" + HueBridgeDevice.CONFIG_HUEBRIDGE + "] missing " +
                                          HueBridgeDevice.CONFIG_USERNAME)
-            if HueBridgeDevice.CONFIG_ALERTGROUP in config:
+            if HueBridgeDevice.CONFIG_ALERTGROUP in config and config[HueBridgeDevice.CONFIG_ALERTGROUP]:
                 self._alertgroupname = config[HueBridgeDevice.CONFIG_ALERTGROUP]
             else:
                 raise HueBridgeException("Config section [" + HueBridgeDevice.CONFIG_HUEBRIDGE + "] missing " +
                                          HueBridgeDevice.CONFIG_ALERTGROUP)
-            if HueBridgeDevice.CONFIG_ALERTTIMES in config:
+            if HueBridgeDevice.CONFIG_ALERTTIMES in config and config[HueBridgeDevice.CONFIG_ALERTTIMES]:
                 self._nr_of_alert = config[HueBridgeDevice.CONFIG_ALERTTIMES]
             else:
                 self._nr_of_alert = 5
@@ -74,26 +74,15 @@ class HueBridgeDevice:
             sensor_json = sensors_json[volgnr]
             sensor_state = sensor_json['state']
             sensor_config = sensor_json['config']
-            if sensor_json['type'] == 'ZLLSwitch':
-                sensor = Schakelaar(volgnr)
-                sensor.knop_id = sensor_state['buttonevent']
-            elif sensor_json['type'] == 'ZLLPresence':
-                sensor = BewegingSchakelaar(volgnr)
-                sensor.beweging_gesignaleerd = sensor_state['presence']
-            elif sensor_json['type'] == 'ZLLTemperature':
-                sensor = TemperatuurSensor(volgnr)
-                sensor.temperature = sensor_state['temperature']
-            elif sensor_json['type'] == 'ZLLLightLevel':
-                sensor = LichtSensor(volgnr)
-                sensor.lichtniveau = sensor_state['lightlevel']
-            else:
-                continue
-            sensor.naam = sensor_json['name']
-            sensor.unique_id = sensor_json['uniqueid']
-            sensor.bereikbaar = sensor_config['reachable']
-            sensor.batterijpercentage = sensor_config['battery']
-            sensor.tijdstip_meting = sensor_state['lastupdated']
-            sensors.append(sensor)
+            sensor_type = sensor_json['type']
+            sensor = factory_get_sensor(sensor_type, volgnr, sensor_state)
+            if sensor:
+                sensor.naam = sensor_json['name']
+                sensor.unique_id = sensor_json['uniqueid']
+                sensor.bereikbaar = sensor_config['reachable']
+                sensor.batterijpercentage = sensor_config['battery']
+                sensor.tijdstip_meting = sensor_state['lastupdated']
+                sensors.append(sensor)
         return sensors
 
     def get_alle_lichten_in_alarmeergroep(self):

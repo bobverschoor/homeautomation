@@ -10,12 +10,32 @@ from mock_api import MockAPI
 class HueBridgeTest(unittest.TestCase):
     def test_setup(self):
         self.assertRaises(HueBridgeException, HueBridgeDevice, {'test': ''})
-        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE: {}})
+        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE:
+                                                                    {HueBridgeDevice.CONFIG_IP: "",
+                                                                     HueBridgeDevice.CONFIG_USERNAME: "test",
+                                                                     HueBridgeDevice.CONFIG_ALERTGROUP: "testt"}})
+        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE:
+                                                                    {HueBridgeDevice.CONFIG_USERNAME: "test",
+                                                                     HueBridgeDevice.CONFIG_ALERTGROUP: "testt"}})
+        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE:
+                                                                    {HueBridgeDevice.CONFIG_IP: "123.123.123.123",
+                                                                     HueBridgeDevice.CONFIG_USERNAME: "",
+                                                                     HueBridgeDevice.CONFIG_ALERTGROUP: "testt"}})
+        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE:
+                                                                    {HueBridgeDevice.CONFIG_IP: "123.123.123.123",
+                                                                     HueBridgeDevice.CONFIG_ALERTGROUP: "testt"}})
+        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE:
+                                                                    {HueBridgeDevice.CONFIG_IP: "123.123.123.123",
+                                                                     HueBridgeDevice.CONFIG_USERNAME: "test",
+                                                                     HueBridgeDevice.CONFIG_ALERTGROUP: ""}})
+        self.assertRaises(HueBridgeException, HueBridgeDevice, {HueBridgeDevice.CONFIG_HUEBRIDGE:
+                                                                    {HueBridgeDevice.CONFIG_IP: "123.123.123.123",
+                                                                     HueBridgeDevice.CONFIG_USERNAME: "test"}})
 
     def test_get_all_lights(self):
-        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
-                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
-                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: ""}})
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "123.123.123.123",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "testures",
+                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: "test alsert"}})
         mockapi = MockAPI()
         hue._lichts_api = mockapi
         mockapi.json = testdata_lights
@@ -43,8 +63,8 @@ class HueBridgeTest(unittest.TestCase):
         self.assertTrue(licht.bereikbaar)
 
     def test_get_alle_lichten_in_groep(self):
-        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
-                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "123.123",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "testuser",
                                                                   HueBridgeDevice.CONFIG_ALERTGROUP: "onbekendegroep"}})
         mockapilight = MockAPI()
         mockapigroup = MockAPI()
@@ -54,8 +74,8 @@ class HueBridgeTest(unittest.TestCase):
         mockapilight.json = testdata_lights
         lichten = hue.get_alle_lichten_in_alarmeergroep()
         self.assertEqual(0, len(lichten))
-        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
-                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "123.123",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "testuser",
                                                                   HueBridgeDevice.CONFIG_ALERTGROUP: "Deurbel"}})
         mockapilight = MockAPI()
         mockapigroup = MockAPI()
@@ -88,9 +108,9 @@ class HueBridgeTest(unittest.TestCase):
         self.assertEqual(0, len(mockapilight.record))
 
     def test_sensors(self):
-        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "",
-                                                                  HueBridgeDevice.CONFIG_USERNAME: "",
-                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: ""}})
+        hue = HueBridgeDevice({HueBridgeDevice.CONFIG_HUEBRIDGE: {HueBridgeDevice.CONFIG_IP: "123",
+                                                                  HueBridgeDevice.CONFIG_USERNAME: "user",
+                                                                  HueBridgeDevice.CONFIG_ALERTGROUP: "alert"}})
         mockapisensors = MockAPI(hue._sensors_api._url)
         hue._sensors_api = mockapisensors
         mockapisensors.json = testdata_sensors
@@ -108,7 +128,6 @@ class HueBridgeTest(unittest.TestCase):
         self.assertTrue(isinstance(sensor_light, LichtSensor))
         self.assertEqual(sensor_light.lichtniveau_lux, 0)
         self.assertEqual(sensor_light.lichtniveau, 0)
-        self.assertEqual(sensor_light.lichtwaarde, "Nacht licht")
         sensor_aanwezigheid = sensors.pop()
         self.assertTrue(isinstance(sensor_aanwezigheid, BewegingSchakelaar))
         self.assertEqual(sensor_aanwezigheid.beweging_gesignaleerd, True)
@@ -266,6 +285,3 @@ testdata_sensors = \
     '"28":{"state":{"status":0,"lastupdated":"2021-12-30T20:31:31"},"config":{"on":true,"reachable":true},' \
     '"name":"textState","type":"CLIPGenericStatus","modelid":"BEH_STATE","manufacturername":"Philips",' \
     '"swversion":"1.0","uniqueid":"2:13:1b24-15fa-4fac-8910","recycle":true}} '
-
-if __name__ == '__main__':
-    unittest.main()
