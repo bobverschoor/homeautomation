@@ -1,7 +1,7 @@
 from device.fast_com import FastComDevice
 from device.speedtest import SpeedtestDeviceException, SpeedtestDevice
 from device.wifi_device import WifiDevice
-from entiteiten.meetwaarde import Meetwaarde, convert2tags
+from entiteiten.meetwaarde import Meetwaarde, convertlist2tags
 
 
 class InternetGateway:
@@ -56,11 +56,11 @@ def get_wifi_tags(netwerk, bron):
 
 def get_speedtest_meetwaarden(device):
     meetwaarden = [Meetwaarde(eenheid='snelheid_bit_s', waarde=device.get_download_speed(),
-                              tags=convert2tags(get_speedtest_tags(device, 'download'))),
+                              tags=convertlist2tags(get_speedtest_tags(device, 'download'))),
                    Meetwaarde(eenheid='snelheid_bit_s', waarde=device.get_upload_speed(),
-                              tags=convert2tags(get_speedtest_tags(device, 'upload'))),
+                              tags=convertlist2tags(get_speedtest_tags(device, 'upload'))),
                    Meetwaarde(eenheid='latentie_ms', waarde=device.get_ping_speed(),
-                              tags=convert2tags(get_speedtest_tags(device, 'ping')))]
+                              tags=convertlist2tags(get_speedtest_tags(device, 'ping')))]
     return meetwaarden
 
 
@@ -68,17 +68,17 @@ def get_wifi_meetwaarden(device):
     meetwaarden = []
     for netwerk in device.get_netwerken():
         meetwaarden.append(Meetwaarde(eenheid='kwaliteit_percentage', waarde=netwerk.quality_percentage,
-                                      tags=convert2tags(get_wifi_tags(netwerk, device.type))))
+                                      tags=convertlist2tags(get_wifi_tags(netwerk, device.type))))
         meetwaarden.append(Meetwaarde(eenheid='signallevel_dbm', waarde=netwerk.signallevel_dbm,
-                                      tags=convert2tags(get_wifi_tags(netwerk, device.type))))
+                                      tags=convertlist2tags(get_wifi_tags(netwerk, device.type))))
         meetwaarden.append(Meetwaarde(eenheid='kanaal', waarde=netwerk.channel,
-                                      tags=convert2tags(get_wifi_tags(netwerk, device.type))))
+                                      tags=convertlist2tags(get_wifi_tags(netwerk, device.type))))
     return meetwaarden
 
 
 def get_fastcom_meetwaarden(device):
     meetwaarden = [Meetwaarde(eenheid='snelheid_bit_s', waarde=device.get_download_speed(),
-                              tags=convert2tags(["naam:download", "bron:" + device.type])),
+                              tags=convertlist2tags(["naam:download", "bron:" + device.type])),
                    Meetwaarde(eenheid='latentie_ms', waarde=device.get_ping_speed(),
-                              tags=convert2tags(["naam:ping", "bron:" + device.type]))]
+                              tags=convertlist2tags(["naam:ping", "bron:" + device.type]))]
     return meetwaarden

@@ -1,6 +1,6 @@
 import re
 
-from entiteiten.meetwaarde import Meetwaarde, convert2tags
+from entiteiten.meetwaarde import Meetwaarde, convertlist2tags
 from entiteiten.sensor import Schakelaar, BewegingSchakelaar, TemperatuurSensor, LichtSensor
 
 
@@ -29,30 +29,30 @@ class WoningGateway:
         meetwaarden = []
         for licht in self.bridge.get_alle_lichten():
             meetwaarden.append(Meetwaarde(eenheid='licht_aan', waarde=licht.aan,
-                                          tags=convert2tags(set_naam_id(licht.naam, licht.unique_id))))
+                                          tags=convertlist2tags(set_naam_id(licht.naam, licht.unique_id))))
             meetwaarden.append(Meetwaarde(eenheid='bereikbaar', waarde=licht.bereikbaar,
-                                          tags=convert2tags(set_naam_id(licht.naam, licht.unique_id))))
+                                          tags=convertlist2tags(set_naam_id(licht.naam, licht.unique_id))))
         return meetwaarden
 
     def _get_meetwaarden_sensoren(self):
         meetwaarden = []
         for sensor in self.bridge.get_alle_sensors():
             meetwaarden.append(Meetwaarde(eenheid='batterijpercentage', waarde=sensor.batterijpercentage,
-                                          tags=convert2tags(set_naam_id(sensor.naam, sensor.unique_id))))
+                                          tags=convertlist2tags(set_naam_id(sensor.naam, sensor.unique_id))))
             meetwaarden.append(Meetwaarde(eenheid='bereikbaar', waarde=sensor.bereikbaar,
-                                          tags=convert2tags(set_naam_id(sensor.naam, sensor.unique_id))))
+                                          tags=convertlist2tags(set_naam_id(sensor.naam, sensor.unique_id))))
             if isinstance(sensor, Schakelaar):
                 meetwaarden.append(Meetwaarde(eenheid='knop_event', waarde=sensor.knop_event,
-                                              tags=convert2tags(set_naam_id(sensor.naam, sensor.unique_id))))
+                                              tags=convertlist2tags(set_naam_id(sensor.naam, sensor.unique_id))))
             if isinstance(sensor, BewegingSchakelaar):
                 meetwaarden.append(Meetwaarde(eenheid='aanwezigheid', waarde=sensor.beweging_gesignaleerd,
-                                              tags=convert2tags(set_naam_id(sensor.naam, sensor.unique_id))))
+                                              tags=convertlist2tags(set_naam_id(sensor.naam, sensor.unique_id))))
             if isinstance(sensor, TemperatuurSensor):
                 meetwaarden.append(Meetwaarde(eenheid='temperatuur_celsius', waarde=sensor.temperature_celsius,
-                                              tags=convert2tags(set_naam_id(sensor.naam, sensor.unique_id))))
+                                              tags=convertlist2tags(set_naam_id(sensor.naam, sensor.unique_id))))
             if isinstance(sensor, LichtSensor):
                 meetwaarden.append(Meetwaarde(eenheid='lichtwaarde_lux', waarde=sensor.lichtniveau_lux,
-                                              tags=convert2tags(set_naam_id(sensor.naam, sensor.unique_id))))
+                                              tags=convertlist2tags(set_naam_id(sensor.naam, sensor.unique_id))))
         return meetwaarden
 
 

@@ -1,5 +1,5 @@
 from entiteiten.electra import Electra
-from entiteiten.meetwaarde import Meetwaarde, convert2tags
+from entiteiten.meetwaarde import Meetwaarde, convertlist2tags
 
 
 def get_meternaam_metertype_from_manufacture(manufacture):
@@ -46,7 +46,7 @@ class SlimmemeterGateway:
                     else:
                         for tag in get_tags_from_property_name(property_name):
                             tags.append(tag)
-                    meetwaarde = Meetwaarde(waarde=waarde, eenheid=v2, timestamp=timestamp, tags=convert2tags(tags))
+                    meetwaarde = Meetwaarde(waarde=waarde, eenheid=v2, timestamp=timestamp, tags=convertlist2tags(tags))
                     meetwaardes.append(meetwaarde)
         return meetwaardes
 

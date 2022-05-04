@@ -1,7 +1,7 @@
 import datetime
 import threading
 from device.deurbel_device import DeurbelGong, DeurbelKnop
-from entiteiten.meetwaarde import Meetwaarde, convert2tags
+from entiteiten.meetwaarde import Meetwaarde, convertstr2tags
 
 
 class DeurbelGatewayException(Exception):
@@ -61,5 +61,5 @@ class DeurbelGateway:
                 t.setDaemon(True)
                 t.start()
                 deurbel_gedrukt = True
-        meetwaarde = Meetwaarde(eenheid='deurbel', tags=convert2tags("naam:deurbel"), waarde=deurbel_gedrukt)
+        meetwaarde = Meetwaarde(eenheid='deurbel', tags=convertstr2tags("naam:deurbel"), waarde=deurbel_gedrukt)
         return meetwaarde
