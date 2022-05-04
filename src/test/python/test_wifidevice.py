@@ -1,6 +1,6 @@
 import unittest
 
-from device.wifi_device import WifiDevice
+from device.sensor.wifi_device import WifiDevice
 
 
 class SpyWifi(WifiDevice):

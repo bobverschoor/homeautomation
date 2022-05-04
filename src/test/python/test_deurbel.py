@@ -2,7 +2,7 @@ import datetime
 import unittest
 
 from deurbel import DeurbelController
-from device.telegram_device import TelegramDevice
+from device.sensor.telegram_device import TelegramDevice
 from entiteiten.meetwaarde import Meetwaarde
 from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway

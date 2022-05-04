@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from device.hue_bridge_device import HueBridgeDevice, HueBridgeException
+from device.sensor.hue_bridge_device import HueBridgeDevice, HueBridgeException
 from entiteiten.licht import Licht
 from entiteiten.sensor import TemperatuurSensor, LichtSensor, BewegingSchakelaar, Schakelaar
 from mock_api import MockAPI

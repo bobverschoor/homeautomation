@@ -2,9 +2,9 @@ import json
 import time
 import unittest
 
-from device.fast_com import FastComDevice
-from device.speedtest import SpeedtestDevice
-from device.wifi_device import WifiDevice
+from device.sensor.internet_fast_com_device import FastComDevice
+from device.sensor.internet_speedtest_device import SpeedtestDevice
+from device.sensor.wifi_device import WifiDevice
 from gateways.internet_gateway import InternetGateway
 
 

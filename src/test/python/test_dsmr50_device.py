@@ -1,6 +1,6 @@
 import unittest
 
-from device.dsmr_50_device import DSMR_50, SerialBus
+from device.sensor.dsmr_50_device import DSMR_50, SerialBus
 from entiteiten.telegram import TelegramEntityException
 
 

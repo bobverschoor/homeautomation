@@ -1,6 +1,6 @@
 import unittest
 
-from device.telegram_device import TelegramException, TelegramDevice
+from device.sensor.telegram_device import TelegramException, TelegramDevice
 from mock_api import MockAPI
 
 

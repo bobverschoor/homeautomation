@@ -1,6 +1,6 @@
 import datetime
 import threading
-from device.deurbel_device import DeurbelGong, DeurbelKnop
+from device.sensor.deurbel_device import DeurbelGong, DeurbelKnop
 from entiteiten.meetwaarde import Meetwaarde, convertstr2tags
 
 

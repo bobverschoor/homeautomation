@@ -1,6 +1,6 @@
 import unittest
 
-from device.deurbel_device import DeurbelKnop, DeurbelGong
+from device.sensor.deurbel_device import DeurbelKnop, DeurbelGong
 from device.raspberrypi import RaspberryPiException, RaspberryPi
 
 

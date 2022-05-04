@@ -4,7 +4,7 @@ import datetime
 import os
 import time
 
-from device.hue_bridge_device import HueBridgeDevice
+from device.sensor.hue_bridge_device import HueBridgeDevice
 from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
 

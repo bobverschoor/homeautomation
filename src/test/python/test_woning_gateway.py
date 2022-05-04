@@ -1,6 +1,6 @@
 import unittest
 
-from device.hue_bridge_device import HueBridgeDevice
+from device.sensor.hue_bridge_device import HueBridgeDevice
 from entiteiten.licht import Licht
 from entiteiten.sensor import Schakelaar
 from gateways.woning_gateway import WoningGateway

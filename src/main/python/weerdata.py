@@ -5,8 +5,8 @@ import os
 
 from persistence.database_gateway import DatabaseGateway
 from gateways.weer_gateway import WeerGateway
-from device.weerhuisjenl import WeerhuisjeDevice
-from device.weerlive_api import WeerLiveDevice
+from device.sensor.weer_huisje_nl_device import WeerhuisjeDevice
+from device.sensor.weer_live_device import WeerLiveDevice
 
 
 class WeerdataController:

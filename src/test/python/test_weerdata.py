@@ -2,8 +2,8 @@ import unittest
 from mock_api import MockAPI
 from gateways.weer_gateway import WeerGateway
 from entiteiten.weer import Weer
-from device.weerhuisjenl import WeerhuisjeDevice
-from device.weerlive_api import WeerLiveDevice
+from device.sensor.weer_huisje_nl_device import WeerhuisjeDevice
+from device.sensor.weer_live_device import WeerLiveDevice
 
 
 class MockWeerLiveDevice(WeerLiveDevice):

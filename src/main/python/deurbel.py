@@ -6,8 +6,8 @@ import time
 
 from pid import PidFile, PidFileAlreadyLockedError
 
-from device.hue_bridge_device import HueBridgeDevice, HueBridgeException
-from device.telegram_device import TelegramDevice
+from device.sensor.hue_bridge_device import HueBridgeDevice, HueBridgeException
+from device.sensor.telegram_device import TelegramDevice
 from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway
 from gateways.woning_gateway import WoningGateway

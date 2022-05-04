@@ -1,6 +1,6 @@
-from device.fast_com import FastComDevice
-from device.speedtest import SpeedtestDeviceException, SpeedtestDevice
-from device.wifi_device import WifiDevice
+from device.sensor.internet_fast_com_device import FastComDevice
+from device.sensor.internet_speedtest_device import SpeedtestDeviceException, SpeedtestDevice
+from device.sensor.wifi_device import WifiDevice
 from entiteiten.meetwaarde import Meetwaarde, convertlist2tags
 
 
