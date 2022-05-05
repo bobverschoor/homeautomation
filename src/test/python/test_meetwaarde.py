@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from entiteiten.electra import Electra
 from entiteiten.meetwaarde import Meetwaarde, convertlist2tags, convertstr2tags
 
 
@@ -32,6 +33,13 @@ class MeetwaardeTest(unittest.TestCase):
         tags = [" goede Tagnaam : tag Value", " andere goede tagnaam  :  tag value"]
         self.assertEqual({"goede Tagnaam": "tag Value", "andere goede tagnaam": "tag value"}, convertlist2tags(tags))
 
-
-if __name__ == '__main__':
-    unittest.main()
+    def test_electra(self):
+        now = datetime.datetime.now()
+        e = Electra(waarde=230.0, tarief=Electra.LAAGTARIEF, richting=Electra.VERBRUIKT, fase="l1", tags={},
+                    timestamp=now)
+        self.assertEqual("230.0 Wh, tags: tarief=laag richting=verbruikt, tarief: laag, richting: verbruikt, fase: l1",
+                         str(e))
+        with self.assertRaises(ValueError):
+            e = Electra(waarde=230.0, tarief="Onbekend", richting=Electra.VERBRUIKT, fase="l1", tags={})
+        with self.assertRaises(ValueError):
+            e = Electra(waarde=230.0, tarief=Electra.LAAGTARIEF, richting="onbekend", fase="l1", tags={})

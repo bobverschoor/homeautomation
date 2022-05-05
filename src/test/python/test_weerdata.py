@@ -11,9 +11,6 @@ class MockWeerLiveDevice(WeerLiveDevice):
         super().__init__({'weer': {'weerlive_api_key': "", 'weerlive_locatie': ""}})
         self.weer = Weer()
 
-    def get_weerentiteit(self):
-        return self.weer
-
 
 class MockWeerhuisjeDevice(WeerhuisjeDevice):
     def __init__(self):
@@ -114,7 +111,3 @@ test_data_weerhuisje = \
     '"UVTH": "--", "SolarRad": "--", "CurrentSolarMax": "--", "SolarTM": "90", "domwinddir": "SSW", ' \
     '"WindRoseData": "[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]", "windrun": "0.0", ' \
     '"version": "5.1", "build": "14426", "ver": "10"}'
-
-
-if __name__ == '__main__':
-    unittest.main()

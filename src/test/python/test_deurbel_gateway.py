@@ -57,7 +57,3 @@ class DeurbelGatewaytest(unittest.TestCase):
             deurbel._knop.knopwaarde = False
         self.assertEqual(gong_duration, deurbel._gong.gong_duration)
         self.assertFalse(deurbel.already_ringing())
-
-
-if __name__ == '__main__':
-    unittest.main()

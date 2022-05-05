@@ -45,7 +45,3 @@ class DSMR50DeviceTest(unittest.TestCase):
         dsmr.serial = MockSerial('p1data_corrupt.txt', 'p1data.txt')
         telegram = dsmr.read_telegram()
         self.assertTrue(telegram.is_data_ok())
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -27,5 +27,5 @@ class Electra(Meetwaarde):
             raise ValueError("Wrong direction: " + str(self.richting))
 
     def __repr__(self):
-        return "tarief: " + self.tarief + ", richting: " + self.richting + ", Wh: " + str(self.waarde) + \
-                ", tijdstip: " + str(self.timestamp)
+        return str(super().__repr__()) + ", tarief: " + self.tarief + ", richting: " + self.richting + \
+               ", fase: " + self.fase

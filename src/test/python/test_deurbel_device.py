@@ -53,7 +53,3 @@ class DeurbelDeviceTest(unittest.TestCase):
         self.assertTrue(self.mock_rpi.outputValueHighSet)
         self.assertTrue(self.mock_rpi.outputValueLowSet)
         self.assertFalse(self.mock_rpi.currentOutputValue)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -3,7 +3,35 @@ import inspect
 
 # https://api.waqi.info/api/feed/@5387/aqi.json
 
+def set_float(value, value_type, min, max):
+    error = ""
+    try:
+        float_value = float(value)
+        if float_value > max:
+            error = value_type + " boven de ingestelde parameters (" + str(max) + ")" + \
+                    str(float_value)
+        if float_value < min:
+            error = value_type + " beneden de ingestelde parameters: (" + str(min) + ")" + \
+                    str(float_value)
+    except ValueError:
+        error = " waarde ongeldig: " + str(value)
+        float_value = -1.0
+    return float_value, error
+
+
 class Weer:
+    TEMP_MAX = 50.0
+    TEMP_MIN = -50.0
+    WIND_MIN = 0.0
+    WIND_MAX = 50.0
+    LUCHTDRUK_MIN = 850.0
+    LUCHTDRUK_MAX = 1100.0
+    NEERSLAG_MIN = 0.0
+    NEERSLAG_MAX = 100.0
+    NEERSLAG_INTENSITEIT_MIN = 0.0
+    NEERSLAG_INTENSITEIT_MAX = 99999.0
+    PERCENTAGE_MIN = 0
+    PERCENTAGE_MAX = 100
 
     def __init__(self):
         self._locatie = {}
@@ -23,12 +51,7 @@ class Weer:
 
     @temperatuur.setter
     def temperatuur(self, value):
-        try:
-            self._temperatuur = float(value)
-            if -50 > self._temperatuur > 50:
-                self._error = "Temperatuur buiten de ingestelde parameters: " + str(self._temperatuur)
-        except ValueError:
-            self._error = "Temperatuur waarde ingeldig: " + str(value)
+        self._temperatuur, self.error = set_float(value, "temperatuur", Weer.TEMP_MIN, Weer.TEMP_MAX)
 
     @property
     def gevoelstemperatuur(self):
@@ -36,12 +59,7 @@ class Weer:
 
     @gevoelstemperatuur.setter
     def gevoelstemperatuur(self, value):
-        try:
-            self._gevoelstemperatuur = float(value)
-            if -50 > self._gevoelstemperatuur > 50:
-                self._error = "GevoelsTemperatuur buiten de ingestelde parameters: " + str(self._gevoelstemperatuur)
-        except ValueError:
-            self._error = "gevoelsTemperatuur waarde ingeldig: " + str(value)
+        self._gevoelstemperatuur, self.error = set_float(value, "gevoelstemperatuur", Weer.TEMP_MIN, Weer.TEMP_MAX)
 
     @property
     def windsnelheidms(self):
@@ -49,12 +67,7 @@ class Weer:
 
     @windsnelheidms.setter
     def windsnelheidms(self, value):
-        try:
-            self._windsnelheidms = float(value)
-            if 0 > self._windsnelheidms > 50:
-                self._error = "windsnelheidms waarde ongeldig: " + str(value)
-        except ValueError:
-            self._error = "windsnelheidms waarde ongeldig: " + str(value)
+        self._windsnelheidms, self.error = set_float(value, "windsnelheidms", Weer.WIND_MIN, Weer.WIND_MAX)
 
     @property
     def luchtvochtigheid(self):
@@ -62,10 +75,9 @@ class Weer:
 
     @luchtvochtigheid.setter
     def luchtvochtigheid(self, value):
-        try:
-            self._luchtvochtigheid = int(value)
-        except ValueError:
-            self._error = "luchtvochtigheid waarde ingeldig: " + str(value)
+        self._luchtvochtigheid, self.error = set_float(value, "luchtvochtigheid",
+                                                       Weer.PERCENTAGE_MIN, Weer.PERCENTAGE_MAX)
+        self._luchtvochtigheid = int(self._luchtvochtigheid)
 
     @property
     def luchtdruk(self):
@@ -73,12 +85,7 @@ class Weer:
 
     @luchtdruk.setter
     def luchtdruk(self, value):
-        try:
-            self._luchtdruk = float(value)
-            if 850 > self._luchtdruk > 1100:
-                self._error = "Luchtdruk waarde te groot of te klein: " + str(self._luchtdruk)
-        except ValueError:
-            self._error = "luchtdruk waarde ingeldig: " + str(value)
+        self._luchtdruk, self.error = set_float(value, "luchtdruk", Weer.LUCHTDRUK_MIN, Weer.LUCHTDRUK_MAX)
 
     @property
     def windrichting(self):
@@ -86,41 +93,16 @@ class Weer:
 
     @windrichting.setter
     def windrichting(self, value):
-        if value == "Noord":
-            value = 0
-        elif value == "NNO":
-            value = 22.5
-        elif value == "NO":
-            value = 45
-        elif value == "ONO":
-            value = 67.5
-        elif value == "Oost":
-            value = 90
-        elif value == "OZO":
-            value = 112.5
-        elif value == "ZO":
-            value = 135
-        elif value == "ZZO":
-            value = 157.5
-        elif value == "Zuid":
-            value = 180
-        elif value == "ZZW":
-            value = 202.5
-        elif value == "ZW":
-            value = 225
-        elif value == "WZW":
-            value = 247.5
-        elif value == "West":
-            value = 270
-        elif value == "WNW":
-            value = 292.5
-        elif value == "NW":
-            value = 315
-        elif value == "NNW":
-            value = 337.5
-        else:
+        richting = ["Noord", "NNO", "NO", "ONO", "Oost", "OZO", "ZO", "ZZO", "Zuid",
+                    "ZZW", "ZW", "WZW", "West", "WNW", "NW", "NNW"]
+        graden = 0.0
+        for r in richting:
+            if value.lower() == r.lower():
+                self._windrichting = graden
+                break
+            graden += 22.5
+        if graden >= 360:
             self.error = "Onbekende windrichting: " + str(value)
-        self._windrichting = float(value)
 
     @property
     def neerslaghoeveelheid24h(self):
@@ -128,12 +110,8 @@ class Weer:
 
     @neerslaghoeveelheid24h.setter
     def neerslaghoeveelheid24h(self, value):
-        try:
-            self._neerslaghoeveelheid24h = float(value)
-            if self._neerslaghoeveelheid24h < 0:
-                self._error = "neerslaghoeveelheid moet groter dan 0 zijn: " + str(self._neerslaghoeveelheid24h)
-        except ValueError:
-            self._error = "neerslaghoeveelheid waarde ingeldig: " + str(value)
+        self._neerslaghoeveelheid24h, self.error = set_float(value, "neerslaghoeveelheid",
+                                                             Weer.NEERSLAG_MIN, Weer.NEERSLAG_MAX)
 
     @property
     def neerslagintensiteit(self):
@@ -141,12 +119,8 @@ class Weer:
 
     @neerslagintensiteit.setter
     def neerslagintensiteit(self, value):
-        try:
-            self._neerslagintensiteit = float(value)
-            if self._neerslagintensiteit < 0:
-                self._error = "neerslagintensiteit moet groter dan 0 zijn: " + str(self._neerslagintensiteit)
-        except ValueError:
-            self._error = "neerslagintensiteit waarde ingeldig: " + str(value)
+        self._neerslagintensiteit, self.error = set_float(value, "neerslagintensiteit",
+                                                          Weer.NEERSLAG_INTENSITEIT_MIN, Weer.NEERSLAG_INTENSITEIT_MAX)
 
     def set_locatie_for_meting(self, metingtype, locatie):
         self._locatie[metingtype] = locatie
@@ -160,7 +134,8 @@ class Weer:
 
     @error.setter
     def error(self, value):
-        self._error = self._error + "\n" + value
+        if value:
+            self._error = self._error + "\n" + str(value)
 
     def get_properties(self):
         props = []
