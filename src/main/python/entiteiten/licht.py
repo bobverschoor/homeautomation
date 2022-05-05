@@ -40,10 +40,7 @@ class Licht:
 
     @aan.setter
     def aan(self, value):
-        if is_boolean(value):
-            self._aan = value
-        else:
-            raise LichtException("Incorrect value voor aan: " + str(value))
+        self._aan = set_boolean(value)
 
     @property
     def bereikbaar(self):
@@ -53,16 +50,13 @@ class Licht:
 
     @bereikbaar.setter
     def bereikbaar(self, value):
-        if is_boolean(value):
-            self._bereikbaar = value
-        else:
-            raise LichtException("Incorrect value voor bereikbaarheid: " + str(value))
-
-    def __str__(self):
-        return self._unique_id + " " + self._naam + " : " + str(self._aan)
+        self._bereikbaar = set_boolean(value)
 
 
-def is_boolean(value):
-    if str(value) in ['True', 'False']:
+def set_boolean(value):
+    if str(value).lower() in ["true", "1"]:
         return True
-    return False
+    elif str(value).lower() in ["false", "0"]:
+        return False
+    else:
+        raise LichtException("Geen boolean: " + str(value))
