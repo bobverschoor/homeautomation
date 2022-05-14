@@ -1,4 +1,3 @@
-
 import json
 import os.path
 import subprocess
@@ -26,55 +25,24 @@ class SpeedtestDevice:
         return False
 
     def get_download_speed(self):
-        data = self._get_validated_data()
-        if 'download' in data:
-            return float(data['download'])
-        else:
-            raise SpeedtestDeviceException("Download data not found: " + str(data))
+        return float(self._get_from_subitem('download'))
 
     def get_upload_speed(self):
-        data = self._get_validated_data()
-        if 'upload' in data:
-            return float(data['upload'])
-        else:
-            raise SpeedtestDeviceException("Upload data not found: " + str(data))
+        return float(self._get_from_subitem('upload'))
 
     def get_ping_speed(self):
-        data = self._get_validated_data()
-        if 'ping' in data:
-            return float(data['ping'])
-        else:
-            raise SpeedtestDeviceException("Ping data not found: " + str(data))
-
-    def get_server_id(self):
-        data = self._get_validated_data()
-        if 'server' in data and 'id' in data['server']:
-            return int(data['server']['id'])
-        else:
-            raise SpeedtestDeviceException("Server Id data not found: " + str(data))
+        return float(self._get_from_subitem('ping'))
 
     def get_server_name(self):
-        data = self._get_validated_data()
-        if 'server' in data and 'name' in data['server']:
-            return data['server']['name']
-        else:
-            raise SpeedtestDeviceException("Server name data not found: " + str(data))
+        return self._get_from_subitem('server', 'name')
 
     def get_server_distance(self):
-        data = self._get_validated_data()
-        if 'server' in data and 'd' in data['server']:
-            return int(data['server']['d'])
-        else:
-            raise SpeedtestDeviceException("Server d data not found: " + str(data))
+        return int(self._get_from_subitem('server', 'd'))
 
     def get_client_ip(self):
-        data = self._get_validated_data()
-        if 'client' in data and 'ip' in data['client']:
-            return data['client']['ip']
-        else:
-            raise SpeedtestDeviceException("Client IP data not found: " + str(data))
+        return self._get_from_subitem('client', 'ip')
 
-    def _get_validated_data(self):
+    def _get_validated_data(self, max_distance=110, max_retries=10):
         invalid = True
         nr_of_times = 0
         data = None
@@ -83,9 +51,9 @@ class SpeedtestDevice:
             data = self._gettest_data()
             if "server" in data and "d" in data["server"]:
                 afstand = int(data["server"]["d"])
-                if afstand < 110:
+                if afstand < max_distance:
                     invalid = False
-            if nr_of_times > 10:
+            if nr_of_times > max_retries:
                 invalid = False
             if invalid:
                 self._testdata = None
@@ -98,3 +66,14 @@ class SpeedtestDevice:
             except subprocess.CalledProcessError:
                 raise SpeedtestDeviceException("Speedtest failed.")
         return self._testdata
+
+    def _get_from_subitem(self, name, sub=""):
+        data = self._get_validated_data()
+        if name in data:
+            if sub:
+                if sub in data[name]:
+                    return data[name][sub]
+            else:
+                return data[name]
+        else:
+            raise SpeedtestDeviceException(name + " " + sub + " data not found: " + str(data))

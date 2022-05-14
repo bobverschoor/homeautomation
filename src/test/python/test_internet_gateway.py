@@ -43,7 +43,7 @@ class MockFastComDevice(FastComDevice):
         return [{'url': '1'}, {'url': '2'}, {'url': '3'}]
 
 
-class TestInternetGateway(unittest.TestCase):
+class InternetGatewayTest(unittest.TestCase):
 
     def test_get_meetwaarde(self):
         internet = InternetGateway({})
