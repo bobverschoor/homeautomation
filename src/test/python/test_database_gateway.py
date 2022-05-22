@@ -2,7 +2,7 @@ import unittest
 
 from entiteiten.electra import Electra
 from entiteiten.gas import Gas
-from persistence.database_gateway import DatabaseGateway
+from persistence.database_gateway import DatabaseGateway, DatabaseGatewayException
 from persistence.influxdb_device import InFluxDBDevice
 
 
@@ -23,12 +23,15 @@ def get_a_electra():
 
 class TestDatabasegateway(unittest.TestCase):
     def test_store_electra_gas(self):
-        db = DatabaseGateway("test")
-        db.repository = MockInFluxDBDevice()
+        db = DatabaseGateway()
         electra = get_a_electra()
-        db.entiteiten.append(electra)
+        db.entiteiten = electra
+        db.entiteiten = electra
         gas = Gas(waarde=4312, tags={})
-        db.entiteiten.append(gas)
+        db.entiteiten = gas
+        with self.assertRaises(DatabaseGatewayException):
+            db.store()
+        db.repository = MockInFluxDBDevice()
         db.store()
         self.assertEqual([
             {"measurement": electra.eenheid,
@@ -40,6 +43,10 @@ class TestDatabasegateway(unittest.TestCase):
              "time": gas.timestamp,
              "fields": {"meetwaarde": gas.waarde}}],
             db.repository._meetwaarde)
+        electradt = electra.timestamp
+        gasdt = gas.timestamp
+        self.assertEqual("\nmeetwaarde: 34224 (Wh), tags:{'tarief': 'laag', 'richting': 'verbruikt'}, time:" +
+                         str(electradt) + "\nmeetwaarde: 4312 (m3), tags:{}, time:" + str(gasdt), str(db))
 
     # def test_integratie(self):
     #     db = DatabaseGateway()
@@ -53,6 +60,3 @@ class TestDatabasegateway(unittest.TestCase):
     #     items = db.repository.get_all_items()
     #     print(items)
 
-
-if __name__ == '__main__':
-    unittest.main()

@@ -6,6 +6,7 @@ import os
 from persistence.database_gateway import DatabaseGateway
 from device.sensor.dsmr_50_device import DSMR_50
 from gateways.slimmemeter_gateway import SlimmemeterGateway
+from persistence.influxdb_device import InFluxDBDevice
 
 
 class EnergieMeterController:
@@ -17,7 +18,7 @@ class EnergieMeterController:
             self._slimmemeter = SlimmemeterGateway()
             self._slimmemeter.p1 = DSMR_50(self._config)
             if self._store_in_database:
-                self._databasebase = DatabaseGateway(self._config['p1meter']['databasenaam'])
+                self._databasebase = DatabaseGateway(InFluxDBDevice(self._config['p1meter']['databasenaam']))
             else:
                 self._databasebase = DatabaseGateway("dryrun")
         else:
@@ -31,7 +32,7 @@ class EnergieMeterController:
         if self._store_in_database:
             self._databasebase.store()
         else:
-            self._databasebase.print()
+            print(str(self._databasebase))
 
 
 if __name__ == "__main__":

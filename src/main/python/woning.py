@@ -7,6 +7,7 @@ import time
 from device.sensor.hue_bridge_device import HueBridgeDevice
 from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
+from persistence.influxdb_device import InFluxDBDevice
 
 
 class WoningController:
@@ -20,7 +21,7 @@ class WoningController:
             self._woning = WoningGateway()
             self._woning.bridge = HueBridgeDevice(self._config)
             if self._store_in_database:
-                self._databasebase = DatabaseGateway(self._config[HueBridgeDevice.CONFIG_HUEBRIDGE]['databasenaam'])
+                self._databasebase = DatabaseGateway(InFluxDBDevice(self._config[HueBridgeDevice.CONFIG_HUEBRIDGE]['databasenaam']))
             else:
                 self._databasebase = DatabaseGateway("dryrun")
         else:
@@ -34,7 +35,7 @@ class WoningController:
         if self._store_in_database:
             self._databasebase.store()
         else:
-            self._databasebase.print()
+            print(str(self._databasebase))
 
     def alarmeer_groep(self):
         self._woning.alarmeer_lichten_in_groep()

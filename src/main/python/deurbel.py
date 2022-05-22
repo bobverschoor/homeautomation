@@ -12,6 +12,7 @@ from gateways.deurbel_gateway import DeurbelGateway
 from gateways.messenger_gateway import MessengerGateway
 from gateways.woning_gateway import WoningGateway
 from persistence.database_gateway import DatabaseGateway
+from persistence.influxdb_device import InFluxDBDevice
 
 
 class DeurbelController:
@@ -26,7 +27,7 @@ class DeurbelController:
             self._messenger.setup(TelegramDevice(config))
             if DeurbelGateway.CONFIG_DATABASENAAM in config[DeurbelGateway.CONFIG_DEURBEL]:
                 self._databasebase = DatabaseGateway(
-                    config[DeurbelGateway.CONFIG_DEURBEL][DeurbelGateway.CONFIG_DATABASENAAM])
+                    InFluxDBDevice(config[DeurbelGateway.CONFIG_DEURBEL][DeurbelGateway.CONFIG_DATABASENAAM]))
             else:
                 print("Databasenaam not in config, therefore not storing results in database.")
                 self._databasebase = None

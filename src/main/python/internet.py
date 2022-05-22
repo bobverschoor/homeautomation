@@ -5,6 +5,7 @@ import os
 
 from gateways.internet_gateway import InternetGateway
 from persistence.database_gateway import DatabaseGateway
+from persistence.influxdb_device import InFluxDBDevice
 
 
 class InternetController:
@@ -18,7 +19,7 @@ class InternetController:
             self._internet = InternetGateway(self._config['internet'])
             self._internet.load_devices()
             if self._store_in_database:
-                self._databasebase = DatabaseGateway(self._config['internet']['databasenaam'])
+                self._databasebase = DatabaseGateway(InFluxDBDevice(self._config['internet']['databasenaam']))
             else:
                 self._databasebase = DatabaseGateway("dryrun")
         else:
@@ -32,7 +33,7 @@ class InternetController:
         if self._store_in_database:
             self._databasebase.store()
         else:
-            self._databasebase.print()
+            print(str(self._databasebase))
 
 
 if __name__ == "__main__":

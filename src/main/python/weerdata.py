@@ -7,6 +7,7 @@ from persistence.database_gateway import DatabaseGateway
 from gateways.weer_gateway import WeerGateway
 from device.sensor.weer_huisje_nl_device import WeerhuisjeDevice
 from device.sensor.weer_live_device import WeerLiveDevice
+from persistence.influxdb_device import InFluxDBDevice
 
 
 class WeerdataController:
@@ -19,7 +20,7 @@ class WeerdataController:
             self._weerdata.weer_devices.append(WeerLiveDevice(self._config))
             self._weerdata.weer_devices.append(WeerhuisjeDevice(self._config))
             if self._store_in_database:
-                self._databasebase = DatabaseGateway(self._config['weer']['databasenaam'])
+                self._databasebase = DatabaseGateway(InFluxDBDevice(self._config['weer']['databasenaam']))
             else:
                 self._databasebase = DatabaseGateway("dryrun")
         else:
@@ -33,7 +34,7 @@ class WeerdataController:
         if self._store_in_database:
             self._databasebase.store()
         else:
-            self._databasebase.print()
+            print(str(self._databasebase))
 
 
 if __name__ == "__main__":

@@ -32,3 +32,6 @@ class Meetwaarde:
             for t in self.tags.keys():
                 tstr = tstr + " " + str(t) + "=" + str(self.tags[t])
         return str(self.waarde) + " " + self.eenheid + tstr
+
+    def __str__(self):
+        return self.__repr__()

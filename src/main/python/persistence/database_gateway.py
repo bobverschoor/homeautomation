@@ -1,10 +1,11 @@
-from persistence.influxdb_device import InFluxDBDevice
+class DatabaseGatewayException(Exception):
+    def __init__(self, message):
+        super(DatabaseGatewayException, self).__init__(message)
 
 
 class DatabaseGateway:
-    def __init__(self, databasenaam):
-        self.repository = None
-        self._databasenaam = databasenaam
+    def __init__(self, database_device=None):
+        self.repository = database_device
         self._entiteiten = []
 
     @property
@@ -34,9 +35,13 @@ class DatabaseGateway:
 
     def store(self):
         if not self.repository:
-            self.repository = InFluxDBDevice(self._databasenaam)
+            raise DatabaseGatewayException("Database device not coupled")
         self.repository.write(self.get_db_entiteiten())
 
-    def print(self):
+    def __str__(self):
+        out = ""
         for entiteit in self.get_db_entiteiten():
-            print(entiteit)
+            out = out + "\n" + "meetwaarde: " + str(entiteit["fields"]["meetwaarde"]) + \
+                  " (" + str(entiteit["measurement"]) + "), tags:" + str(entiteit["tags"]) + ", time:" + \
+                  str(entiteit["time"])
+        return out
