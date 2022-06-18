@@ -226,4 +226,5 @@ def set_datetime(value):
     try:
         return datetime.datetime.fromisoformat(value)
     except ValueError:
-        raise SensorException("Tijdstip ingedrukt geen isoformaat: " + str(value))
+        return datetime.datetime.now()
+

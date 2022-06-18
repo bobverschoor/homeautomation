@@ -208,7 +208,7 @@ testdata_sensors = \
     '{"1":{"state":{"daylight":false,"lastupdated":"2021-12-30T15:06:00"},"config":{"on":true,"configured":true,' \
     '"sunriseoffset":30,"sunsetoffset":-30},"name":"Daylight","type":"Daylight","modelid":"PHDL00",' \
     '"manufacturername":"Signify Netherlands B.V.","swversion":"1.0"},"2":{"state":{"buttonevent":null,' \
-    '"lastupdated":"2021-12-17T18:21:22"},"swupdate":{"state":"noupdates","lastinstall":"2019-10-27T17:56:55"},' \
+    '"lastupdated":"none"},"swupdate":{"state":"noupdates","lastinstall":"2019-10-27T17:56:55"},' \
     '"config":{"on":true,"battery":98,"reachable":true,"pending":[]},"name":"Gang beneden","type":"ZLLSwitch",' \
     '"modelid":"RWL021","manufacturername":"Signify Netherlands B.V.","productname":"Hue dimmer switch",' \
     '"diversityid":"73bbabea-3420-499a-9856-46bf437e119b","swversion":"6.1.1.28573",' \

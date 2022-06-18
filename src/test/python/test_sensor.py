@@ -1,3 +1,4 @@
+import datetime
 import unittest
 
 from entiteiten.sensor import Sensor, SensorException, Schakelaar, TemperatuurSensor, LichtSensor
@@ -14,8 +15,9 @@ class TestSensor(unittest.TestCase):
             sensor.bereikbaar = "geen booolean"
         sensor.bereikbaar = 'False'
         self.assertFalse(sensor.bereikbaar)
-        with self.assertRaises(SensorException):
-            sensor.tijdstip_meting = "gisteren"
+        sensor.tijdstip_meting = "none"
+        self.assertEqual(sensor.tijdstip_meting.date(), datetime.datetime.now().date())
+
 
     def test_schakelaar(self):
         schakelaar = Schakelaar(2)
