@@ -112,7 +112,7 @@ class Schakelaar(Sensor):
         if value in [Schakelaar.AAN, Schakelaar.DIMMER_OMHOOG, Schakelaar.DIMMER_OMLAAG, Schakelaar.UIT]:
             self._knop_id = value
         else:
-            raise SensorException("Verkeerde knop waarde: " + str(value))
+            raise SensorException("Verkeerde knop waarde: " + str(value) + " voor volgnr: " + str(self._volgr))
 
     @property
     def knop_waarde(self):

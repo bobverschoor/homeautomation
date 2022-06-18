@@ -1,7 +1,21 @@
 import unittest
 
 from device.sensor.dsmr_50_device import DSMR_50, SerialBus
-from entiteiten.telegram import TelegramEntityException
+from entiteiten.telegram import TelegramEntityException, Telegram
+
+
+class Mock_DSMR_50_Device(DSMR_50):
+
+    def __init__(self):
+        super().__init__({'p1meter': {'serialport': ''}})
+        self._testdata_filename = "../resources/testdata_DSMR_50_Device.txt"
+
+    def read_telegram(self):
+        telegram = Telegram()
+        with open(self._testdata_filename) as file:
+            while line := file.readline().rstrip():
+                telegram.add(line)
+        return telegram
 
 
 class MockSerial(SerialBus):
