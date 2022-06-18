@@ -141,7 +141,7 @@ class HueBridgeTest(unittest.TestCase):
         self.assertEqual(sensor_knop_2.batterijpercentage, 5)
         sensor_knop_3 = sensors.pop()
         self.assertTrue(isinstance(sensor_knop_3, Schakelaar))
-        self.assertEqual(sensor_knop_3.knop_waarde, 'aan')
+        self.assertEqual(sensor_knop_3.knop_waarde, 'onbekend')
         self.assertEqual(sensor_knop_3.batterijpercentage, 98)
 
 
@@ -207,7 +207,7 @@ testdata_groups = \
 testdata_sensors = \
     '{"1":{"state":{"daylight":false,"lastupdated":"2021-12-30T15:06:00"},"config":{"on":true,"configured":true,' \
     '"sunriseoffset":30,"sunsetoffset":-30},"name":"Daylight","type":"Daylight","modelid":"PHDL00",' \
-    '"manufacturername":"Signify Netherlands B.V.","swversion":"1.0"},"2":{"state":{"buttonevent":1000,' \
+    '"manufacturername":"Signify Netherlands B.V.","swversion":"1.0"},"2":{"state":{"buttonevent":null,' \
     '"lastupdated":"2021-12-17T18:21:22"},"swupdate":{"state":"noupdates","lastinstall":"2019-10-27T17:56:55"},' \
     '"config":{"on":true,"battery":98,"reachable":true,"pending":[]},"name":"Gang beneden","type":"ZLLSwitch",' \
     '"modelid":"RWL021","manufacturername":"Signify Netherlands B.V.","productname":"Hue dimmer switch",' \
