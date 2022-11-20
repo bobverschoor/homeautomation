@@ -89,7 +89,7 @@ class InternetGatewayTest(unittest.TestCase):
         self.assertEqual(9, int(meetwaarde.waarde / 1000000))
         self.assertEqual(meetwaarde.tags['naam'], 'download')
         meetwaarde = meetwaarden.pop(0)
-        self.assertEqual(0.03, meetwaarde.waarde)
+        self.assertEqual(30.0, meetwaarde.waarde)
         self.assertEqual(meetwaarde.tags['naam'], 'ping')
         self.assertEqual(meetwaarde.tags['bron'], 'fast_com')
 

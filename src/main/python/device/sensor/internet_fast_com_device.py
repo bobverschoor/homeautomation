@@ -56,12 +56,12 @@ class FastComDevice:
         latency_times = []
         for target in targets:
             start = timer()
-            nr_of_bytes, latency = self._get_downloadbytes_latency(target['url'], token)
+            nr_of_bytes, latency_in_sec = self._get_downloadbytes_latency(target['url'], token)
             end = timer()
             total_time = end - start
             bytes_sec = nr_of_bytes / total_time
             download_times.append(bytes_sec)
-            latency_times.append(latency)
+            latency_times.append(latency_in_sec * 1000) # ms
         self._download_b_s = average_list(download_times) * 8  # bits/s
         self._latency_ms = average_list(latency_times)
 
