@@ -23,7 +23,7 @@ pid==3.0.4
 prompt-toolkit==3.0.22
 ptyprocess==0.7.0
 pydantic==1.8.2
-Pygments==2.10.0
+Pygments==2.15.0
 pyserial==3.5
 python-dateutil==2.8.2
 python-dotenv==0.19.2
